@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-palette="#2a78d6,#eb6834,#1baf7a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>虎航全航線追蹤 · 台灣出發 · 2027 Q1 週末小旅行</title>
+<style>
+:root{
+  color-scheme: light;
+  --surface-1:#fcfcfb; --plane:#f9f9f7;
+  --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --ring:rgba(11,11,11,.10);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --good:#0ca30c; --goodtext:#006300; --crit:#d03b3b; --warn:#fab219;
+  --seq1:#cde2fb; --seq2:#9ec5f4; --seq3:#6da7ec; --seq4:#3987e5; --seq5:#256abf; --seq6:#184f95;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --surface-1:#1a1a19; --plane:#0d0d0d;
+    --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --ring:rgba(255,255,255,.10);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --goodtext:#0ca30c;
+    --seq1:#104281; --seq2:#184f95; --seq3:#256abf; --seq4:#2a78d6; --seq5:#5598e7; --seq6:#9ec5f4;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface-1:#1a1a19; --plane:#0d0d0d;
+  --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --ring:rgba(255,255,255,.10);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --goodtext:#0ca30c;
+  --seq1:#104281; --seq2:#184f95; --seq3:#256abf; --seq4:#2a78d6; --seq5:#5598e7; --seq6:#9ec5f4;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif;font-size:14px;line-height:1.55}
+.wrap{max-width:1240px;margin:0 auto;padding:28px 20px 72px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+header>div:first-child{flex:1 1 640px;min-width:0}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--ink2);font-size:13px;max-width:980px}
+.note{color:var(--muted);font-size:12px;margin-top:8px}
+button.tgl{background:var(--surface-1);color:var(--ink2);border:1px solid var(--ring);
+  border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.card{background:var(--surface-1);border:1px solid var(--ring);border-radius:12px;padding:18px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:22px 0}
+.tile .lbl{font-size:12px;color:var(--ink2)}
+.tile .val{font-size:29px;font-weight:600;margin:5px 0 2px;letter-spacing:-.02em}
+.tile .val small{font-size:14px;font-weight:500;color:var(--ink2);margin-right:3px}
+.tile .meta{font-size:12px;color:var(--ink2)}
+.delta{font-size:12px;margin-top:6px}
+.dn{color:var(--goodtext)} .up{color:var(--crit)} .flat{color:var(--muted)}
+.badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;
+  border:1px solid var(--ring);color:var(--ink2);background:var(--plane);white-space:nowrap}
+.badge.newlow{border-color:var(--good);color:var(--goodtext);font-weight:600}
+.badge.est{border-color:var(--warn);color:var(--ink2)}
+h2{font-size:15px;margin:34px 0 4px}
+.h2note{font-size:12px;color:var(--muted);margin:0 0 12px;max-width:1000px}
+.filters{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:0 0 14px;
+  padding:12px 14px;background:var(--surface-1);border:1px solid var(--ring);border-radius:10px}
+.fg{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)}
+select{font:inherit;font-size:13px;padding:5px 8px;border-radius:7px;border:1px solid var(--ring);
+  background:var(--plane);color:var(--ink);max-width:190px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:7px 10px;border-bottom:1px solid var(--grid);white-space:nowrap}
+th{font-size:11px;color:var(--muted);font-weight:600;position:sticky;top:0;background:var(--surface-1);z-index:1}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+tbody tr:hover{background:color-mix(in oklab,var(--s1) 7%,transparent)}
+td.tot{font-weight:600}
+.tblbox{max-height:560px;overflow:auto;border:1px solid var(--ring);border-radius:12px;background:var(--surface-1)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:2px 0 10px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;vertical-align:-2px;margin-right:6px}
+.legend i.ln{width:22px;height:2px;border-radius:2px;vertical-align:middle}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.gl{stroke:var(--grid);stroke-width:1}
+.ax{stroke:var(--axis);stroke-width:1}
+.tick{fill:var(--muted);font-size:10px}
+.cal h3{font-size:13px;margin:0 0 8px;font-weight:600}
+.cal table{width:auto} .cal td,.cal th{padding:0;border:0}
+.cell{width:38px;height:30px;border-radius:5px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-size:9px;line-height:1.15;color:var(--ink);margin:2px}
+.cell.empty{background:transparent;color:var(--muted)}
+.cell .d{font-size:9px;color:var(--ink2)}
+.cell.filled{font-weight:600} .cell.filled .d{color:inherit}
+.cal .wd{font-size:10px;color:var(--muted);text-align:center;padding-bottom:4px}
+.seqleg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);margin-top:8px}
+.seqleg span{width:26px;height:10px;border-radius:2px;display:inline-block}
+.tip{position:fixed;pointer-events:none;background:var(--surface-1);color:var(--ink);
+  border:1px solid var(--ring);border-radius:8px;padding:7px 10px;font-size:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,.14);opacity:0;transition:opacity .1s;z-index:9;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+footer{margin-top:44px;font-size:12px;color:var(--muted);border-top:1px solid var(--grid);padding-top:16px}
+details summary{cursor:pointer;font-size:13px;color:var(--ink2)}
+.grid2{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:900px){.grid2{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<!-- ===== 最新一次抓價的完整價格網格（V3 壓縮字串）。排程每日整塊取代。 ===== -->
+<script type="application/json" id="latest">{"ts":"2026-08-20 14:30","pay":"V3|2027-01-01|86|1199,1399,1599,1799,1899,1999,2099,2199,2299,2399,2499,2599,2699,2799,2899,2999,3199,3299,3399,3499,3599,3699,3799,3899,3999,4099,4199,4299,4399,4499,4599,4699,4799,4899,4999,5099,5199,5299,5399,5499,5599,5699,5799,5899,5999,6099,6199,6299,6399,6499,6599,6699,6799,6899,6999,7199,7299,7399,7499,7599,7899,7999,8099,8199,8299,8399,8499,8599,8699,8899,8999,9199,9299,9499,9599,9799,9899,9999,10199,10399,10799,10899,10999,11599,11699,11999,12199,12299,12599,12699,12899,12999,13399,13499,13699,13799,13999,14499,14599,14799,14899,14999,15099,15599,15799,15999,16399,16999,17399,17499,17699,17999,18999,19999,20999,21999,24999|AXT-TPE -*2,67,-*3,42,-*2,42,-*3,42,-*2,51,-*3,59,-*2,59,-*3,67,-*2,74,-*3,74,-*2,74,-*3,102,-*2,110,-*3,59,-*2,51,-*3,42,-*2,51,-*3,51,-*2,36,-*3,36,-*2,51,-*3,30,-*2,36,-*3,30,-*2;CJU-KHH -,23,-,28,-,2,-*2,2,-,9,-,2,-*2,2,-,18,-,2,-*2,23,-,28,-,23,-*2,28,-,23,-,14,-*2,63,-,82,-,62,-*2,62,-,18,-,5,-*2,9,-,9,-,2,-*2,18,-,34,-,14,-*2,5,-,18,-,1,-*2,9,-,18,-,2,-*2,18,-,23,-,14,-*2,34;CJU-RMQ 34,-,52,-*4,1,-,23,-*4,5,-,23,-*4,5,-,18,-*4,34,-,23,-*4,34,-,71,-*4,70,-,56,-*4,9,-,34,-*4,2,-,28,-*4,2,-,18,-*4,18,-,23,-*4,18,-,23,-*4,18,-;CJU-TPE 28,23,46,34,18,2,0,1,2,18,14*2,9,2,18,9,18*2,9*5,23*3,18*2,34,18,23,18,23*2,28,40,82*3,95*5,56,23*2,14,9,2,9,14*2,9,2*2,9,18,23,52,34,18,5,2,14,23*2,28*2,14,9,14,23*2,28*2,2,5,9,40,23,34,23,28*2,40;CTS-KHH 86,114,-,82,75,-,67*3,-,67,82,-,75,67,82,-,82,98,-,75*2,86,-,86,82,-,98,92,114,-,92,98,-,86*2,92,-,112,115,-,115,99,115,-,98*2,-,82,75,82,-,67,75,-,82*2,92,-,92,98,-,82,67,86,-,82,92,-,75*2,92,-,67,82,-,75,67,82,-,75*2,-,82,67,82;CTS-TPE 75*2,82,57,75,50,42,29,57,67,50,57,67,50*2,57*3,50*3,67,75,82*2,92,75,57,67,86,92,82,75,82,92,82*2,92,104,112,115,109,105*3,86,82,75,57*2,67,75,67*3,57*2,75,82,86*2,75,57*2,67,82,67,57*4,67,75,67,57,67,57*2,67,75,57*3,67,57*2;DAD-KHH -,57,30,-,36,-,24,-,57,-*2,24,-,30,-,66,-*2,30,-,42,-,66,-*2,57,-,42,-,85,-*2,42,36*2,-,77*2,-,89*2,96,-,89,83,-,66,17,30,-,24,17,-,30,15,17,-,17,15,-,57,36,42,-,20,17,-,24,17*2,-,24,20,-,24,15,20,-,20*2,-,30,15,17,-,30;DAD-TPE -,42,-*2,36,-,12,-,15,-*2,20,-,15,-,15,-*2,17,-,15,-,17,-*2,30,-,36,-,30,-*2,30,-,36,-,77,-*2,96,-,89,-,89,-*2,42,-,20,-,30,-*2,17,-,20,-,20,-*2,57,-,12,-,12,-*2,17,-,12,-,17,-*2,15,-,20,-,15,-*2,24,-,15,-,20;FKS-TPE 42,-*3,59,-*2,51,-*3,42,-*2,30,-*3,59,-*2,59,-*3,51,-*2,67,-*3,67,-*2,59,-*3,110,-*2,96,-*3,59,-*2,51,-*3,67,-*2,51,-*3,74,-*2,30,-*3,42,-*2,30,-*3,36,-*2,36,-*3,51,-*2,30,-;FUK-KHH 70,-*3,47,17,-,42,-*3,42,22,-,37,-*3,37,17,-,37,-*3,61,47,-,61,-*3,70,47,-,82,-*3,113,111,-,113,-*3,54,17,-,32,-*3,42,27,-,32,-*3,70,42,-,32,-*3,37,22,-,37,-*3,47,22,-,47,-*3,47,27,-,47,-;FUK-TPE 70,82,91,47,32,42,37,47*2,32*2,27*4,32,37,27*5,37*2,54,47*4,54,47,37*2,47,54*2,70,82,91,85,113,105,113*3,61,42,32*3,54,32,27*2,22,27*3,32,70*2,42,27*2,32*2,37,27*2,22,27,32*2,27*2,22,27,42,47,32,27*2,22,27*2,32;GMP-KHH 38,32,-,32,-*2,9,13,9,-,21,-*2,16*2,9,-,32,-*2,13*3,-,26,-*2,26,32*2,-,26,-*2,32,38,45,-,70,-*2,69*3,-,26,-*2,13*3,-,13,-*2,13*2,21,-,32,-*2,3,6,3,-,13,-*2,9*3,-,13,-*2,9*3,-,13,-*2,9*3;HKD-TPE 82,75,67,75,42*2,35,29*2,35,42,23,42,35,42,29,57,50,35,67,35,57,42,75,67,42,57,75,67*2,82,75,67,86,82,67*2,98*2,99,112,88*2,99,94,86,57*2,50,67,57,50,57,42,57,50,57,42,75,86,67*2,29,35,29,75,50,29*2,35,29,23,50,29,23,29,35,29,23,57,35,23,35,29*2,35;HNA-TPE -,63,-*3,41,-*2,48,-*3,63,-*2,72,-*3,56,-*2,79,-*3,72,-*2,79,-*3,105,-*2,79,-*6,91,-*3,48,-*2,63,-*3,63,-*2,56,-*3,91,-*2,72,-*3,63,-*2,48,-*3,56,-*2,48,-*3,34,-*2,41;HND-TPE 44,38,44,27,18,15,12,18,22,15,12*2,15*4,22,18*2,27,22,27*2,32*2,22,27,22*3,38,44,38*2,44,38*3,60,105*2,85,77*2,82,60,32,27,18,22*2,27*2,22*5,27,53,38,22,12*2,18,27,18*2,12,9,15*2,22,15,12*2,9,15,22*2,15,12*2,15*3;HSG-TPE -*2,29,-,29,-,15,-*2,20,-,17,-,17,-*2,20,-,20,-,17,-*2,24,-,36,-,36,-*2,36,-,44,-,44,-*2,88,-,103,-,103,-*2,70,-,36,-,17,-*2,17,-,17,-,15,-*2,17,-,29,-,12,-*2,24,-,15,-,17,-*2,17,-,17,-,17,-*2,20,-,17,-,17,-*2;ICN-TPE 27,17,33*2,14*2,4,7*3,10,7,4,7,4,7*3,4*3,14,7,14,17*2,22,17*7,27,33*2,39*2,48,61,55,40,34*2,22,14,4*6,2*4,17,4,27*2,14,1,2*2,4,7,10,2,-,2*2,4,7,2,-*2,1,2,-,7,4,-*2,2,4;ISG-KHH -*2,30,-*2,9,-*3,16,-*2,9,-*3,13,-*2,13,-*3,25,-*2,20,-*3,25,-*2,20,-*3,25,-*2,91,-*3,73,-*2,5,-*3,20,-*2,7,-*3,20,-*2,20,-*3,13,-*2,7,-*3,13,-*2,7,-*3,13,-*2,5,-*3;ISG-TPE 3,9,-*2,16,3,-,13,16,-*2,13,9,-,7,5,-*2,16,9,-,9,16,-*2,30,20,-,13,25,-*2,25*2,-,20,44,-*2,73,82,-,60,73,-*2,16,9,-,9,20,-*2,9*2,-,3,7,-*2,44,25,-,7*2,-*2,13,9,-,7,9,-*2,9,13,-,13,16,-*2,9,30,-,5,9;KCZ-TPE -,22,-*3,22,-*2,14,-*3,17,-*2,17,-*3,22,-*2,27,-*3,37,-*2,32,-*3,27,-*2,70,-*3,105,-*2,70,-*3,22,-*2,17,-*3,22,-*2,14,-*3,32,-*2,37,-*3,42,-*2,22,-*3,22,-*2,22,-*3,22,-*2,27;KHH-CJU 34,-,34,9,-,9,-,14,-,9*2,-,18,-,23,-,14,5,-,14,-,28,-,28,18,-,23,-,18,-,18,34,-,76,-,87,-,70,49,-,23,-,23,-,14,5,-,9,-,9,-,9,1,-,5,-,34,-,9*2,-,23,-,28,-,18,9,-,23,-,28,-,18,23,-,28,-,23,-,14,5,-,5,-,28,-;KHH-CTS 86,92,-,86,92,-,105,86,98,-,82*2,-,92,86,105,-,92,98,-,108,105,114,-,98*2,-,105,98,112,-,82,105,-,116,111,116,-,113,112,-,98*3,-,86*2,-,86*2,92,-,82*2,-,105,92,98,-,82*2,-,98,86*2,-,82*2,-,86,82*2,-,67,75,-,67*2,82,-,57,67,-,57*2,67;KHH-DAD -,57,36,-,57,-,36,-,30,-*2,66,-,30,-,48,-*2,66,-,57,-,48,-*2,85,-,57,-,66,-*2,77,96*2,-,96,83,-,85,30,24,-,20,15,-,20,15,17,-,30,15,-,17,15,57,-,57,24,-,20,17,24,-,24,15,-,24,17,24,-,20,15,-,17,20,24,-,30,15,-,30,15,12,-,12;KHH-FUK 82,-*3,37,22,-,54,-*3,47,27,-,42,-*3,37,27,-,61,-*3,54,47,-,61,-*3,91,111,-,113,-*3,91,17,-,70,-*3,37,27,-,37,-*3,42,22,-,70,-*3,32,22,-,42,-*3,37,27,-,37,-*3,42,27,-,42,-*3,47,27,-,42,-;KHH-GMP 32*2,-,26,-*2,16,13,16,-,16,-*2,26,13,16,-,16,-*2,26*3,-,26,-*2,26,21*2,-,38,-*2,81,69,76,-,60,-*2,16,9*2,-,9,-*2,9,13,6,-,9,-*2,16,32*2,-,26,-*2,13,9*2,-,9,-*2,9*2,6,-,16,-*2,9*2,6,-,9,-*2,6*2,3;KHH-ISG -*2,20,-*2,13,-*3,16,-*2,13,-*3,20,-*2,20,-*3,30,-*2,25,-*3,25,-*2,82,-*3,56,-*2,25,-*3,25,-*2,16,-*3,20,-*2,16,-*3,25,-*2,16,-*3,20,-*2,16,-*3,20,-*2,16,-*3,16,-*2,16,-*3;KHH-KIX 32*5,22,37,32,42,32*2,22,37*2,42*2,47,37,42,54,70,82,70,61,54*2,70*2,61,70,61*2,82,70,113,105,113,77*2,70,42,37*3,32,27*2,42*4,32,27,22,37,32,42,54,47,27,32*2,37,32,42,32*2,37,32*2,37,42,37,32,37*2,32*2,42,37*6,54;KHH-KMJ 27,-*3,10,-*2,27,-*3,22,-*2,32,-*3,27,-*2,54,-*3,54,-*2,82,-*3,61,-*2,105,-*3,47,-*2,32,-*3,27,-*2,42,-*3,17,-*2,37,-*3,27,-*2,27,-*3,42,-*2,27,-*3,27,-*2,42,-*3,32,-*2,42,-;KHH-KMQ -*2,56,-*3,37,-*2,43,-*3,37,-*2,49,-*3,82,-*2,82,-*3,56,-*2,82,-*3,105,-*2,85,-*3,43,-*2,56,-*3,49,-*2,43,-*3,49,-*2,49,-*3,32,-*2,32,-*3,37,-*2,32,-*3,32,-*2,32,-*3,27,-*2;KHH-NGO -,82,-,82,-,64,-*2,64,-,56,-,72,-*2,56,-,72,-,72,-*2,101,-,82,-,82,-*2,101,-,101,-,111,-*2,111,-,111,-,101,-*2,56,-,43,-,43,-*2,49,-,37,-,64,-*2,72,-,37,-,43,-*2,43,-,43,-,37,-*2,37,-,37,-,43,-*2,37,-,56,-,37,-*2,49;KHH-NRT 43,48,43,57*4,43,65,48,57*5,65,57,48*2,65,81*2,90,74*2,65,57,65,74*3,65,81,96,111,105,96,85,82,74,57,48*4,57,48*4,57,48*4,57*2,74,43,38,33*3,38*3,33,28,38*4,48,43,38,33,38,33,38*2,33,28*2,33*3;KHH-OKA 70*2,31,37,17,25,17,31,37*3,25,31,21,31,37,31,25,13,43,31,58*2,51,58,31,51,31,70,82,43,82,51,91,82,107*2,91,82,43,51,21,37*2,43,37,21,37,17,43*2,37,31,25,37,25,70*2,37*2,17,37,17,43*2,31,43,17,37,17,37,43,37,31,17,43,21,37*2,31,37,25,37,17,43,37;KHH-OKJ 37,-*2,42,-,32,-,32,-*2,32,-,32,-,37,-*2,42,-,54,-,82,-*2,61,-,70,-,70,-*2,54,-,105,-,105,-*2,82,-,47,-,37,-*2,32,-,32,-,32,-*2,27,-,42,-,54,-*2,27,-,32,-,32,-*2,22,-,37,-,37,-*2,27,-,32,-,42,-*2,32,-,27,-,37,-;KHH-SDJ -,48,-,56,-,72,-*2,72,-,72,-,72,-*2,79,-,72,-,84,-*2,84,-,79,-,84,-*2,84,-,72,-,102,-*2,106,-,102,-,79,-*2,72,-,72,-,72,-*2,79,-,63,-,72,-*2,63,-,56,-,56,-*2,56,-,41,-,48,-*2,48,-,34,-,41,-*2,41,-,41,-,34,-*2,48;KIJ-TPE 41,-*2,41,-*3,34,-*2,34,-*3,34,-*2,41,-*3,48,-*2,41,-*3,48,-*2,72,-*3,41,-*2,84,-*3,85,-*2,63,-*3,41,-*2,41,-*3,29,-*2,79,-*3,41,-*2,29,-*3,29,-*2,29,-*3,56,-*2,34,-*3,19,-;KIX-KHH 32,42,37,17,10,14,10,6,17,22,27,17,10,14*2,22,27,17*3,27*2,37,27,32,37,42*2,37,42,70,54*4,61*2,91,101,96,111,77,70*2,77,54,27,32,22,17,27*4,17,14,17,22,37,47*2,27,17*3,22,17*6,22*2,37,17,22,17*2,22,14,17*4,27;KIX-TPE 22,42*2,22,6,10,6,14*2,10*2,14*2,10,14*2,17,10,14*3,17,22,17,14*2,32,22*2,27,37,32*2,37,32,42,47,70,91,96*2,61*2,85,70,42,22*4,27,37,22,14,17,10,14*2,27,47,22,6,3,14*6,10,14*2,17,14*2,10,14,17,27,17*2,14,17,10,14,17;KMI-TPE 17,-*2,63,-*3,36,-*2,17,-*3,15,-*2,15,-*3,17,-*2,29,-*3,36,-*2,36,-*3,63,-*2,88,-*3,103,-*2,36,-*3,17,-*2,24,-*3,15,-*2,54,-*3,15,-*2,15,-*3,17,-*2,17,-*3,29,-*2,17,-*3,15,-;KMJ-KHH 27,-*3,27,-*2,10,-*3,27,-*2,22,-*3,27,-*2,17,-*3,37,-*2,42,-*3,54,-*2,61,-*3,111,-*2,85,-*3,47,-*2,17,-*3,37,-*2,22,-*3,37,-*2,22,-*3,27,-*2,27,-*3,54,-*2,17,-*3,32,-*2,17,-;KMJ-TNN 14,-*3,22,-*2,6,-*3,22,-*2,6,-*3,32,-*2,17,-*3,37,-*2,42,-*3,82,-*2,42,-*3,113,-*2,70,-*3,32,-*2,22,-*3,27,-*2,14,-*3,37,-*2,22,-*3,22,-*2,22,-*3,47,-*2,22,-*3,42,-*2,22,-;KMQ-KHH -*2,56,-*3,37,-*2,32,-*3,37,-*2,37,-*3,43,-*2,43,-*3,82,-*2,72,-*3,72,-*2,91,-*3,91,-*2,82,-*3,37,-*2,27,-*3,27,-*2,43,-*3,32,-*2,37,-*3,32,-*2,32,-*3,32,-*2,32,-*3,37,-*2;KMQ-TPE -*2,64,-*3,27,-*2,27,-*3,32,-*2,43,-*3,37,-*2,56,-*3,64,-*2,64,-*3,64,-*2,82,-*3,91,-*2,91,-*3,32,-*2,43,-*3,32,-*2,37,-*3,37,-*2,32,-*3,32,-*2,27,-*3,37,-*2,27,-*3,32,-*2;NGO-KHH -,82,-,72,-,37,-*2,72,-,49,-,43,-*2,43,-,64,-,56,-*2,82,-,82,-,82,-*2,101,-,101,-,91,-*2,82,-,101,-,111,-*2,111,-,101,-,56,-*2,64,-,56,-,49,-*2,64,-,101,-,64,-*2,49,-,49,-,37,-*2,43,-,43,-,43,-*2,56,-,49,-,37,-*2,37;NGO-RMQ 27,-*2,82,-,22,-,37,-*2,27,-,32,-,27,-*2,27,-,32,-,43,-*2,64,-,56,-,64,-*2,64,-,56,-,64,-*2,91,-,111,-,105,-*2,64,-,32,-,32,-*2,32,-,22,-,22,-*2,72,-,49,-,27,-*2,27,-,27,-,22,-*2,27,-,37,-,43,-*2,22,-,27,-,27,-;NGO-TPE 32,49,43,32,22,17,22,17,22,43,27*2,22,27*3,43,32*3,27,32,43,56,49,43*2,49,43,64*2,49,56,64,49,64,49,82,91,105*2,82,77,82,77,49,37,27,32,37*2,43,27,32,22,37,27,37,56*2,32*3,27,37,43,37,27,22,32,22,32,43,37*2,27,32,27*2,43,27*5,32;NRT-KHH 48,65,43,38*2,28*3,38,43,33,38,33*3,38,48,43*2,38,33,38,43,57,48,57,48*2,65,74*4,65,74,57,74,81,90,105,111,96,82,85*2,65,43*2,38,33,43,33,48,43,38,33,28,48,65*3,38,33,28,33,38,28,33,28*4,43,28,33,28*3,33,38,33*2,28*3,38;NRT-TPE 48,65,57,43,28,18*3,33,28*2,18*4,28,33,23*2,28*2,33,38,57,43,38*3,43,57,65,57*3,65,48,57,65,100,111*2,96,85,96,85,81,43,38,28*2,33,38,43,33*2,28*3,38,74,65,33,28,23,28,38,28,38,18*2,28,33,28*2,18*4,33*2,23,18*4,23;OIT-TPE -,24,-*3,15,-*2,36,-*3,20,-*2,17,-*3,29,-*2,17,-*3,36,-*2,44,-*3,44,-*2,82,-*3,103,-*2,96,-*3,29,-*2,36,-*3,17,-*2,15,-*3,29,-*2,15,-*3,17,-*2,17,-*3,24,-*2,29,-*3,20,-*2,17;OKA-KHH 43,51*2,43,37,43,31,25,37,31,17,31,25,31,13,25,43,17,37,31,37,17,37*2,31,43*3,25,43*2,31,43*4,70*2,82,107*2,73,60,91,82,31,51,43,31,13,31,37,21,31,37,31,13,31,51,43,58,43,37,13,31*2,21,37*3,13,37,31,25,37*2,31,25,43,37,17,31*3,8,31;OKA-RMQ -*4,31,-,13,-*4,21,-,17,-*4,21,-,25,-*4,37,-,37,-*4,31,-,31,-*4,91,-,91,-*4,37,-,13,-*4,21,-,1,-*4,51,-,3,-*4,21,-,13,-*4,25,-,8,-*4,21,-,3,-*2;OKA-TNN -*2,37,-*3,21,-*2,25,-*3,21,-*2,25,-*3,21,-*2,31,-*3,43,-*2,37,-*3,37,-*2,70,-*3,82,-*2,73,-*3,31,-*2,25,-*3,25,-*2,43,-*3,31,-*2,25,-*3,25,-*2,25,-*3,25,-*2,25,-*3,25,-*2;OKA-TPE 31*2,43,37,31,3,8,31*2,13,8*2,3*2,8*9,17,31*3,25,31*7,37,31,37,82,101*2,68,91*2,68,58,31,8,1,3,17*2,21,3,1*3,8,21,43*2,31,3*2,8*3,3,1*2,3,8*4,1,8,31*2,8,31,3*4,8;OKJ-KHH 42,-*2,42,-,27,-,17,-*2,32,-,27,-,27,-*2,42,-,27,-,32,-*2,54,-,82,-,61,-*2,70,-,70,-,61,-*2,101,-,113,-,85,-*2,61,-,27,-,22,-*2,47,-,27,-,22,-*2,61,-,22,-,27,-*2,32,-,32,-,32,-*2,42,-,32,-,27,-*2,32,-,42,-,37,-;OKJ-TPE 37,42,27*2,10,14*2,10,14*2,17,14*3,10,14,17,27,14,27,10*3,22*2,17,22,27,37,42*2,47,42,47,42,47,54,82,101,111,113,58,77,85,77,54,37*2,14,37,32,27,32,17*2,14*2,22,17,47,42,27,17*2,32,17,22,17*4,22*2,27,22,17*2,22,32,22*2,17,22,17*2,32;PUS-TPE 36,44*2,36,22,7,5,9*2,14*2,9*2,7,9,17,14,11,9*4,17*2,22*4,28*2,36,22*2,28,36,44,61*3,78*5,57,36,22,11*2,9*2,14,9,11,7*2,9,22,28,36*2,22,7*2,14,11,17,9,7*3,9,14,9*2,11,5,7,9,14,11,7*3,9,28;RMQ-CJU -,28,-*3,18,-*2,9,-*3,18,-*2,9,-*3,18,-*2,34,-*3,28,-*2,28,-*3,87,-*2,76,-*3,23,-*2,9,-*3,23,-*2,9,-*3,18,-*2,28,-*3,34,-*2,18,-*3,34,-*2,9,-*3,34,-*2,23,-*3,28,-*2,9;RMQ-NGO 72,-*2,43,-,27,-,27,-*2,43,-,27,-,37,-*2,27,-,56,-,56,-*2,49,-,56,-,56,-*2,56,-,105,-,111,-*2,82,-,43,-,32,-*2,27,-,27,-,32,-*2,22,-,32,-,56,-*2,27,-,27,-,27,-*2,22,-,27,-,22,-*2,22,-,27,-,27,-*2,43,-,22,-,27,-;RMQ-OKA 43,-*2,17,-*3,25,-*2,17,-*3,31,-*2,17,-*3,58,-*2,43,-*3,70,-*2,82,-*3,101,-*2,91,-*3,51,-*2,37,-*3,51,-*2,31,-*3,70,-*2,37,-*3,37,-*2,37,-*3,37,-*2,31,-*3,31,-*2,31,-*3,25,-;SDJ-KHH -,63,-,56,-,63,-*2,63,-,56,-,56,-*2,84,-,91,-,84,-*2,79,-,72,-,79,-*2,91,-,91,-,84,-*2,91,-,105,-,112,-*2,110,-,91,-,63,-*2,72,-,79,-,63,-*2,79,-,72,-,56,-*2,63,-,56,-,48,-*2,56,-,48,-,48,-*2,56,-,48,-,48,-*2,48;SDJ-TPE -*2,72,-,63,-,48,-*2,56,-,72,-,63,-*4,79,-,56,-*2,97,-,79,-,79,-*2,105,-,84,-,91,-*2,91,-,110,-,106,-*2,106,-,79,-,79,-*2,79,-,91,-,72,-*2,91,-,79,-,72,-*2,79,-,63,-,48,-*2,56,-,48,-,48,-*2,41,-,41,-,41,-*2;TNN-KMJ 22,-*3,14,-*2,22,-*3,22,-*2,32,-*3,27,-*2,70,-*3,42,-*2,47,-*3,61,-*2,85,-*3,27,-*2,32,-*3,14,-*2,27,-*3,14,-*2,37,-*3,22,-*2,27,-*3,22,-*2,32,-*3,22,-*2,32,-*3,22,-*2,32,-;TNN-OKA -*2,25,-*3,25,-*2,25,-*3,25,-*2,21,-*3,43,-*2,37,-*3,37,-*2,37,-*3,82,-*2,73,-*3,25,-*2,31,-*3,25,-*2,25,-*3,43,-*2,31,-*3,25,-*2,25,-*3,25,-*2,25,-*3,25,-*2,25,-*3,25,-*2;TPE-AXT -*2,74,-*3,59,-*2,59,-*3,59,-*2,59,-*3,85,-*2,85,-*3,74,-*2,74,-*3,102,-*2,96,-*3,67,-*2,51,-*3,67,-*2,59,-*3,59,-*2,59,-*3,51,-*2,51,-*3,42,-*2,36,-*3,36,-*2,59,-*3,30,-*2;TPE-CJU 46,23,34,23,14,18,14,23,18,9,23,9,14,18*2,14*5,23,34,23,40,23,28,23,28*2,40,18,34,58,87,95*3,62,56,46,28,14*2,9*2,14,9*2,14*2,18*2,9,2,18,34,46*2,18*2,14,34,28*2,40,23,14,9,34,28*2,46,14,23,9,34,28,40,28*2,23*2,28*3,40;TPE-CTS 86,82*4,86*2,92,98,92,82*2,98,86*2,98,92,82*2,86,98,104,107,104,98,86,104*2,98,104,92,82,86,112,115,112*3,109,98,86*3,92,86,82*3,86,82,86,82,75*2,92*2,98,104,92,82,75*2,82*2,86,75,67*2,75*3,92,75,57,67*2,75*3,67*2,57*5;TPE-DAD -,48,-*2,24,-,24,-,20,-*2,17,-,24,-,24,-*2,24,-,42,-,42,-*2,48,-,48,-,66,-*2,77,-,96,-,89,-*2,48,-,20,-,17,-*2,12,-,15,-,20,-*2,17,-,36,-,48,-*2,20,-,20,-,17,-*2,24,-,30,-,20,-*2,17,-,24,-,20,-*2,20,-,15,-,12;TPE-FKS 67,-*3,67,-*2,74,-*3,67,-*2,74,-*3,51,-*2,85,-*3,93,-*2,74,-*3,80,-*2,91,-*3,80,-*2,67,-*3,67,-*2,59,-*3,74,-*2,74,-*3,42,-*2,51,-*3,36,-*2,42,-*3,36,-*2,36,-*3,36,-*2,36,-;TPE-FUK 91,82*2,42,32*4,42,32,47,42,32,37,32,37,32*2,27,37,61*3,54*5,61*3,70,91,113*4,111,96,91,37,32,27,32,42,27*3,32*3,27*2,42*2,47,82,91,37,22*2,27,32*3,27*2,22,32*2,37,32,27,22,27,32*2,37,32*2,42*2,27,32*2,37;TPE-HKD 86,67,86*2,67,92,82,86,75,82*2,67,82*2,86,67,82*2,67,75,107,92,82*2,86,82,86*2,92,86,92,82*2,99,109,105,94*2,99,86*2,75,57*2,67*2,57,75*2,82,67,75,57*2,92,86,92,86*2,75,50,57*2,86,67*2,57,50,67*2,57,67,75,57,42*2,50,57,50,42*2,35*5;TPE-HNA -,72,-*3,84,-*9,91,-*3,97,-*6,97,-*6,102,-*2,106,-*3,84,-*2,72,-*3,72,-*2,79,-*3,84,-*2,97,-*3,72,-*2,84,-*3,48,-*2,56,-*3,48,-*2,48,-*3,34,-*2,41;TPE-HND 44*3,53*2,44*3,69,44,53*3,60*3,53,38,44,53,69*2,81,69,60*2,69,60,69,81,60,53,60,85,111,96*2,82*2,69,60,53,38,53,38*6,53,44,38,44,53,60*2,81,44,32,27,32,27,32*3,27*3,32*4,27,32*12;TPE-HSG -*2,74,-,20,-,17,-*2,20,-,29,-,24,-*2,20,-,20,-,44,-*2,44,-,36,-,44,-*2,44,-,63,-,103,-*2,96,-,63,-,17,-*2,29,-,17,-,17,-*2,17,-,29,-,36,-*2,20,-,17,-,17,-*2,17,-,17,-,17,-*2,17,-,17,-,20,-*2,17,-,29,-,17,-*2;TPE-ICN 46,39*2,17,14*4,17*2,14*4,17*5,22*8,17,22*2,17,22,27,61,70,77,70,55*2,39,17,14,17,14,10*5,14*6,22,33,27,14,22,10*2,14*2,10*4,-,10,14,10*3,-*2,14*2,-,10*2,-*2,10*2,-;TPE-ISG 25*2,-*2,9,7,-,9*2,-*2,20,7,-,9,16,-*2,9,7,-,25,30,-*2,20,25,-,25*2,-*2,35,60,-,82,73,-*2,35,13,-,9,7,-*2,7,5,-,9*2,-*2,25,9,-,25,44,-*2,9,7,-,9,13,-*2,9*2,-,9,13,-*2,7*2,-,20,9,-*2,16,7,-,7*2;TPE-KCZ -,47,-*3,17,-*2,22,-*3,17,-*2,27,-*3,32,-*2,54,-*3,37,-*2,47,-*3,77,-*2,105,-*3,42,-*2,22,-*3,17,-*2,22,-*3,22,-*2,47,-*3,17,-*2,27,-*3,17,-*2,37,-*3,17,-*2,37,-*3,37,-*2,42;TPE-KIJ 41,-*2,56,-*3,48,-*2,41,-*3,56,-*2,48,-*3,84,-*2,79,-*3,56,-*2,72,-*3,96,-*2,77,-*3,41,-*2,34,-*3,34,-*2,34,-*3,63,-*2,29,-*3,29,-*2,41,-*3,34,-*2,34,-*3,29,-*2,48,-*3,19,-;TPE-KIX 42,32,27*2,22*4,27,22,27*2,22*3,27,22,27*3,37,42,47,42,37*2,42,47*2,70,47,54,70,85,105,96,105,77,70,37,32,27*3,22*2,17,27,32*2,27,22,17,22,27*2,37,42,32,17*11,22,27,17,22,17*2,22,17,27,22,32,22*2,27,32,37;TPE-KMI 74,-*2,36,-*3,20,-*2,36,-*3,17,-*2,20,-*3,44,-*2,36,-*3,36,-*2,54,-*3,103,-*2,88,-*3,17,-*2,15,-*3,17,-*2,15,-*3,54,-*2,29,-*3,17,-*2,17,-*3,20,-*2,17,-*3,20,-*2,29,-*3,17,-;TPE-KMQ -*2,56,-*3,43,-*2,37,-*3,37,-*2,49,-*3,64,-*2,64,-*3,56,-*2,64,-*3,105,-*2,91,-*3,37,-*2,37,-*3,37,-*2,37,-*3,37,-*2,37,-*3,27,-*2,27,-*3,27,-*2,27,-*3,27,-*2,32,-*3,32,-*2;TPE-NGO 49,43,37,32,27,37,27,37*2,27,32,22,43,32,43,49,37*2,32,56,64*3,56,49*2,56,49,64,72,56*2,72,82,96*2,105,77*2,56,43,32*2,37,32*2,27,32,27,37,43,27,32*2,37*2,43,56,32,27,22,27,32,27*3,32,27*3,37*2,22*3,27,22,27*3,32*2,22,27,37,27;TPE-NRT 48,43,48*2,33*2,38,43*2,33,38,28,38,33,43*2,38*2,33,48,57,65,74,57,48*4,57,74,65,57,65,82,96,85,96,77*2,57*2,33*5,28*2,33*4,28,33*3,43,57,38,23*3,28*4,23*2,28,23,28*4,23*3,28*3,33,28,23*2,28,33;TPE-OIT -,63,-*3,20,-*2,24,-*3,24,-*2,29,-*3,24,-*2,44,-*3,44,-*2,44,-*3,96,-*2,103,-*3,17,-*2,24,-*3,17,-*2,20,-*3,17,-*2,63,-*3,17,-*2,17,-*3,17,-*2,20,-*3,20,-*2,20,-*3,17,-*2,17;TPE-OKA 51,25*2,13,8,13*2,17,13*2,8,13*3,17*2,13,8,13*2,25,51,43,25,31*2,43,25,51,43,25,51,58,91*4,60,68,51,31,13,31,21,25,21*3,13,31,21,13,21*3,25,58*2,21*2,17,21,17,25,21,17,21*3,17,25,21,13,21*3,17,25,21,13,21*3,13,25,21;TPE-OKJ 54,47,22,37,27*2,17,27*2,22,14,27*2,14,27,32,17,22,27,37,54,61,54,42,37,42,47,42*2,82,61,47,91,85,105*3,70,77,42,27,17,27,22,17*2,22*2,17,27,22,17*2,27,22,27,37,47,32,17*3,14,22,32,17*2,22,27,17,27,22,17*3,32,17,27,37,22*2,27*2,17,22,32;TPE-PUS 28*3,22,9,11,14*2,11,17,14*6,11,9,17,14,22*3,28,17,22,28,22*2,28,17,28,36,78*4,57*2,44,22,11*3,14,7,9,11,9,14,9*3,11,9,17,36,28,11,17,9,17,11,14,11,9,7,9*2,11,14,17,11,9*2,14,11*2,14,9*2,22,7,9,11,9;TPE-SDJ -*2,63,-,72,-,72,-*2,72,-,63,-,79,-*2,84,-,79,-,84,-*2,91,-,79,-,84,-*2,79,-,91,-,110,-*2,96,-,84,-,79,-*2,79,-,72,-,79,-*2,79,-,63,-,84,-*2,79,-,48,-,56,-*2,56,-,48,-,56,-*2,48,-,48,-,48,-*2,48,-,41,-,41,-*2;TPE-YGJ 27,-*2,17,-*3,22,-*2,27,-*3,22,-*2,17,-*3,42,-*2,42,-*3,37,-*2,37,-*3,85,-*2,61,-*3,17,-*2,22,-*3,22,-*2,17,-*3,37,-*2,17,-*3,17,-*2,17,-*3,17,-*2,14,-*3,17,-*2,27,-*3,22,-;YGJ-TPE 22,-*2,32,-*3,14,-*2,10,-*3,17,-*2,17,-*3,14,-*2,17,-*3,37,-*2,37,-*3,32,-*2,101,-*3,70,-*2,37,-*3,17,-*2,22,-*3,17,-*2,37,-*3,17,-*2,17,-*3,17,-*2,17,-*3,17,-*2,14,-*3,17,-"}</script>
+
+<!-- ===== 追蹤歷程：每次抓價只保留「每條航線當時最便宜的來回未稅合計」。
+     完整網格只留最新一份，否則檔案會膨脹到數 MB。 ===== -->
+<script type="application/json" id="hist">[{"ts":"2026-08-20 14:30","best":{"KHH-CJU":4798,"KHH-CTS":18398,"KHH-DAD":5998,"KHH-FUK":11098,"KHH-GMP":4898,"KHH-ISG":5598,"KHH-KIX":7298,"KHH-KMJ":8598,"KHH-KMQ":9598,"KHH-NGO":10598,"KHH-NRT":9298,"KHH-OKA":6598,"KHH-OKJ":9598,"KHH-SDJ":12098,"RMQ-CJU":6798,"RMQ-NGO":8098,"RMQ-OKA":7798,"TNN-KMJ":7598,"TNN-OKA":8198,"TPE-AXT":10398,"TPE-CJU":4998,"TPE-CTS":17198,"TPE-DAD":6598,"TPE-FKS":10998,"TPE-FUK":8598,"TPE-HKD":10498,"TPE-HNA":11398,"TPE-HND":7498,"TPE-HSG":6598,"TPE-ICN":4098,"TPE-ISG":4598,"TPE-KCZ":7098,"TPE-KIJ":8998,"TPE-KIX":6198,"TPE-KMI":6298,"TPE-KMQ":8598,"TPE-NGO":8098,"TPE-NRT":7798,"TPE-OIT":6598,"TPE-OKA":4598,"TPE-OKJ":6198,"TPE-PUS":4598,"TPE-SDJ":12098,"TPE-YGJ":6198}}]</script>
+
+<!-- ===== 各航段「稅金與其他費用」（TWD／每位成人／單程），取自官網訂票引擎購物車明細。
+     排程每天補查幾個未知航段，legs 裡沒有的航段在頁面上標示「未查核」。 ===== -->
+<script type="application/json" id="tax">{"updated":"2026-08-20","checked":{"TPE-PUS":"2027-02-20","PUS-TPE":"2027-02-24","TPE-KIX":"2027-03-03","KIX-TPE":"2027-03-07","KHH-KIX":"2027-01-01","KIX-KHH":"2027-01-05"},"legs":{"TPE-PUS":800,"PUS-TPE":725,"TPE-KIX":900,"KIX-TPE":1624,"KHH-KIX":900,"KIX-KHH":1624}}</script>
+
+<div class="wrap">
+<header>
+  <div>
+    <h1>虎航全航線追蹤 · 台灣出發 · 2027 Q1 週末小旅行</h1>
+    <div class="sub">2027 年 1–3 月 · 行程 3–5 天 · 須跨週六與週日 · 1 位成人 · 最低票價（不含行李）</div>
+    <div class="sub" style="margin-top:6px"><b>價格說明：</b>虎航官網顯示的是<b>未稅票價</b>。已查核稅費的航線顯示<b>實付總額</b>，
+      尚未查核的顯示未稅價並標記 <span class="badge est">未稅</span>。排程每天會補查幾個航段，逐步補齊。</div>
+  </div>
+  <button class="tgl" id="themeBtn">切換深/淺色</button>
+</header>
+<div class="note" id="cov"></div>
+
+<div class="tiles" id="tiles"></div>
+
+<h2>航線排行</h2>
+<p class="h2note">每條航線在條件內最便宜的來回組合。點欄位標題可換排序方式。</p>
+<div class="filters">
+  <div class="fg">出發機場 <select id="fOrg"></select></div>
+  <div class="fg">地區 <select id="fCountry"></select></div>
+  <div class="fg">天數 <select id="fN"><option value="">全部</option><option value="3">3 天</option><option value="4">4 天</option><option value="5">5 天</option></select></div>
+  <div class="fg">月份 <select id="fM"><option value="">全部</option><option value="01">1 月</option><option value="02">2 月</option><option value="03">3 月</option></select></div>
+  <div class="fg">價格顯示 <select id="fMode"><option value="pay">可比價（含稅，未查核者用未稅）</option><option value="fare">一律未稅</option></select></div>
+  <div class="fg" style="margin-left:auto" id="cnt"></div>
+</div>
+<div class="tblbox">
+<table>
+<thead><tr>
+  <th data-s="route">航線</th><th data-s="dep">最便宜的去程 → 回程</th><th data-s="nights">天數</th>
+  <th data-s="fare">未稅合計</th><th data-s="tax">稅費</th><th data-s="pay">價格</th>
+  <th data-s="chg">vs 前次</th><th data-s="lo">追蹤最低</th>
+</tr></thead>
+<tbody id="tbRoute"></tbody>
+</table>
+</div>
+
+<h2>各航線最低價一覽</h2>
+<p class="h2note">依價格排序；顏色代表地區。長條末端直接標數字，不需要對照色塊。</p>
+<div class="card"><div class="legend" id="barleg"></div><div id="bars"></div></div>
+
+<h2>單一航線細看</h2>
+<p class="h2note">選一條航線，看它的來回價格日曆與去/回程單程票價走勢。</p>
+<div class="filters" style="margin-bottom:12px">
+  <div class="fg">航線 <select id="fRoute" style="max-width:280px"></select></div>
+  <div class="fg" id="routeTax" style="color:var(--ink2)"></div>
+</div>
+<div class="grid2">
+  <div class="card" id="calBox"></div>
+  <div class="card" id="legBox"></div>
+</div>
+
+<h2>所有符合條件的組合</h2>
+<p class="h2note">套用上方「航線排行」的篩選條件。組合數很多，畫面只渲染前 400 筆最便宜的；縮小篩選範圍就能看到更多。</p>
+<div class="tblbox">
+<table>
+<thead><tr><th>航線</th><th>去程 → 回程</th><th>天數</th><th>去程</th><th>回程</th><th>未稅合計</th><th>稅費</th><th>價格</th></tr></thead>
+<tbody id="tbCombo"></tbody>
+</table>
+</div>
+
+<h2>追蹤歷程</h2>
+<p class="h2note">每次抓價記錄各航線當時最便宜的來回<b>未稅</b>合計。圖上顯示目前最便宜的 6 條航線，加上你在上面選的那一條。</p>
+<div class="card" id="trendbox"></div>
+
+<details class="card" style="margin-top:22px">
+  <summary>稅費查核進度</summary>
+  <div id="taxtable" style="margin-top:12px"></div>
+</details>
+
+<footer>
+資料來源：台灣虎航官網每日票價 API（<code>api-book.tigerairtw.com/api/cms/station-daily-prices</code>），涵蓋桃園／台中／高雄／台南出發的所有航點。
+API 回傳<b>未稅</b>單程最低價，數值與官網「選擇航班」頁一致。<br>
+「稅金與其他費用」逐航段取自官網訂票引擎購物車明細；尚未查核的航段以未稅價顯示並標記。<br>
+票價為 1 位成人、不含託運行李與選位；實際可售價格隨機位變動（實測一小時內就會變動），請以官網結帳頁為準。
+</footer>
+</div>
+
+<div class="tip" id="tip"></div>
+<script>
+/* ============ 資料 ============ */
+const LATEST = JSON.parse(document.getElementById('latest').textContent);
+const HIST   = JSON.parse(document.getElementById('hist').textContent);
+const TAXD   = JSON.parse(document.getElementById('tax').textContent);
+const LEGTAX = TAXD.legs || {};
+HIST.sort((a,b)=>a.ts.localeCompare(b.ts));
+
+const NAME = {TPE:'桃園',RMQ:'台中',KHH:'高雄',TNN:'台南',
+  AXT:'秋田',CJU:'濟州',CTS:'札幌',DAD:'峴港',FKS:'福島',FUK:'福岡',GMP:'首爾金浦',HKD:'函館',
+  HNA:'花卷',HND:'東京羽田',HSG:'佐賀',ICN:'首爾仁川',ISG:'石垣島',KCZ:'高知',KIJ:'新潟',KIX:'大阪',
+  KMI:'宮崎',KMJ:'熊本',KMQ:'小松',NGO:'名古屋',NRT:'東京成田',OIT:'大分',OKA:'沖繩',OKJ:'岡山',
+  PUS:'釜山',SDJ:'仙台',YGJ:'米子'};
+const COUNTRY = {CJU:'韓國',GMP:'韓國',ICN:'韓國',PUS:'韓國',DAD:'越南'};
+const cty = c => COUNTRY[c] || '日本';
+const CCOL = {'日本':'var(--s1)','韓國':'var(--s2)','越南':'var(--s3)'};
+
+/* V3 解碼 */
+function decodeV3(pay){
+  const p = pay.split('|');
+  const ndates = +p[2];
+  const prices = p[3].split(',').map(Number);
+  const [y,m,d] = p[1].split('-').map(Number);
+  const dates=[]; const dt=new Date(Date.UTC(y,m-1,d));
+  for(let i=0;i<ndates;i++){dates.push(dt.toISOString().slice(0,10)); dt.setUTCDate(dt.getUTCDate()+1);}
+  const legs={};
+  for(const seg of p[4].split(';')){
+    const sp=seg.indexOf(' '); const key=seg.slice(0,sp);
+    const vals=[];
+    for(const tok of seg.slice(sp+1).split(',')){
+      const st=tok.indexOf('*');
+      const c = st<0?tok:tok.slice(0,st);
+      const n = st<0?1:+tok.slice(st+1);
+      const v = c==='-'?null:prices[+c];
+      for(let i=0;i<n;i++) vals.push(v);
+    }
+    const o={}; vals.forEach((v,i)=>{ if(v!=null) o[dates[i]]=v; });
+    legs[key]=o;
+  }
+  return {dates, legs};
+}
+const {dates:DATES, legs:LEGS} = decodeV3(LATEST.pay);
+
+/* 來回航線 = 兩個方向都有資料，且出發地是台灣機場 */
+const TW=['TPE','RMQ','KHH','TNN'];
+const ROUTES=[];
+for(const k of Object.keys(LEGS)){
+  const [o,d]=k.split('-');
+  if(!TW.includes(o)) continue;
+  if(!LEGS[d+'-'+o]) continue;
+  ROUTES.push({key:k, back:d+'-'+o, org:o, dst:d, country:cty(d),
+    label:`${NAME[o]||o} ⇄ ${NAME[d]||d}`, code:`${o}⇄${d}`});
+}
+ROUTES.sort((a,b)=>a.org.localeCompare(b.org)||a.dst.localeCompare(b.dst));
+
+const W=['一','二','三','四','五','六','日'];
+const fmt=n=>n==null?'—':Math.round(n).toLocaleString('en-US');
+const md=s=>s.slice(5).replace('-','/');
+const dowI=s=>{const d=new Date(s+'T00:00:00');return (d.getDay()+6)%7;};
+const dow=s=>W[dowI(s)];
+
+/* 3–5 天且跨週六與週日的組合 */
+const COMBOS=(()=>{
+  const out=[]; const S=new Date('2027-01-01T00:00:00'), E=new Date('2027-03-31T00:00:00');
+  const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  for(let d=new Date(S); d<=E; d.setDate(d.getDate()+1)){
+    for(const n of [3,4,5]){
+      const r=new Date(d); r.setDate(r.getDate()+n-1);
+      if(r>E) continue;
+      const wd=new Set();
+      for(let i=0;i<n;i++){const x=new Date(d); x.setDate(x.getDate()+i); wd.add(x.getDay());}
+      if(wd.has(6)&&wd.has(0)) out.push([iso(d),iso(r),n]);
+    }
+  }
+  return out;
+})();
+
+/* 每條航線的所有組合 */
+const ALL=[];
+for(const R of ROUTES){
+  const to=LEGTAX[R.key], tb=LEGTAX[R.back];
+  const taxKnown = to!=null && tb!=null;
+  const tax = taxKnown ? to+tb : null;
+  for(const [dep,ret,n] of COMBOS){
+    const a=LEGS[R.key][dep], b=LEGS[R.back][ret];
+    if(a==null||b==null) continue;
+    ALL.push({R, dep, ret, nights:n, out:a, back:b, fare:a+b, tax, taxKnown,
+      pay: taxKnown ? a+b+tax : a+b});
+  }
+}
+
+/* 每條航線的最便宜組合 + 歷程 */
+const histBest = HIST.map(h=>h.best||{});
+const ROWS = ROUTES.map(R=>{
+  const mine=ALL.filter(x=>x.R===R);
+  if(!mine.length) return null;
+  const best=mine.reduce((a,b)=>b.fare<a.fare?b:a);
+  const ser=histBest.map(h=>h[R.key]??null).filter(v=>v!=null);
+  const prev=ser.slice(0,-1);
+  return {...best, n:mine.length,
+    lo: ser.length?Math.min(...ser):best.fare,
+    chg: prev.length?best.fare-ser[ser.length-1]:0,
+    isNewLow: prev.length>0 && best.fare<Math.min(...prev)};
+}).filter(Boolean);
+
+/* ============ 小工具 ============ */
+const tip=document.getElementById('tip');
+function showTip(e,html){ tip.innerHTML=html; tip.style.opacity=1;
+  const p=12; let x=e.clientX+p,y=e.clientY+p; const r=tip.getBoundingClientRect();
+  if(x+r.width>innerWidth-8)x=e.clientX-r.width-p;
+  if(y+r.height>innerHeight-8)y=e.clientY-r.height-p;
+  tip.style.left=x+'px'; tip.style.top=y+'px'; }
+const hideTip=()=>tip.style.opacity=0;
+function bindTips(root){ (root||document).querySelectorAll('[data-t]').forEach(el=>{
+  if(el._b)return; el._b=1;
+  el.addEventListener('mousemove',e=>showTip(e,el.dataset.t));
+  el.addEventListener('mouseleave',hideTip); }); }
+
+const known=ROUTES.filter(R=>LEGTAX[R.key]!=null&&LEGTAX[R.back]!=null).length;
+document.getElementById('cov').textContent =
+  `最後更新 ${LATEST.ts}（台北時間） · 已累積 ${HIST.length} 次抓價 · `
+  + `${ROUTES.length} 條來回航線 / ${ALL.length.toLocaleString('en-US')} 個日期組合 · `
+  + `票價涵蓋 ${DATES[0]} – ${DATES[DATES.length-1]} · 稅費已查核 ${known}/${ROUTES.length} 條航線`;
+
+/* ============ 統計卡 ============ */
+(function(){
+  const byPay=[...ROWS].sort((a,b)=>a.fare-b.fare);
+  const cheapest=byPay[0];
+  const byC={};
+  ROWS.forEach(r=>{ const c=r.R.country; if(!byC[c]||r.fare<byC[c].fare) byC[c]=r; });
+  const cards=[{t:'全航線最便宜',r:cheapest}].concat(
+    ['日本','韓國','越南'].filter(c=>byC[c]).map(c=>({t:c+'最便宜',r:byC[c]})));
+  document.getElementById('tiles').innerHTML=cards.map(({t,r})=>{
+    const cls=r.chg<0?'dn':(r.chg>0?'up':'flat');
+    const dtxt=r.chg===0?(HIST.length<2?'首次抓價':'與前次相同')
+      :(r.chg<0?'▼ 跌 ':'▲ 漲 ')+fmt(Math.abs(r.chg));
+    return `<div class="card tile">
+      <div class="lbl">${t}</div>
+      <div class="val"><small>TWD</small>${fmt(r.pay)}${r.taxKnown?'':' <span class="badge est">未稅</span>'}</div>
+      <div class="meta" style="color:var(--muted)">${r.R.label}${r.taxKnown?`｜未稅 ${fmt(r.fare)} ＋ 稅費 ${fmt(r.tax)}`:''}</div>
+      <div class="meta" style="margin-top:4px">${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)}) · ${r.nights} 天</div>
+      <div class="delta ${cls}">${dtxt}${r.isNewLow?' <span class="badge newlow">追蹤新低</span>':''}</div>
+    </div>`;
+  }).join('');
+})();
+
+/* ============ 篩選器 ============ */
+/* 預設選最便宜的那條航線，而不是字母排序第一條（後者常是一週兩班的季節航線） */
+const F={org:'',country:'',n:'',m:'',mode:'pay',sort:'pay',dir:1,
+  route:([...ROWS].sort((a,b)=>a.fare-b.fare)[0]?.R.key)||ROUTES[0]?.key||''};
+document.getElementById('fOrg').innerHTML='<option value="">全部</option>'
+  + [...new Set(ROUTES.map(r=>r.org))].map(o=>`<option value="${o}">${NAME[o]} ${o}</option>`).join('');
+document.getElementById('fCountry').innerHTML='<option value="">全部</option>'
+  + [...new Set(ROUTES.map(r=>r.country))].map(c=>`<option>${c}</option>`).join('');
+document.getElementById('fRoute').innerHTML=ROUTES.map(r=>
+  `<option value="${r.key}"${r.key===F.route?' selected':''}>${r.label}（${r.code}）</option>`).join('');
+
+function keep(x){
+  const R=x.R;
+  return (!F.org||R.org===F.org)&&(!F.country||R.country===F.country)
+    &&(!F.n||x.nights==F.n)&&(!F.m||x.dep.slice(5,7)===F.m);
+}
+const price=x=>F.mode==='fare'?x.fare:x.pay;
+
+/* ============ 航線排行 ============ */
+function renderRoutes(){
+  let rs = ROUTES.map(R=>{
+    const mine=ALL.filter(x=>x.R===R&&keep(x));
+    if(!mine.length) return null;
+    const best=mine.reduce((a,b)=>price(b)<price(a)?b:a);
+    const base=ROWS.find(r=>r.R===R);
+    return {...best, lo:base?base.lo:best.fare, chg:base?base.chg:0,
+      isNewLow:base?base.isNewLow:false, cnt:mine.length};
+  }).filter(Boolean);
+  const k=F.sort;
+  rs.sort((a,b)=>{
+    let v;
+    if(k==='route') v=a.R.label.localeCompare(b.R.label,'zh-Hant');
+    else if(k==='dep') v=a.dep.localeCompare(b.dep);
+    else if(k==='tax') v=(a.tax??1e9)-(b.tax??1e9);
+    else v=(a[k]??0)-(b[k]??0);
+    return v*F.dir || price(a)-price(b);
+  });
+  document.getElementById('cnt').textContent=`${rs.length} 條航線`;
+  document.getElementById('tbRoute').innerHTML = rs.map(r=>{
+    const cls=r.chg<0?'dn':(r.chg>0?'up':'flat');
+    const dtxt=r.chg===0?'—':(r.chg<0?'▼':'▲')+fmt(Math.abs(r.chg));
+    return `<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${CCOL[r.R.country]};margin-right:7px"></span>${r.R.label}
+        <span style="color:var(--muted)">${r.R.code}</span></td>
+      <td>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})${r.isNewLow?' <span class="badge newlow">新低</span>':''}</td>
+      <td>${r.nights}</td>
+      <td style="color:var(--ink2)">${fmt(r.fare)}</td>
+      <td style="color:var(--muted)" ${r.taxKnown?`data-t="${r.R.org}→${r.R.dst} ${fmt(LEGTAX[r.R.key])} ＋ ${r.R.dst}→${r.R.org} ${fmt(LEGTAX[r.R.back])}"`:''}>${r.taxKnown?'+'+fmt(r.tax):'<span class="badge est">未查核</span>'}</td>
+      <td class="tot">${fmt(price(r))}</td>
+      <td class="${cls}">${dtxt}</td>
+      <td style="color:var(--ink2)">${fmt(r.lo)}</td></tr>`;
+  }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">沒有符合條件的航線</td></tr>';
+  bindTips(document.getElementById('tbRoute'));
+  return rs;
+}
+document.querySelectorAll('th[data-s]').forEach(th=>{
+  th.style.cursor='pointer';
+  th.addEventListener('click',()=>{
+    const s=th.dataset.s;
+    if(F.sort===s) F.dir*=-1; else {F.sort=s; F.dir=1;}
+    redraw();
+  });
+});
+
+/* ============ 組合明細 ============ */
+function renderCombos(){
+  const rs=ALL.filter(keep).sort((a,b)=>price(a)-price(b));
+  const show=rs.slice(0,400);
+  document.getElementById('tbCombo').innerHTML = show.map(r=>`<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${CCOL[r.R.country]};margin-right:7px"></span>${r.R.label}</td>
+      <td>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})</td>
+      <td>${r.nights}</td><td>${fmt(r.out)}</td><td>${fmt(r.back)}</td>
+      <td style="color:var(--ink2)">${fmt(r.fare)}</td>
+      <td style="color:var(--muted)">${r.taxKnown?'+'+fmt(r.tax):'<span class="badge est">未查核</span>'}</td>
+      <td class="tot">${fmt(price(r))}</td></tr>`).join('')
+    || '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">沒有符合條件的組合</td></tr>';
+  if(rs.length>show.length){
+    document.getElementById('tbCombo').insertAdjacentHTML('beforeend',
+      `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:14px">
+       共 ${rs.length.toLocaleString('en-US')} 個組合，已顯示最便宜的 ${show.length} 筆</td></tr>`);
+  }
+}
+
+/* ============ 長條圖 ============ */
+document.getElementById('barleg').innerHTML=
+  Object.entries(CCOL).map(([c,v])=>`<span><i style="background:${v}"></i>${c}</span>`).join('')
+  + '<span style="color:var(--muted)">TWD · 該航線條件內最便宜的來回價</span>';
+function renderBars(rs){
+  if(!rs.length){document.getElementById('bars').innerHTML='';return;}
+  const rowH=22, padL=150, padR=86, W_=1100;
+  const H=rs.length*rowH+14;
+  const max=Math.max(...rs.map(price));
+  const x=v=>padL+v/max*(W_-padL-padR);
+  let g='';
+  rs.forEach((r,i)=>{
+    const y=i*rowH+8, w=Math.max(2,x(price(r))-padL);
+    g+=`<text x="${padL-8}" y="${y+11}" text-anchor="end" style="font-size:11px;fill:var(--ink2)">${r.R.label}</text>
+      <rect x="${padL}" y="${y+2}" width="${w}" height="${rowH-8}" rx="4" fill="${CCOL[r.R.country]}"
+        data-t="${r.R.label}（${r.R.code}）<br><b>TWD ${fmt(price(r))}</b>${r.taxKnown?`（未稅 ${fmt(r.fare)} ＋ 稅費 ${fmt(r.tax)}）`:'（未稅，稅費未查核）'}<br>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})　${r.nights} 天"/>
+      <text x="${padL+w+7}" y="${y+11}" style="font-size:11px;fill:var(--ink)">${fmt(price(r))}${r.taxKnown?'':'*'}</text>`;
+  });
+  document.getElementById('bars').innerHTML=
+    `<svg viewBox="0 0 ${W_} ${H}" role="img" aria-label="各航線最低來回價">${g}</svg>
+     <div style="font-size:11px;color:var(--muted);margin-top:8px">* 稅費尚未查核，顯示的是未稅價</div>`;
+  bindTips(document.getElementById('bars'));
+}
+
+/* ============ 單一航線：日曆 + 單程走勢 ============ */
+const SEQ=['--seq1','--seq2','--seq3','--seq4','--seq5','--seq6'];
+function renderRoute(){
+  const R=ROUTES.find(r=>r.key===F.route);
+  const box=document.getElementById('calBox'), lb=document.getElementById('legBox');
+  const tx=document.getElementById('routeTax');
+  if(!R){box.innerHTML='';lb.innerHTML='';return;}
+  const to=LEGTAX[R.key], tb=LEGTAX[R.back];
+  tx.innerHTML = (to!=null&&tb!=null)
+    ? `稅費 ${R.org}→${R.dst} ${fmt(to)} ＋ ${R.dst}→${R.org} ${fmt(tb)} ＝ <b>${fmt(to+tb)}</b>`
+    : '<span class="badge est">稅費未查核，以下為未稅價</span>';
+
+  const mine=ALL.filter(x=>x.R===R);
+  const best={}; mine.forEach(r=>{ if(!best[r.dep]||price(r)<price(best[r.dep])) best[r.dep]=r; });
+  const vals=Object.values(best).map(price).sort((a,b)=>a-b);
+  if(!vals.length){box.innerHTML='<div style="color:var(--muted)">這條航線在條件內沒有可用組合</div>';}
+  else{
+    const cuts=[1,2,3,4,5].map(k=>vals[Math.floor(vals.length*k/6)]);
+    const bin=v=>{let i=0;while(i<5&&v>=cuts[i])i++;return i;};
+    let html='';
+    [[2027,0],[2027,1],[2027,2]].forEach(([y,m])=>{
+      const first=new Date(y,m,1), last=new Date(y,m+1,0);
+      const pad=(first.getDay()+6)%7;
+      let rowsH='<tr>'+'<td></td>'.repeat(pad);
+      for(let d=1;d<=last.getDate();d++){
+        const key=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const b=best[key];
+        if(b) rowsH+=`<td><div class="cell filled" style="background:var(${SEQ[bin(price(b))]});color:${bin(price(b))>=4?'#fff':'var(--ink)'}"
+          data-t="${R.label}｜${md(b.dep)}(${dow(b.dep)}) → ${md(b.ret)}(${dow(b.ret)})　${b.nights} 天<br><b>TWD ${fmt(price(b))}</b>${b.taxKnown?`<br>未稅 ${fmt(b.fare)}（去 ${fmt(b.out)} ＋ 回 ${fmt(b.back)}）＋ 稅費 ${fmt(b.tax)}`:`<br>去 ${fmt(b.out)} ＋ 回 ${fmt(b.back)}（未稅）`}">
+          <div class="d">${d}</div><div>${Math.round(price(b)/100)/10}k</div></div></td>`;
+        else rowsH+=`<td><div class="cell empty"><div class="d">${d}</div></div></td>`;
+        if((pad+d)%7===0) rowsH+='</tr><tr>';
+      }
+      html+=`<div class="cal"><h3>${m+1} 月</h3><table><thead><tr>${W.map(w=>`<th class="wd">${w}</th>`).join('')}</tr></thead><tbody>${rowsH}</tr></tbody></table></div>`;
+    });
+    box.innerHTML=`<h3 style="margin:0 0 10px;font-size:14px">${R.label}　來回價格日曆（依去程日）</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:4px">${html}</div>
+      <div class="seqleg">便宜 ${SEQ.map(s=>`<span style="background:var(${s})"></span>`).join('')} 貴
+        <span style="width:auto;margin-left:8px;color:var(--muted)">${fmt(vals[0])} – ${fmt(vals[vals.length-1])}</span></div>`;
+    bindTips(box);
+  }
+  /* 單程走勢 */
+  const sets=[{name:`${NAME[R.org]} → ${NAME[R.dst]}`, vals:DATES.map(d=>LEGS[R.key][d]??null)},
+              {name:`${NAME[R.dst]} → ${NAME[R.org]}`, vals:DATES.map(d=>LEGS[R.back][d]??null)}];
+  lb.innerHTML=lineChart(sets,DATES,`${R.label}　單程最低票價（未稅）`);
+  bindTips(lb);
+}
+function lineChart(sets,dates,title){
+  const Wd=980,H=300,M={t:18,r:16,b:26,l:56};
+  const all=sets.flatMap(s=>s.vals.filter(v=>v!=null));
+  if(!all.length) return '<div style="color:var(--muted)">沒有資料</div>';
+  const ymax=Math.ceil(Math.max(...all)/1000)*1000;
+  const x=i=>M.l+i*(Wd-M.l-M.r)/Math.max(1,dates.length-1);
+  const y=v=>M.t+(1-v/ymax)*(H-M.t-M.b);
+  let g='';
+  for(let k=0;k<=5;k++){const v=ymax*k/5;
+    g+=`<line class="gl" x1="${M.l}" x2="${Wd-M.r}" y1="${y(v)}" y2="${y(v)}"/>
+        <text class="tick" x="${M.l-8}" y="${y(v)+3}" text-anchor="end">${fmt(v)}</text>`;}
+  dates.forEach((d,i)=>{ if(d.slice(8)==='01'||d.slice(8)==='15')
+    g+=`<text class="tick" x="${x(i)}" y="${H-M.b+15}" text-anchor="middle">${md(d)}</text>`;});
+  g+=`<line class="ax" x1="${M.l}" x2="${Wd-M.r}" y1="${y(0)}" y2="${y(0)}"/>`;
+  sets.forEach((s,si)=>{
+    const col=si===0?'var(--s1)':'var(--s2)';
+    let ds='',open=false, pts=0;
+    s.vals.forEach((v,i)=>{ if(v==null){open=false;return;} ds+=(open?'L':'M')+x(i)+' '+y(v)+' '; open=true; pts++;});
+    g+=`<path d="${ds}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    if(pts<40) s.vals.forEach((v,i)=>{ if(v!=null) g+=`<circle cx="${x(i)}" cy="${y(v)}" r="2.6" fill="${col}"/>`; });
+    let mi=-1; s.vals.forEach((v,i)=>{if(v!=null&&(mi<0||v<s.vals[mi]))mi=i;});
+    if(mi>=0) g+=`<circle cx="${x(mi)}" cy="${y(s.vals[mi])}" r="4.5" fill="${col}" stroke="var(--surface-1)" stroke-width="2"/>
+      <text class="tick" x="${x(mi)}" y="${y(s.vals[mi])-10}" text-anchor="middle" style="font-size:11px;fill:var(--ink)">${fmt(s.vals[mi])}</text>`;
+  });
+  dates.forEach((d,i)=>{
+    const parts=sets.map(s=>s.vals[i]==null?null:`${s.name} <b>${fmt(s.vals[i])}</b>`).filter(Boolean);
+    if(!parts.length) return;
+    g+=`<rect x="${x(i)-4}" y="${M.t}" width="8" height="${H-M.t-M.b}" fill="transparent"
+      data-t="${md(d)}(${dow(d)})<br>${parts.join('<br>')}" style="cursor:crosshair"/>`;
+  });
+  return `<h3 style="margin:0 0 2px;font-size:14px">${title}</h3>
+    <div class="legend">${sets.map((s,i)=>`<span><i class="ln" style="background:${i===0?'var(--s1)':'var(--s2)'}"></i>${s.name}</span>`).join('')}</div>
+    <svg viewBox="0 0 ${Wd} ${H}" role="img" aria-label="${title}">${g}</svg>`;
+}
+
+/* ============ 追蹤歷程 ============ */
+function renderTrend(){
+  const box=document.getElementById('trendbox');
+  if(HIST.length<2){
+    const top=[...ROWS].sort((a,b)=>a.fare-b.fare).slice(0,8);
+    box.innerHTML=`<div style="color:var(--ink2);font-size:13px">目前只有 ${HIST.length} 次抓價紀錄，尚無走勢可畫。目前最便宜的 8 條航線（未稅來回）：</div>
+      <table style="margin-top:10px;width:auto"><tbody>${top.map(r=>
+      `<tr><td style="text-align:left;padding-right:24px">${r.R.label}</td>
+        <td><b>${fmt(r.fare)}</b></td>
+        <td style="color:var(--muted);text-align:left">${md(r.dep)} → ${md(r.ret)} · ${r.nights} 天</td></tr>`).join('')}</tbody></table>`;
+    return;
+  }
+  const picks=[...new Set([...[...ROWS].sort((a,b)=>a.fare-b.fare).slice(0,6).map(r=>r.R.key), F.route])]
+    .map(k=>ROUTES.find(r=>r.key===k)).filter(Boolean);
+  const Wd=1060,H=280,M={t:16,r:150,b:30,l:58};
+  const series=picks.map(R=>({R, vals:histBest.map(h=>h[R.key]??null)}));
+  const all=series.flatMap(s=>s.vals.filter(v=>v!=null));
+  const ymax=Math.ceil(Math.max(...all)/500)*500, ymin=Math.max(0,Math.floor(Math.min(...all)/500)*500-500);
+  const n=HIST.length;
+  const x=i=>M.l+(n===1?0:i*(Wd-M.l-M.r)/(n-1));
+  const y=v=>M.t+(1-(v-ymin)/((ymax-ymin)||1))*(H-M.t-M.b);
+  let g='';
+  for(let k=0;k<=4;k++){const v=ymin+(ymax-ymin)*k/4;
+    g+=`<line class="gl" x1="${M.l}" x2="${Wd-M.r}" y1="${y(v)}" y2="${y(v)}"/>
+        <text class="tick" x="${M.l-8}" y="${y(v)+3}" text-anchor="end">${fmt(v)}</text>`;}
+  const stepL=Math.ceil(n/10);
+  HIST.forEach((h,i)=>{ if(i%stepL===0||i===n-1)
+    g+=`<text class="tick" x="${x(i)}" y="${H-M.b+16}" text-anchor="middle">${h.ts.slice(5,10)}</text>`;});
+  series.forEach(s=>{
+    const col=CCOL[s.R.country]; let ds='',open=false;
+    s.vals.forEach((v,i)=>{ if(v==null){open=false;return;} ds+=(open?'L':'M')+x(i)+' '+y(v)+' '; open=true;});
+    const sel=s.R.key===F.route;
+    g+=`<path d="${ds}" fill="none" stroke="${col}" stroke-width="${sel?3:1.6}" stroke-linejoin="round" opacity="${sel?1:.75}"/>`;
+    let li=-1; s.vals.forEach((v,i)=>{if(v!=null)li=i;});
+    if(li>=0) g+=`<circle cx="${x(li)}" cy="${y(s.vals[li])}" r="4" fill="${col}" stroke="var(--surface-1)" stroke-width="2"/>
+      <text x="${x(li)+9}" y="${y(s.vals[li])+4}" style="font-size:11px;fill:${sel?'var(--ink)':'var(--ink2)'};font-weight:${sel?600:400}">${s.R.label} ${fmt(s.vals[li])}</text>`;
+    s.vals.forEach((v,i)=>{ if(v==null)return;
+      g+=`<rect x="${x(i)-5}" y="${y(v)-5}" width="10" height="10" fill="transparent"
+        data-t="${HIST[i].ts}<br>${s.R.label} <b>${fmt(v)}</b>（未稅來回）"/>`;});
+  });
+  box.innerHTML=`<div class="legend">${Object.entries(CCOL).map(([c,v])=>`<span><i style="background:${v}"></i>${c}</span>`).join('')}
+    <span style="color:var(--muted)">粗線 = 上方選定的航線</span></div>
+    <svg viewBox="0 0 ${Wd} ${H}" role="img" aria-label="各航線最低來回未稅合計走勢">${g}</svg>`;
+  bindTips(box);
+}
+
+/* ============ 稅費進度 ============ */
+(function(){
+  const legs=[...new Set(ROUTES.flatMap(R=>[R.key,R.back]))].sort();
+  const done=legs.filter(k=>LEGTAX[k]!=null);
+  document.getElementById('taxtable').innerHTML=`
+    <div style="font-size:13px;color:var(--ink2);margin-bottom:10px">
+      已查核 <b>${done.length}</b> / ${legs.length} 個航段（上次更新 ${TAXD.updated||'—'}）。
+      排程每天會補查幾個航段；未查核的航線在頁面上以未稅價顯示並標記。</div>
+    <table style="width:auto"><thead><tr><th>航段</th><th>稅金與其他費用</th><th>抽驗日期</th></tr></thead><tbody>
+    ${legs.map(k=>`<tr><td style="text-align:left">${k.replace('-',' → ')}</td>
+      <td>${LEGTAX[k]!=null?fmt(LEGTAX[k]):'<span class="badge est">未查核</span>'}</td>
+      <td style="color:var(--muted)">${TAXD.checked?.[k]??'—'}</td></tr>`).join('')}
+    </tbody></table>
+    <div style="font-size:12px;color:var(--ink2);margin-top:10px;max-width:780px">
+    稅費<b>不是固定公告費率</b>：內含台灣機場服務費與兵險費，以及日圓／韓元計價的日本國際觀光旅客稅、
+    機場設施使用費、韓國出國納付金等，會隨匯率與官方費率調整而變動。已知規律：台灣出發飛日本 900、飛韓國 800。</div>`;
+})();
+
+/* ============ 事件 ============ */
+function redraw(){ const rs=renderRoutes(); renderBars(rs); renderCombos(); renderRoute(); renderTrend(); }
+[['fOrg','org'],['fCountry','country'],['fN','n'],['fM','m'],['fMode','mode']].forEach(([id,k])=>
+  document.getElementById(id).addEventListener('change',e=>{F[k]=e.target.value;redraw();}));
+document.getElementById('fRoute').addEventListener('change',e=>{F.route=e.target.value;renderRoute();renderTrend();});
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme');
+  const dark=cur?cur==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+});
+redraw();
+</script>
+</body>
+</html>
