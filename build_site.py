@@ -99,7 +99,9 @@ def stage2():
     html = open(SRC2, encoding='utf-8').read()
     latest = block(html, 'latest')
     hist = block(html, 'hist')
-    tax = block(html, 'tax')['legs']
+    taxblk = block(html, 'tax')
+    tax = taxblk['legs']
+    est = set(taxblk.get('estimated') or [])
     dates, legs = decode_v3(latest['pay'])
     TW = ['TPE', 'RMQ', 'KHH', 'TNN']
     rows = []
@@ -110,9 +112,9 @@ def stage2():
         bk = d + '-' + o
         if bk not in legs:
             continue
-        to, tb = tax.get(k), tax.get(bk)
-        known = to is not None and tb is not None
-        t = (to + tb) if known else 0
+        to, tb = tax.get(k) or 0, tax.get(bk) or 0
+        known = (k not in est) and (bk not in est)   # 兩端都實測才算已查核
+        t = to + tb
         best = None
         for dep, ret, n in CB:
             a, b = legs[k].get(dep), legs[bk].get(ret)
@@ -174,7 +176,7 @@ __CARDS__
 
 <footer>
 資料來源：台灣虎航官網每日票價 API。票價為 1 位成人、不含託運行李與選位。
-標示<span class="badge">未稅</span>者尚未查核機場稅費，顯示的是未稅價。<br>
+標示<span class="badge">推估</span>者的機場稅費尚未逐段實測，採保守推估（寧可高估）。<br>
 實際可售價格隨機位變動（實測一小時內就會變動），請以官網結帳頁為準。本頁僅供參考，非虎航官方頁面。
 </footer>
 </div>
@@ -190,8 +192,8 @@ def card(href, title, desc, rows, basis='pay', extra=''):
         if basis == 'fare':
             tag, val = '', r['fare']
         else:
-            tag = '' if r.get('taxKnown') else '<span class="badge">未稅</span>'
-            val = r['pay'] if r.get('taxKnown') else r['fare']
+            tag = '' if r.get('taxKnown') else '<span class="badge">推估</span>'
+            val = r['pay']
         trs += (f'<tr><td>{r["label"]}{tag}'
                 f'<span class="dt">{md(r["dep"])}({dow(r["dep"])}) → {md(r["ret"])}({dow(r["ret"])}) · {r["nights"]} 天</span></td>'
                 f'<td>{val:,}</td></tr>')
@@ -210,11 +212,12 @@ def main():
     open(os.path.join(SITE, '.nojekyll'), 'w').close()
 
     ntax = sum(1 for r in r2 if r['taxKnown'])
+    r2p = sorted(r2, key=lambda r: r['pay'])
     cards = card('all-routes.html', '全航線 · 台灣出發',
                  f'桃園／台中／高雄／台南出發的所有航點，共 {nroutes} 條來回航線。'
-                 f'目前最便宜的 5 條（<b>未稅</b>來回，基準一致才好比較；'
-                 f'{ntax}/{nroutes} 條已查核稅費，完整儀表板可切換顯示）：',
-                 r2[:5], basis='fare')
+                 f'目前最便宜的 5 條（<b>實付總額</b>，含稅；'
+                 f'{ntax}/{nroutes} 條稅費為官網實測，其餘標 <span class="badge">推估</span>）：',
+                 r2p[:5], basis='pay')
     cards += card('busan-osaka.html', '釜山 / 大阪 專追',
                   '桃園⇄釜山、桃園⇄大阪、高雄⇄大阪。稅費已逐航段查核，顯示<b>實付總額</b>：',
                   r1, basis='pay')

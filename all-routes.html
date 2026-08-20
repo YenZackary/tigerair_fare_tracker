@@ -106,15 +106,15 @@ details summary{cursor:pointer;font-size:13px;color:var(--ink2)}
 
 <!-- ===== 各航段「稅金與其他費用」（TWD／每位成人／單程），取自官網訂票引擎購物車明細。
      排程每天補查幾個未知航段，legs 裡沒有的航段在頁面上標示「未查核」。 ===== -->
-<script type="application/json" id="tax">{"updated":"2026-08-20","checked":{"TPE-PUS":"2027-02-20","PUS-TPE":"2027-02-24","TPE-KIX":"2027-03-03","KIX-TPE":"2027-03-07","KHH-KIX":"2027-01-01","KIX-KHH":"2027-01-05"},"legs":{"TPE-PUS":800,"PUS-TPE":725,"TPE-KIX":900,"KIX-TPE":1624,"KHH-KIX":900,"KIX-KHH":1624}}</script>
+<script type="application/json" id="tax">{"updated":"2026-08-20","fallback":1624,"checked":{"TPE-PUS":"2027-02-20","PUS-TPE":"2027-02-24","TPE-KIX":"2027-03-03","KIX-TPE":"2027-03-07","KHH-KIX":"2027-01-01","KIX-KHH":"2027-01-05","TPE-ICN":"2027-03-06","ICN-TPE":"2027-03-10"},"estimated":["AXT-TPE","CJU-KHH","CJU-RMQ","CJU-TPE","CTS-KHH","CTS-TPE","DAD-KHH","DAD-TPE","FKS-TPE","FUK-KHH","FUK-TPE","GMP-KHH","HKD-TPE","HNA-TPE","HND-TPE","HSG-TPE","ISG-KHH","ISG-TPE","KCZ-TPE","KHH-CJU","KHH-CTS","KHH-DAD","KHH-FUK","KHH-GMP","KHH-ISG","KHH-KMJ","KHH-KMQ","KHH-NGO","KHH-NRT","KHH-OKA","KHH-OKJ","KHH-SDJ","KIJ-TPE","KMI-TPE","KMJ-KHH","KMJ-TNN","KMQ-KHH","KMQ-TPE","NGO-KHH","NGO-RMQ","NGO-TPE","NRT-KHH","NRT-TPE","OIT-TPE","OKA-KHH","OKA-RMQ","OKA-TNN","OKA-TPE","OKJ-KHH","OKJ-TPE","RMQ-CJU","RMQ-NGO","RMQ-OKA","SDJ-KHH","SDJ-TPE","TNN-KMJ","TNN-OKA","TPE-AXT","TPE-CJU","TPE-CTS","TPE-DAD","TPE-FKS","TPE-FUK","TPE-HKD","TPE-HNA","TPE-HND","TPE-HSG","TPE-ISG","TPE-KCZ","TPE-KIJ","TPE-KMI","TPE-KMQ","TPE-NGO","TPE-NRT","TPE-OIT","TPE-OKA","TPE-OKJ","TPE-SDJ","TPE-YGJ","YGJ-TPE"],"legs":{"AXT-TPE":1624,"CJU-KHH":1624,"CJU-RMQ":1624,"CJU-TPE":1624,"CTS-KHH":1624,"CTS-TPE":1624,"DAD-KHH":1624,"DAD-TPE":1624,"FKS-TPE":1624,"FUK-KHH":1624,"FUK-TPE":1624,"GMP-KHH":1624,"HKD-TPE":1624,"HNA-TPE":1624,"HND-TPE":1624,"HSG-TPE":1624,"ICN-TPE":837,"ISG-KHH":1624,"ISG-TPE":1624,"KCZ-TPE":1624,"KHH-CJU":800,"KHH-CTS":900,"KHH-DAD":900,"KHH-FUK":900,"KHH-GMP":800,"KHH-ISG":900,"KHH-KIX":900,"KHH-KMJ":900,"KHH-KMQ":900,"KHH-NGO":900,"KHH-NRT":900,"KHH-OKA":900,"KHH-OKJ":900,"KHH-SDJ":900,"KIJ-TPE":1624,"KIX-KHH":1624,"KIX-TPE":1624,"KMI-TPE":1624,"KMJ-KHH":1624,"KMJ-TNN":1624,"KMQ-KHH":1624,"KMQ-TPE":1624,"NGO-KHH":1624,"NGO-RMQ":1624,"NGO-TPE":1624,"NRT-KHH":1624,"NRT-TPE":1624,"OIT-TPE":1624,"OKA-KHH":1624,"OKA-RMQ":1624,"OKA-TNN":1624,"OKA-TPE":1624,"OKJ-KHH":1624,"OKJ-TPE":1624,"PUS-TPE":725,"RMQ-CJU":800,"RMQ-NGO":900,"RMQ-OKA":900,"SDJ-KHH":1624,"SDJ-TPE":1624,"TNN-KMJ":900,"TNN-OKA":900,"TPE-AXT":900,"TPE-CJU":800,"TPE-CTS":900,"TPE-DAD":900,"TPE-FKS":900,"TPE-FUK":900,"TPE-HKD":900,"TPE-HNA":900,"TPE-HND":900,"TPE-HSG":900,"TPE-ICN":800,"TPE-ISG":900,"TPE-KCZ":900,"TPE-KIJ":900,"TPE-KIX":900,"TPE-KMI":900,"TPE-KMQ":900,"TPE-NGO":900,"TPE-NRT":900,"TPE-OIT":900,"TPE-OKA":900,"TPE-OKJ":900,"TPE-PUS":800,"TPE-SDJ":900,"TPE-YGJ":900,"YGJ-TPE":1624}}</script>
 
 <div class="wrap">
 <header>
   <div>
     <h1>虎航全航線追蹤 · 台灣出發 · 2027 Q1 週末小旅行</h1>
     <div class="sub">2027 年 1–3 月 · 行程 3–5 天 · 須跨週六與週日 · 1 位成人 · 最低票價（不含行李）</div>
-    <div class="sub" style="margin-top:6px"><b>價格說明：</b>虎航官網顯示的是<b>未稅票價</b>。已查核稅費的航線顯示<b>實付總額</b>，
-      尚未查核的顯示未稅價並標記 <span class="badge est">未稅</span>。排程每天會補查幾個航段，逐步補齊。</div>
+    <div class="sub" style="margin-top:6px"><b>價格說明：</b>虎航官網顯示的是<b>未稅票價</b>。本頁一律顯示<b>實付總額</b>（未稅票價 ＋ 稅金與其他費用）。
+      <span id="taxnote"></span></div>
   </div>
   <button class="tgl" id="themeBtn">切換深/淺色</button>
 </header>
@@ -129,7 +129,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--ink2)}
   <div class="fg">地區 <select id="fCountry"></select></div>
   <div class="fg">天數 <select id="fN"><option value="">全部</option><option value="3">3 天</option><option value="4">4 天</option><option value="5">5 天</option></select></div>
   <div class="fg">月份 <select id="fM"><option value="">全部</option><option value="01">1 月</option><option value="02">2 月</option><option value="03">3 月</option></select></div>
-  <div class="fg">價格顯示 <select id="fMode"><option value="pay">可比價（含稅，未查核者用未稅）</option><option value="fare">一律未稅</option></select></div>
+  <div class="fg">價格顯示 <select id="fMode"><option value="pay">實付總額（含稅）</option><option value="fare">未稅票價</option></select></div>
   <div class="fg" style="margin-left:auto" id="cnt"></div>
 </div>
 <div class="tblbox">
@@ -179,7 +179,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--ink2)}
 <footer>
 資料來源：台灣虎航官網每日票價 API（<code>api-book.tigerairtw.com/api/cms/station-daily-prices</code>），涵蓋桃園／台中／高雄／台南出發的所有航點。
 API 回傳<b>未稅</b>單程最低價，數值與官網「選擇航班」頁一致。<br>
-「稅金與其他費用」逐航段取自官網訂票引擎購物車明細；尚未查核的航段以未稅價顯示並標記。<br>
+「稅金與其他費用」逐航段取自官網訂票引擎購物車明細；尚未實測的航段以保守推估值計入（見上方「稅費查核進度」，推估值以 * 標示）。<br>
 票價為 1 位成人、不含託運行李與選位；實際可售價格隨機位變動（實測一小時內就會變動），請以官網結帳頁為準。
 </footer>
 </div>
@@ -191,6 +191,10 @@ const LATEST = JSON.parse(document.getElementById('latest').textContent);
 const HIST   = JSON.parse(document.getElementById('hist').textContent);
 const TAXD   = JSON.parse(document.getElementById('tax').textContent);
 const LEGTAX = TAXD.legs || {};
+const ESTSET = new Set(TAXD.estimated || []);
+/* 每個航段都有稅費數字：實測優先，其餘為保守推估（見頁尾說明）。
+   isEst 只用來在明細與提示裡標示來源，不影響價格計算。 */
+const isEst = k => ESTSET.has(k);
 HIST.sort((a,b)=>a.ts.localeCompare(b.ts));
 
 const NAME = {TPE:'桃園',RMQ:'台中',KHH:'高雄',TNN:'台南',
@@ -265,14 +269,14 @@ const COMBOS=(()=>{
 /* 每條航線的所有組合 */
 const ALL=[];
 for(const R of ROUTES){
-  const to=LEGTAX[R.key], tb=LEGTAX[R.back];
-  const taxKnown = to!=null && tb!=null;
-  const tax = taxKnown ? to+tb : null;
+  const to=LEGTAX[R.key]??0, tb=LEGTAX[R.back]??0;
+  const tax=to+tb;
+  const measured = !isEst(R.key) && !isEst(R.back);   // 兩端都實測才算已查核
   for(const [dep,ret,n] of COMBOS){
     const a=LEGS[R.key][dep], b=LEGS[R.back][ret];
     if(a==null||b==null) continue;
-    ALL.push({R, dep, ret, nights:n, out:a, back:b, fare:a+b, tax, taxKnown,
-      pay: taxKnown ? a+b+tax : a+b});
+    ALL.push({R, dep, ret, nights:n, out:a, back:b, fare:a+b, tax,
+      taxKnown:measured, pay:a+b+tax});
   }
 }
 
@@ -303,11 +307,11 @@ function bindTips(root){ (root||document).querySelectorAll('[data-t]').forEach(e
   el.addEventListener('mousemove',e=>showTip(e,el.dataset.t));
   el.addEventListener('mouseleave',hideTip); }); }
 
-const known=ROUTES.filter(R=>LEGTAX[R.key]!=null&&LEGTAX[R.back]!=null).length;
+const known=ROUTES.filter(R=>!isEst(R.key)&&!isEst(R.back)).length;
 document.getElementById('cov').textContent =
   `最後更新 ${LATEST.ts}（台北時間） · 已累積 ${HIST.length} 次抓價 · `
   + `${ROUTES.length} 條來回航線 / ${ALL.length.toLocaleString('en-US')} 個日期組合 · `
-  + `票價涵蓋 ${DATES[0]} – ${DATES[DATES.length-1]} · 稅費已查核 ${known}/${ROUTES.length} 條航線`;
+  + `票價涵蓋 ${DATES[0]} – ${DATES[DATES.length-1]} · 稅費實測 ${known}/${ROUTES.length} 條航線`;
 
 /* ============ 統計卡 ============ */
 (function(){
@@ -323,8 +327,8 @@ document.getElementById('cov').textContent =
       :(r.chg<0?'▼ 跌 ':'▲ 漲 ')+fmt(Math.abs(r.chg));
     return `<div class="card tile">
       <div class="lbl">${t}</div>
-      <div class="val"><small>TWD</small>${fmt(r.pay)}${r.taxKnown?'':' <span class="badge est">未稅</span>'}</div>
-      <div class="meta" style="color:var(--muted)">${r.R.label}${r.taxKnown?`｜未稅 ${fmt(r.fare)} ＋ 稅費 ${fmt(r.tax)}`:''}</div>
+      <div class="val"><small>TWD</small>${fmt(r.pay)}</div>
+      <div class="meta" style="color:var(--muted)">${r.R.label}｜未稅 ${fmt(r.fare)} ＋ 稅費 ${fmt(r.tax)}${r.taxKnown?'':'（推估）'}</div>
       <div class="meta" style="margin-top:4px">${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)}) · ${r.nights} 天</div>
       <div class="delta ${cls}">${dtxt}${r.isNewLow?' <span class="badge newlow">追蹤新低</span>':''}</div>
     </div>`;
@@ -378,7 +382,7 @@ function renderRoutes(){
       <td>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})${r.isNewLow?' <span class="badge newlow">新低</span>':''}</td>
       <td>${r.nights}</td>
       <td style="color:var(--ink2)">${fmt(r.fare)}</td>
-      <td style="color:var(--muted)" ${r.taxKnown?`data-t="${r.R.org}→${r.R.dst} ${fmt(LEGTAX[r.R.key])} ＋ ${r.R.dst}→${r.R.org} ${fmt(LEGTAX[r.R.back])}"`:''}>${r.taxKnown?'+'+fmt(r.tax):'<span class="badge est">未查核</span>'}</td>
+      <td style="color:var(--muted)" data-t="${r.R.org}→${r.R.dst} ${fmt(LEGTAX[r.R.key])}${isEst(r.R.key)?'（推估）':'（實測）'} ＋ ${r.R.dst}→${r.R.org} ${fmt(LEGTAX[r.R.back])}${isEst(r.R.back)?'（推估）':'（實測）'}">+${fmt(r.tax)}${r.taxKnown?'':'<span style="color:var(--warn)">*</span>'}</td>
       <td class="tot">${fmt(price(r))}</td>
       <td class="${cls}">${dtxt}</td>
       <td style="color:var(--ink2)">${fmt(r.lo)}</td></tr>`;
@@ -404,7 +408,7 @@ function renderCombos(){
       <td>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})</td>
       <td>${r.nights}</td><td>${fmt(r.out)}</td><td>${fmt(r.back)}</td>
       <td style="color:var(--ink2)">${fmt(r.fare)}</td>
-      <td style="color:var(--muted)">${r.taxKnown?'+'+fmt(r.tax):'<span class="badge est">未查核</span>'}</td>
+      <td style="color:var(--muted)">+${fmt(r.tax)}${r.taxKnown?'':'<span style="color:var(--warn)">*</span>'}</td>
       <td class="tot">${fmt(price(r))}</td></tr>`).join('')
     || '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">沒有符合條件的組合</td></tr>';
   if(rs.length>show.length){
@@ -429,12 +433,12 @@ function renderBars(rs){
     const y=i*rowH+8, w=Math.max(2,x(price(r))-padL);
     g+=`<text x="${padL-8}" y="${y+11}" text-anchor="end" style="font-size:11px;fill:var(--ink2)">${r.R.label}</text>
       <rect x="${padL}" y="${y+2}" width="${w}" height="${rowH-8}" rx="4" fill="${CCOL[r.R.country]}"
-        data-t="${r.R.label}（${r.R.code}）<br><b>TWD ${fmt(price(r))}</b>${r.taxKnown?`（未稅 ${fmt(r.fare)} ＋ 稅費 ${fmt(r.tax)}）`:'（未稅，稅費未查核）'}<br>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})　${r.nights} 天"/>
+        data-t="${r.R.label}（${r.R.code}）<br><b>TWD ${fmt(price(r))}</b>（未稅 ${fmt(r.fare)} ＋ 稅費 ${fmt(r.tax)}${r.taxKnown?'':'，推估'}）<br>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})　${r.nights} 天"/>
       <text x="${padL+w+7}" y="${y+11}" style="font-size:11px;fill:var(--ink)">${fmt(price(r))}${r.taxKnown?'':'*'}</text>`;
   });
   document.getElementById('bars').innerHTML=
     `<svg viewBox="0 0 ${W_} ${H}" role="img" aria-label="各航線最低來回價">${g}</svg>
-     <div style="font-size:11px;color:var(--muted);margin-top:8px">* 稅費尚未查核，顯示的是未稅價</div>`;
+     <div style="font-size:11px;color:var(--muted);margin-top:8px">* 稅費為推估值（保守估計，實際可能更低）；未標星號者為官網實測</div>`;
   bindTips(document.getElementById('bars'));
 }
 
@@ -445,10 +449,9 @@ function renderRoute(){
   const box=document.getElementById('calBox'), lb=document.getElementById('legBox');
   const tx=document.getElementById('routeTax');
   if(!R){box.innerHTML='';lb.innerHTML='';return;}
-  const to=LEGTAX[R.key], tb=LEGTAX[R.back];
-  tx.innerHTML = (to!=null&&tb!=null)
-    ? `稅費 ${R.org}→${R.dst} ${fmt(to)} ＋ ${R.dst}→${R.org} ${fmt(tb)} ＝ <b>${fmt(to+tb)}</b>`
-    : '<span class="badge est">稅費未查核，以下為未稅價</span>';
+  const to=LEGTAX[R.key]??0, tb=LEGTAX[R.back]??0;
+  const src=k=>isEst(k)?'推估':'實測';
+  tx.innerHTML = `稅費 ${R.org}→${R.dst} ${fmt(to)}（${src(R.key)}） ＋ ${R.dst}→${R.org} ${fmt(tb)}（${src(R.back)}） ＝ <b>${fmt(to+tb)}</b>`;
 
   const mine=ALL.filter(x=>x.R===R);
   const best={}; mine.forEach(r=>{ if(!best[r.dep]||price(r)<price(best[r.dep])) best[r.dep]=r; });
@@ -466,7 +469,7 @@ function renderRoute(){
         const key=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
         const b=best[key];
         if(b) rowsH+=`<td><div class="cell filled" style="background:var(${SEQ[bin(price(b))]});color:${bin(price(b))>=4?'#fff':'var(--ink)'}"
-          data-t="${R.label}｜${md(b.dep)}(${dow(b.dep)}) → ${md(b.ret)}(${dow(b.ret)})　${b.nights} 天<br><b>TWD ${fmt(price(b))}</b>${b.taxKnown?`<br>未稅 ${fmt(b.fare)}（去 ${fmt(b.out)} ＋ 回 ${fmt(b.back)}）＋ 稅費 ${fmt(b.tax)}`:`<br>去 ${fmt(b.out)} ＋ 回 ${fmt(b.back)}（未稅）`}">
+          data-t="${R.label}｜${md(b.dep)}(${dow(b.dep)}) → ${md(b.ret)}(${dow(b.ret)})　${b.nights} 天<br><b>TWD ${fmt(price(b))}</b><br>未稅 ${fmt(b.fare)}（去 ${fmt(b.out)} ＋ 回 ${fmt(b.back)}）＋ 稅費 ${fmt(b.tax)}${b.taxKnown?'':'（推估）'}">
           <div class="d">${d}</div><div>${Math.round(price(b)/100)/10}k</div></div></td>`;
         else rowsH+=`<td><div class="cell empty"><div class="d">${d}</div></div></td>`;
         if((pad+d)%7===0) rowsH+='</tr><tr>';
@@ -569,19 +572,32 @@ function renderTrend(){
 /* ============ 稅費進度 ============ */
 (function(){
   const legs=[...new Set(ROUTES.flatMap(R=>[R.key,R.back]))].sort();
-  const done=legs.filter(k=>LEGTAX[k]!=null);
+  const meas=legs.filter(k=>!isEst(k));
+  const measRoutes=ROUTES.filter(R=>!isEst(R.key)&&!isEst(R.back)).length;
+
+  document.getElementById('taxnote').innerHTML =
+    `其中 <b>${measRoutes}/${ROUTES.length}</b> 條航線的稅費為官網實測，其餘為<b>保守推估</b>（寧可高估，實際可能更低）；`
+    + `排程每天補實測幾個航段，逐步取代推估值。`;
+
   document.getElementById('taxtable').innerHTML=`
     <div style="font-size:13px;color:var(--ink2);margin-bottom:10px">
-      已查核 <b>${done.length}</b> / ${legs.length} 個航段（上次更新 ${TAXD.updated||'—'}）。
-      排程每天會補查幾個航段；未查核的航線在頁面上以未稅價顯示並標記。</div>
-    <table style="width:auto"><thead><tr><th>航段</th><th>稅金與其他費用</th><th>抽驗日期</th></tr></thead><tbody>
+      航段 <b>${meas.length}</b> / ${legs.length} 已實測（上次更新 ${TAXD.updated||'—'}）；
+      航線 <b>${measRoutes}</b> / ${ROUTES.length} 兩端都實測。推估值以 <span style="color:var(--warn)">*</span> 標示。</div>
+    <table style="width:auto"><thead><tr><th>航段</th><th>稅金與其他費用</th><th>來源</th><th>抽驗日期</th></tr></thead><tbody>
     ${legs.map(k=>`<tr><td style="text-align:left">${k.replace('-',' → ')}</td>
-      <td>${LEGTAX[k]!=null?fmt(LEGTAX[k]):'<span class="badge est">未查核</span>'}</td>
+      <td>${fmt(LEGTAX[k])}</td>
+      <td style="color:${isEst(k)?'var(--ink2)':'var(--goodtext)'}">${isEst(k)?'推估':'實測'}</td>
       <td style="color:var(--muted)">${TAXD.checked?.[k]??'—'}</td></tr>`).join('')}
     </tbody></table>
-    <div style="font-size:12px;color:var(--ink2);margin-top:10px;max-width:780px">
+    <div style="font-size:12px;color:var(--ink2);margin-top:10px;max-width:820px">
+    <b>實測值</b>取自官網訂票引擎購物車明細的「稅金與其他費用」欄位。
+    <b>推估規則</b>：台灣出發端依目的地國家套用已實測值（飛日本 900、飛韓國 800）；
+    外國出發端套用已實測的<b>最高</b>值 ${fmt(TAXD.fallback||0)}（關西機場），因為各機場的設施使用費差異大，
+    取最高值可確保不低估 —— 地方機場的實際稅費通常明顯更低。<br><br>
     稅費<b>不是固定公告費率</b>：內含台灣機場服務費與兵險費，以及日圓／韓元計價的日本國際觀光旅客稅、
-    機場設施使用費、韓國出國納付金等，會隨匯率與官方費率調整而變動。已知規律：台灣出發飛日本 900、飛韓國 800。</div>`;
+    機場設施使用費、韓國出國納付金等，會隨匯率與官方費率調整而變動。
+    <b>已知即將變動：台灣機場服務費自 2026/9/1 起由 500 元調升至 750 元</b>（2028/9/1 再升至 1,000 元），
+    屆時所有台灣出發航段的稅費都會改變，排程會重新實測。</div>`;
 })();
 
 /* ============ 事件 ============ */
