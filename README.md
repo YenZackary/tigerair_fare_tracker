@@ -1,9 +1,53 @@
-# tigerair_fare_tracker
+# 虎航票價追蹤
 
-Tigerair Taiwan fare tracker for 2027 Q1 weekend trips: 3-5 day round trips that must span both Saturday and Sunday, 1 adult, no checked baggage.
+台灣虎航 2027 年 1–3 月來回票價追蹤。條件：行程 3–5 天，且必須涵蓋週六與週日，1 位成人、不含託運行李與選位。
 
-Site: https://yenzackary.github.io/tigerair_fare_tracker/
+**公開頁面：** https://yenzackary.github.io/tigerair_fare_tracker/
 
-Pages: index.html (overview), all-routes.html (all Taiwan departures), busan-osaka.html (Busan / Osaka with verified taxes).
+## 頁面
 
-Fares come from the Tigerair public daily-price API and are pre-tax; see each page for details. Not an official Tigerair site.
+```
+index.html          首頁：兩個儀表板的入口 + 目前最低價摘要
+all-routes.html     全航線儀表板（桃園／台中／高雄／台南出發的所有航點，44 條來回航線）
+busan-osaka.html    釜山 / 大阪 專追儀表板
+build_site.py       由兩份儀表板 HTML 產生上面三個頁面
+.nojekyll           要求 Pages 不要跑 Jekyll
+```
+
+## 票價怎麼來的
+
+票價來自台灣虎航官網的每日票價 API（`api-book.tigerairtw.com/api/cms/station-daily-prices`），
+回傳的是**未稅**單程最低價，數值與官網「選擇航班」頁一致。
+
+那支 API 的 CORS 鎖在 `tigerairtw.com` 網域，所以**只能從瀏覽器內抓**，不能由伺服器端直接取。
+實際流程是：每天排程驅動使用者電腦上的 Chrome 抓價 → 重組驗證 → 更新儀表板 → 部署到這裡。
+
+## 稅費怎麼來的（重要）
+
+「稅金與其他費用」是**88 個航段一段一段實測**的，來源是官網訂票引擎購物車明細的「稅金與其他費用」欄位，
+並以「總計金額 = 兩段票價 ＋ 兩段稅費」對帳驗證。**不使用任何推估值。**
+
+原因是實測證明稅費**無法由國家、機場或方向推導**。例如：
+
+| 航段 | 稅費 | 對照 |
+|---|---|---|
+| 桃園 → 沖繩 | 800 | 桃園 → 石垣島 900（同為日本） |
+| 沖繩 → 桃園 | 1,145 | 沖繩 → 高雄 1,245（同一起點，終點不同就不同） |
+| 大阪 → 桃園 | 1,624 | 石垣島 → 桃園 899（同為日本出發） |
+| 釜山 → 桃園 | 725 | 仁川 → 桃園 837、濟州 → 桃園 825（同為韓國出發） |
+
+稅費內含台灣機場服務費與兵險費，以及日圓／韓元計價的日本國際觀光旅客稅、機場設施使用費、
+韓國出國納付金等，會隨匯率與官方費率調整而變動。
+
+**注意：** 台灣機場服務費 2026-09-01 起由 500 調整為 750（2028-09-01 起 1,000）。
+屆時所有「台灣出發」航段的稅費都必須全部重新實測一次，不能沿用本表數值。
+
+## 手動重新產生
+
+```bash
+python3 build_site.py --busan <釜山大阪儀表板.html> --all <全航線儀表板.html> --out <輸出目錄>
+```
+
+## 免責
+
+票價隨機位變動，實測一小時內就會變動。本頁僅供參考，非台灣虎航官方頁面，下訂請以官網結帳頁為準。
