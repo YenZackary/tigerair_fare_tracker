@@ -176,7 +176,8 @@ __CARDS__
 
 <footer>
 資料來源：台灣虎航官網每日票價 API。票價為 1 位成人、不含託運行李與選位。
-標示<span class="badge">推估</span>者的機場稅費尚未逐段實測，採保守推估（寧可高估）。<br>
+顯示金額為<b>實付總額</b>（票價＋稅費）。機場稅費<b>逐航段實測</b>自官網訂票引擎購物車的
+「稅金與其他費用」欄位，<b>不使用推估值</b>；若有尚未實測的航段會標示<span class="badge">推估</span>。<br>
 實際可售價格隨機位變動（實測一小時內就會變動），請以官網結帳頁為準。本頁僅供參考，非虎航官方頁面。
 </footer>
 </div>
@@ -216,7 +217,9 @@ def main():
     cards = card('all-routes.html', '全航線 · 台灣出發',
                  f'桃園／台中／高雄／台南出發的所有航點，共 {nroutes} 條來回航線。'
                  f'目前最便宜的 5 條（<b>實付總額</b>，含稅；'
-                 f'{ntax}/{nroutes} 條稅費為官網實測，其餘標 <span class="badge">推估</span>）：',
+                 f'稅費 {ntax}/{nroutes} 條為官網<b>逐航段實測</b>'
+                 + ('，全部航線都有含稅價' if ntax == nroutes else '，其餘標 <span class="badge">推估</span>')
+                 + '）：',
                  r2p[:5], basis='pay')
     cards += card('busan-osaka.html', '釜山 / 大阪 專追',
                   '桃園⇄釜山、桃園⇄大阪、高雄⇄大阪。稅費已逐航段查核，顯示<b>實付總額</b>：',
