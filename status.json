@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "note": "每次排程執行都會在這裡追加一筆，不論結果。缺一筆＝那次執行連 GitHub 都沒摸到（掛在很前面，或 Chrome 連不上）。",
-  "updated": "2026-08-21 10:50",
+  "updated": "2026-08-21 11:25",
   "runs": [
     {
       "ts": "2026-08-21 09:45",
@@ -10,7 +10,8 @@
       "changed": 3,
       "deployed": true,
       "tax": "未做（tax.updated 距今 1 天）",
-      "note": "手動執行。TPE-FKS -600、TPE-YGJ +100、KHH-DAD +600；並修正 vs 前次 的比較 bug"
+      "note": "手動執行。TPE-FKS -600、TPE-YGJ +100、KHH-DAD +600；並修正 vs 前次 的比較 bug",
+      "notified": []
     },
     {
       "ts": "2026-08-21 10:50",
@@ -19,7 +20,18 @@
       "changed": 0,
       "deployed": true,
       "tax": "未做",
-      "note": "建立 status.json / status.html。此前 09:01、09:11、10:10、10:34 四次觸發沒有紀錄，因為心跳當時還不存在。"
+      "note": "建立 status.json / status.html。此前 09:01、09:11、10:10、10:34 四次觸發沒有紀錄，因為心跳當時還不存在。",
+      "notified": []
+    },
+    {
+      "ts": "2026-08-21 11:25",
+      "by": "manual",
+      "result": "no-change",
+      "changed": 0,
+      "deployed": false,
+      "tax": "非稅費時段",
+      "notified": [],
+      "note": "定義四種通知事件（每日摘要／新低價／有變動／排程中斷），並在本表加上「通知」欄。目前送出管道＝手機推播，電子郵件待定。"
     }
   ]
 }

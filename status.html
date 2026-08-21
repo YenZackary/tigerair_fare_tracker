@@ -42,7 +42,7 @@ footer{margin-top:34px;font-size:12px;color:var(--muted);border-top:1px solid va
 </head>
 <body>
 <!-- ===== 排程執行紀錄。每次執行由排程原地取代這整塊。 ===== -->
-<script type="application/json" id="runs">{"schema":1,"note":"每次排程執行都會在這裡追加一筆，不論結果。缺一筆＝那次執行連 GitHub 都沒摸到（掛在很前面，或 Chrome 連不上）。","updated":"2026-08-21 10:50","runs":[{"ts":"2026-08-21 09:45","by":"manual","result":"changed","changed":3,"deployed":true,"tax":"未做（tax.updated 距今 1 天）","note":"手動執行。TPE-FKS -600、TPE-YGJ +100、KHH-DAD +600；並修正 vs 前次 的比較 bug"},{"ts":"2026-08-21 10:50","by":"manual","result":"heartbeat-installed","changed":0,"deployed":true,"tax":"未做","note":"建立 status.json / status.html。此前 09:01、09:11、10:10、10:34 四次觸發沒有紀錄，因為心跳當時還不存在。"}]}</script>
+<script type="application/json" id="runs">{"schema":1,"note":"每次排程執行都會在這裡追加一筆，不論結果。缺一筆＝那次執行連 GitHub 都沒摸到（掛在很前面，或 Chrome 連不上）。","updated":"2026-08-21 11:25","runs":[{"ts":"2026-08-21 09:45","by":"manual","result":"changed","changed":3,"deployed":true,"tax":"未做（tax.updated 距今 1 天）","note":"手動執行。TPE-FKS -600、TPE-YGJ +100、KHH-DAD +600；並修正 vs 前次 的比較 bug","notified":[]},{"ts":"2026-08-21 10:50","by":"manual","result":"heartbeat-installed","changed":0,"deployed":true,"tax":"未做","note":"建立 status.json / status.html。此前 09:01、09:11、10:10、10:34 四次觸發沒有紀錄，因為心跳當時還不存在。","notified":[]},{"ts":"2026-08-21 11:25","by":"manual","result":"no-change","changed":0,"deployed":false,"tax":"非稅費時段","notified":[],"note":"定義四種通知事件（每日摘要／新低價／有變動／排程中斷），並在本表加上「通知」欄。目前送出管道＝手機推播，電子郵件待定。"}]}</script>
 
 <div class="wrap">
 <h1>虎航追蹤 · 排程執行紀錄</h1>
@@ -52,18 +52,23 @@ footer{margin-top:34px;font-size:12px;color:var(--muted);border-top:1px solid va
 <div class="kvs" id="kvs"></div>
 
 <div class="box"><table>
-<thead><tr><th>執行時間</th><th>結果</th><th>變動航線</th><th>是否部署</th><th>稅費</th><th>備註</th></tr></thead>
-<tbody id="tb"><tr><td colspan="6" style="color:var(--muted)">載入中…</td></tr></tbody>
+<thead><tr><th>執行時間</th><th>結果</th><th>變動航線</th><th>是否部署</th><th>稅費</th><th>通知</th><th>備註</th></tr></thead>
+<tbody id="tb"><tr><td colspan="7" style="color:var(--muted)">載入中…</td></tr></tbody>
 </table></div>
 
 <footer>
 資料由排程每次執行時追加在本頁的 <code>script#runs</code> 區塊。
 表格中<b>橘底</b>的列代表偵測到時間缺口 —— 那段時間的排程沒有留下紀錄，也就是連 GitHub 都沒摸到
 （掛在很前面，或你的電腦／Chrome 當時沒開）。<br>
+<b>通知</b>欄顯示那次執行實際發出的通知：每日摘要（08:00 後第一次成功執行）、新低價（跌破歷史最低，
+必發）、有變動（最低價有動）、排程中斷（距上一筆紀錄超過 3 小時且在 09:00–23:00 之間）。<br>
+目前通知走手機推播；電子郵件管道尚未決定，決定後只需換掉送出的那一步。<br>
 回到 <a href="index.html">追蹤首頁</a>。
 </footer>
 </div>
 <script>
+const NLBL = {'daily':'每日摘要','newlow':'新低價','change':'有變動','gap':'排程中斷'};
+const NTAG = {'newlow':'ch','gap':'gap','daily':'','change':''};
 const RES = {
   'changed':            ['有變動', 'ch'],
   'no-change':          ['無變動', 'no'],
@@ -94,16 +99,19 @@ function mins(a, b){ return (new Date(b.replace(' ','T')) - new Date(a.replace('
           + `<td>${r.changed ?? 0}</td>`
           + `<td>${r.deployed ? '是' : '—'}</td>`
           + `<td class="note">${r.tax || '—'}</td>`
+          + `<td>${(r.notified && r.notified.length)
+                   ? r.notified.map(n => `<span class="tag ${NTAG[n] || ''}">${NLBL[n] || n}</span>`).join(' ')
+                   : '—'}</td>`
           + `<td class="note">${r.note || ''}</td></tr>`;
     if (gap > 95) {                                 // 排程是每小時，超過 95 分鐘就是漏了
       const missed = Math.round(gap / 60) - 1;
-      html += `<tr class="gap"><td colspan="6"><span class="tag gap">缺口</span> `
+      html += `<tr class="gap"><td colspan="7"><span class="tag gap">缺口</span> `
             + `${nxt.ts} → ${r.ts} 之間約 ${missed} 次排程沒有留下紀錄`
             + `（執行掛在很前面，或當時電腦／Chrome 沒開）</td></tr>`;
     }
   });
   document.getElementById('tb').innerHTML = html
-    || '<tr><td colspan="6" style="color:var(--muted)">還沒有任何紀錄</td></tr>';
+    || '<tr><td colspan="7" style="color:var(--muted)">還沒有任何紀錄</td></tr>';
 })();
 </script>
 </body>
