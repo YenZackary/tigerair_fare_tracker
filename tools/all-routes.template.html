@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-palette="#2a78d6,#eb6834,#1baf7a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>虎航全航線追蹤 · 台灣出發 · 2027 Q1 週末小旅行</title>
+<style>
+:root{
+  color-scheme: light;
+  --surface-1:#fcfcfb; --plane:#f9f9f7;
+  --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --ring:rgba(11,11,11,.10);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --good:#0ca30c; --goodtext:#006300; --crit:#d03b3b; --warn:#fab219;
+  --seq1:#cde2fb; --seq2:#9ec5f4; --seq3:#6da7ec; --seq4:#3987e5; --seq5:#256abf; --seq6:#184f95;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --surface-1:#1a1a19; --plane:#0d0d0d;
+    --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --ring:rgba(255,255,255,.10);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --goodtext:#0ca30c;
+    --seq1:#104281; --seq2:#184f95; --seq3:#256abf; --seq4:#2a78d6; --seq5:#5598e7; --seq6:#9ec5f4;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface-1:#1a1a19; --plane:#0d0d0d;
+  --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --ring:rgba(255,255,255,.10);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --goodtext:#0ca30c;
+  --seq1:#104281; --seq2:#184f95; --seq3:#256abf; --seq4:#2a78d6; --seq5:#5598e7; --seq6:#9ec5f4;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif;font-size:14px;line-height:1.55}
+.wrap{max-width:1240px;margin:0 auto;padding:28px 20px 72px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+header>div:first-child{flex:1 1 640px;min-width:0}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--ink2);font-size:13px;max-width:980px}
+/* 條件與更新時間是使用者最常看的兩件事 —— 做成顯眼的資訊帶，不要當成小字說明 */
+.cond{margin-top:10px;display:inline-block;font-size:15px;font-weight:600;color:var(--ink);
+ background:var(--surface-1);border:1px solid var(--ring);border-left:4px solid var(--s1);
+ border-radius:8px;padding:9px 14px;line-height:1.5}
+.note{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;
+ font-size:13px;color:var(--ink2)}
+.note .kv{background:var(--surface-1);border:1px solid var(--ring);border-radius:999px;padding:3px 11px}
+.note .kv b{color:var(--ink);font-variant-numeric:tabular-nums}
+.note .kv.hot{border-color:var(--s1)}
+.note .kv.hot b{color:var(--s1)}
+button.tgl{background:var(--surface-1);color:var(--ink2);border:1px solid var(--ring);
+  border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.card{background:var(--surface-1);border:1px solid var(--ring);border-radius:12px;padding:18px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:22px 0}
+.tile .lbl{font-size:12px;color:var(--ink2)}
+.tile .val{font-size:29px;font-weight:600;margin:5px 0 2px;letter-spacing:-.02em}
+.tile .val small{font-size:14px;font-weight:500;color:var(--ink2);margin-right:3px}
+.tile .meta{font-size:12px;color:var(--ink2)}
+.delta{font-size:12px;margin-top:6px}
+.dn{color:var(--goodtext)} .up{color:var(--crit)} .flat{color:var(--muted)}
+.badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;
+  border:1px solid var(--ring);color:var(--ink2);background:var(--plane);white-space:nowrap}
+.badge.newlow{border-color:var(--good);color:var(--goodtext);font-weight:600}
+.badge.est{border-color:var(--warn);color:var(--ink2)}
+h2{font-size:15px;margin:34px 0 4px}
+.h2note{font-size:12px;color:var(--muted);margin:0 0 12px;max-width:1000px}
+.filters{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:0 0 14px;
+  padding:12px 14px;background:var(--surface-1);border:1px solid var(--ring);border-radius:10px}
+.fg{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)}
+select{font:inherit;font-size:13px;padding:5px 8px;border-radius:7px;border:1px solid var(--ring);
+  background:var(--plane);color:var(--ink);max-width:190px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:7px 10px;border-bottom:1px solid var(--grid);white-space:nowrap}
+th{font-size:11px;color:var(--muted);font-weight:600;position:sticky;top:0;background:var(--surface-1);z-index:1}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+tbody tr:hover{background:color-mix(in oklab,var(--s1) 7%,transparent)}
+td.tot{font-weight:600}
+.tblbox{max-height:560px;overflow:auto;border:1px solid var(--ring);border-radius:12px;background:var(--surface-1)}
+.rcode{color:var(--muted)}
+/* 手機只看得到前 3 欄，所以第 3 欄必須是「價格（含稅）」。
+   航線欄本來 217px（中文名＋IATA 代碼）會把價格擠出畫面 —— 窄螢幕就收掉重複的代碼並縮排距。 */
+@media(max-width:700px){
+  .rcode{display:none}
+  .tblbox th,.tblbox td{padding:7px 6px}
+  .tblbox th:nth-child(2),.tblbox td:nth-child(2){font-size:12px}
+}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:2px 0 10px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;vertical-align:-2px;margin-right:6px}
+.legend i.ln{width:22px;height:2px;border-radius:2px;vertical-align:middle}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.gl{stroke:var(--grid);stroke-width:1}
+.ax{stroke:var(--axis);stroke-width:1}
+.tick{fill:var(--muted);font-size:10px}
+.cal h3{font-size:13px;margin:0 0 8px;font-weight:600}
+.cal table{width:auto} .cal td,.cal th{padding:0;border:0}
+.cell{width:38px;height:30px;border-radius:5px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-size:9px;line-height:1.15;color:var(--ink);margin:2px}
+.cell.empty{background:transparent;color:var(--muted)}
+.cell .d{font-size:9px;color:var(--ink2)}
+.cell.filled{font-weight:600} .cell.filled .d{color:inherit}
+.cal .wd{font-size:10px;color:var(--muted);text-align:center;padding-bottom:4px}
+.seqleg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2);margin-top:8px}
+.seqleg span{width:26px;height:10px;border-radius:2px;display:inline-block}
+.tip{position:fixed;pointer-events:none;background:var(--surface-1);color:var(--ink);
+  border:1px solid var(--ring);border-radius:8px;padding:7px 10px;font-size:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,.14);opacity:0;transition:opacity .1s;z-index:9;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+footer{margin-top:44px;font-size:12px;color:var(--muted);border-top:1px solid var(--grid);padding-top:16px}
+details summary{cursor:pointer;font-size:13px;color:var(--ink2)}
+.grid2{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:900px){.grid2{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<!-- ===== 最新一次抓價的完整價格網格（V3 壓縮字串）。排程每日整塊取代。 ===== -->
+<script type="application/json" id="latest">__LATEST__</script>
+
+<!-- ===== 追蹤歷程：每次抓價只保留「每條航線當時最便宜的來回未稅合計」。
+     完整網格只留最新一份，否則檔案會膨脹到數 MB。 ===== -->
+<script type="application/json" id="hist">__HIST__</script>
+
+<!-- ===== 各航段「稅金與其他費用」（TWD／每位成人／單程），取自官網訂票引擎購物車明細。
+     排程每天補查幾個未知航段，legs 裡沒有的航段在頁面上標示「未查核」。 ===== -->
+<script type="application/json" id="tax">__TAX__</script>
+
+<div class="wrap">
+<header>
+  <div>
+    <h1>虎航全航線追蹤 · 台灣出發 · 2027 Q1 週末小旅行</h1>
+    <div class="cond">2027 年 1–3 月 · 行程 3–5 天 · 須跨週六與週日 · 1 位成人 · 最低票價（不含行李）</div>
+  </div>
+  <button class="tgl" id="themeBtn">切換深/淺色</button>
+</header>
+<div class="note" id="cov"></div>
+
+<div class="tiles" id="tiles"></div>
+
+<h2>航線排行</h2>
+<p class="h2note">每條航線在條件內最便宜的來回組合。點欄位標題可換排序方式。</p>
+<div class="filters">
+  <div class="fg">出發機場 <select id="fOrg"></select></div>
+  <div class="fg">地區 <select id="fCountry"></select></div>
+  <div class="fg">天數 <select id="fN"><option value="">全部</option><option value="3">3 天</option><option value="4">4 天</option><option value="5">5 天</option></select></div>
+  <div class="fg">月份 <select id="fM"><option value="">全部</option><option value="01">1 月</option><option value="02">2 月</option><option value="03">3 月</option></select></div>
+  <div class="fg">價格顯示 <select id="fMode"><option value="pay">實付總額（含稅）</option><option value="fare">未稅票價</option></select></div>
+  <div class="fg" style="margin-left:auto" id="cnt"></div>
+</div>
+<div class="tblbox">
+<table>
+<thead><tr>
+  <th data-s="route">航線</th><th data-s="dep">最便宜的去程 → 回程</th><th data-s="pay">價格（含稅）</th>
+  <th data-s="nights">天數</th><th data-s="fare">未稅合計</th><th data-s="tax">稅費</th>
+  <th data-s="chg">vs 前次</th>
+</tr></thead>
+<tbody id="tbRoute"></tbody>
+</table>
+</div>
+
+<h2>各航線最低價一覽</h2>
+<p class="h2note">依價格排序；顏色代表地區。長條末端直接標數字，不需要對照色塊。</p>
+<div class="card"><div class="legend" id="barleg"></div><div id="bars"></div></div>
+
+<h2>單一航線細看</h2>
+<p class="h2note">選一條航線，看它的來回價格日曆與去/回程單程票價走勢。</p>
+<div class="filters" style="margin-bottom:12px">
+  <div class="fg">航線 <select id="fRoute" style="max-width:280px"></select></div>
+  <div class="fg" id="routeTax" style="color:var(--ink2)"></div>
+</div>
+<div class="grid2">
+  <div class="card" id="calBox"></div>
+  <div class="card" id="legBox"></div>
+</div>
+
+<h2>所有符合條件的組合</h2>
+<p class="h2note">套用上方「航線排行」的篩選條件。組合數很多，畫面只渲染前 400 筆最便宜的；縮小篩選範圍就能看到更多。</p>
+<div class="tblbox">
+<table>
+<thead><tr><th>航線</th><th>去程 → 回程</th><th>天數</th><th>去程</th><th>回程</th><th>未稅合計</th><th>稅費</th><th>價格</th></tr></thead>
+<tbody id="tbCombo"></tbody>
+</table>
+</div>
+
+<h2>追蹤歷程</h2>
+<p class="h2note">每次抓價記錄各航線當時最便宜的來回<b>未稅</b>合計。圖上顯示目前最便宜的 6 條航線，加上你在上面選的那一條。</p>
+<div class="card" id="trendbox"></div>
+
+<details class="card" style="margin-top:22px">
+  <summary>稅費查核進度</summary>
+  <div class="h2note" id="taxnote" style="margin-top:10px"></div>
+  <div id="taxtable" style="margin-top:12px"></div>
+</details>
+
+<footer>
+資料來源：台灣虎航官網每日票價 API（<code>api-book.tigerairtw.com/api/cms/station-daily-prices</code>），涵蓋桃園／台中／高雄／台南出發的所有航點。
+API 回傳<b>未稅</b>單程最低價，數值與官網「選擇航班」頁一致。<br>
+「稅金與其他費用」逐航段取自官網訂票引擎購物車明細；尚未實測的航段以保守推估值計入（見上方「稅費查核進度」，推估值以 * 標示）。<br>
+票價為 1 位成人、不含託運行李與選位；實際可售價格隨機位變動（實測一小時內就會變動），請以官網結帳頁為準。
+</footer>
+</div>
+
+<div class="tip" id="tip"></div>
+<script>
+/* ============ 資料 ============ */
+const LATEST = JSON.parse(document.getElementById('latest').textContent);
+const HIST   = JSON.parse(document.getElementById('hist').textContent);
+const TAXD   = JSON.parse(document.getElementById('tax').textContent);
+const LEGTAX = TAXD.legs || {};
+const ESTSET = new Set(TAXD.estimated || []);
+/* 每個航段都有稅費數字：實測優先，其餘為保守推估（見頁尾說明）。
+   isEst 只用來在明細與提示裡標示來源，不影響價格計算。 */
+const isEst = k => ESTSET.has(k);
+HIST.sort((a,b)=>a.ts.localeCompare(b.ts));
+
+const NAME = {TPE:'桃園',RMQ:'台中',KHH:'高雄',TNN:'台南',
+  AXT:'秋田',CJU:'濟州',CTS:'札幌',DAD:'峴港',FKS:'福島',FUK:'福岡',GMP:'首爾金浦',HKD:'函館',
+  HNA:'花卷',HND:'東京羽田',HSG:'佐賀',ICN:'首爾仁川',ISG:'石垣島',KCZ:'高知',KIJ:'新潟',KIX:'大阪',
+  KMI:'宮崎',KMJ:'熊本',KMQ:'小松',NGO:'名古屋',NRT:'東京成田',OIT:'大分',OKA:'沖繩',OKJ:'岡山',
+  PUS:'釜山',SDJ:'仙台',YGJ:'米子'};
+const COUNTRY = {CJU:'韓國',GMP:'韓國',ICN:'韓國',PUS:'韓國',DAD:'越南'};
+const cty = c => COUNTRY[c] || '日本';
+const CCOL = {'日本':'var(--s1)','韓國':'var(--s2)','越南':'var(--s3)'};
+
+/* V3 解碼 */
+function decodeV3(pay){
+  const p = pay.split('|');
+  const ndates = +p[2];
+  const prices = p[3].split(',').map(Number);
+  const [y,m,d] = p[1].split('-').map(Number);
+  const dates=[]; const dt=new Date(Date.UTC(y,m-1,d));
+  for(let i=0;i<ndates;i++){dates.push(dt.toISOString().slice(0,10)); dt.setUTCDate(dt.getUTCDate()+1);}
+  const legs={};
+  for(const seg of p[4].split(';')){
+    const sp=seg.indexOf(' '); const key=seg.slice(0,sp);
+    const vals=[];
+    for(const tok of seg.slice(sp+1).split(',')){
+      const st=tok.indexOf('*');
+      const c = st<0?tok:tok.slice(0,st);
+      const n = st<0?1:+tok.slice(st+1);
+      const v = c==='-'?null:prices[+c];
+      for(let i=0;i<n;i++) vals.push(v);
+    }
+    const o={}; vals.forEach((v,i)=>{ if(v!=null) o[dates[i]]=v; });
+    legs[key]=o;
+  }
+  return {dates, legs};
+}
+const {dates:DATES, legs:LEGS} = decodeV3(LATEST.pay);
+
+/* 來回航線 = 兩個方向都有資料，且出發地是台灣機場 */
+const TW=['TPE','RMQ','KHH','TNN'];
+const ROUTES=[];
+for(const k of Object.keys(LEGS)){
+  const [o,d]=k.split('-');
+  if(!TW.includes(o)) continue;
+  if(!LEGS[d+'-'+o]) continue;
+  ROUTES.push({key:k, back:d+'-'+o, org:o, dst:d, country:cty(d),
+    label:`${NAME[o]||o} ⇄ ${NAME[d]||d}`, code:`${o}⇄${d}`});
+}
+ROUTES.sort((a,b)=>a.org.localeCompare(b.org)||a.dst.localeCompare(b.dst));
+
+const W=['一','二','三','四','五','六','日'];
+const fmt=n=>n==null?'—':Math.round(n).toLocaleString('en-US');
+const md=s=>s.slice(5).replace('-','/');
+const dowI=s=>{const d=new Date(s+'T00:00:00');return (d.getDay()+6)%7;};
+const dow=s=>W[dowI(s)];
+
+/* 3–5 天且跨週六與週日的組合 */
+const COMBOS=(()=>{
+  const out=[]; const S=new Date('2027-01-01T00:00:00'), E=new Date('2027-03-31T00:00:00');
+  const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  for(let d=new Date(S); d<=E; d.setDate(d.getDate()+1)){
+    for(const n of [3,4,5]){
+      const r=new Date(d); r.setDate(r.getDate()+n-1);
+      if(r>E) continue;
+      const wd=new Set();
+      for(let i=0;i<n;i++){const x=new Date(d); x.setDate(x.getDate()+i); wd.add(x.getDay());}
+      if(wd.has(6)&&wd.has(0)) out.push([iso(d),iso(r),n]);
+    }
+  }
+  return out;
+})();
+
+/* 每條航線的所有組合 */
+const ALL=[];
+for(const R of ROUTES){
+  /* 只有兩端都「實測」到稅費才顯示實付總額；沒量到的就誠實顯示未稅，不用推估值填。 */
+  const to=LEGTAX[R.key], tb=LEGTAX[R.back];
+  const measured = to!=null && tb!=null && !isEst(R.key) && !isEst(R.back);
+  const tax = measured ? to+tb : 0;
+  for(const [dep,ret,n] of COMBOS){
+    const a=LEGS[R.key][dep], b=LEGS[R.back][ret];
+    if(a==null||b==null) continue;
+    ALL.push({R, dep, ret, nights:n, out:a, back:b, fare:a+b, tax,
+      taxKnown:measured, pay:a+b+tax});
+  }
+}
+
+/* 每條航線的最便宜組合 + 歷程 */
+const histBest = HIST.map(h=>h.best||{});
+const ROWS = ROUTES.map(R=>{
+  const mine=ALL.filter(x=>x.R===R);
+  if(!mine.length) return null;
+  const best=mine.reduce((a,b)=>b.fare<a.fare?b:a);
+  const ser=histBest.map(h=>h[R.key]??null).filter(v=>v!=null);
+  const prev=ser.slice(0,-1);
+  return {...best, n:mine.length,
+    lo: ser.length?Math.min(...ser):best.fare,
+    /* 跟「上一次」比，不是跟自己比 —— ser 的最後一筆就是這次，要用 prev 的最後一筆 */
+    chg: prev.length?best.fare-prev[prev.length-1]:0,
+    isNewLow: prev.length>0 && best.fare<Math.min(...prev)};
+}).filter(Boolean);
+
+/* ============ 小工具 ============ */
+const tip=document.getElementById('tip');
+function showTip(e,html){ tip.innerHTML=html; tip.style.opacity=1;
+  const p=12; let x=e.clientX+p,y=e.clientY+p; const r=tip.getBoundingClientRect();
+  if(x+r.width>innerWidth-8)x=e.clientX-r.width-p;
+  if(y+r.height>innerHeight-8)y=e.clientY-r.height-p;
+  tip.style.left=x+'px'; tip.style.top=y+'px'; }
+const hideTip=()=>tip.style.opacity=0;
+function bindTips(root){ (root||document).querySelectorAll('[data-t]').forEach(el=>{
+  if(el._b)return; el._b=1;
+  el.addEventListener('mousemove',e=>showTip(e,el.dataset.t));
+  el.addEventListener('mouseleave',hideTip); }); }
+
+const known=ROUTES.filter(R=>!isEst(R.key)&&!isEst(R.back)).length;
+document.getElementById('cov').innerHTML =
+    `<span class="kv hot">最後更新 <b>${LATEST.ts}</b> 台北時間</span>`
+  + `<span class="kv">已累積 <b>${HIST.length}</b> 次抓價</span>`
+  + `<span class="kv"><b>${ROUTES.length}</b> 條來回航線 / <b>${ALL.length.toLocaleString('en-US')}</b> 個日期組合</span>`
+  + `<span class="kv">票價涵蓋 <b>${DATES[0]}</b> – <b>${DATES[DATES.length-1]}</b></span>`
+  + `<span class="kv">稅費實測 <b>${known}/${ROUTES.length}</b> 條航線</span>`;
+
+/* ============ 統計卡 ============ */
+(function(){
+  const byPay=[...ROWS].sort((a,b)=>a.fare-b.fare);
+  const cheapest=byPay[0];
+  const byC={};
+  ROWS.forEach(r=>{ const c=r.R.country; if(!byC[c]||r.fare<byC[c].fare) byC[c]=r; });
+  const cards=[{t:'全航線最便宜',r:cheapest}].concat(
+    ['日本','韓國','越南'].filter(c=>byC[c]).map(c=>({t:c+'最便宜',r:byC[c]})));
+  document.getElementById('tiles').innerHTML=cards.map(({t,r})=>{
+    const cls=r.chg<0?'dn':(r.chg>0?'up':'flat');
+    const dtxt=r.chg===0?(HIST.length<2?'首次抓價':'與前次相同')
+      :(r.chg<0?'▼ 跌 ':'▲ 漲 ')+fmt(Math.abs(r.chg));
+    return `<div class="card tile">
+      <div class="lbl">${t}</div>
+      <div class="val"><small>TWD</small>${fmt(r.pay)}${r.taxKnown?'':' <span class="badge est">未稅</span>'}</div>
+      <div class="meta" style="color:var(--muted)">${r.R.label}${r.taxKnown?`｜未稅 ${fmt(r.fare)} ＋ 稅費 ${fmt(r.tax)}`:'｜稅費尚未實測'}</div>
+      <div class="meta" style="margin-top:4px">${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)}) · ${r.nights} 天</div>
+      <div class="delta ${cls}">${dtxt}${r.isNewLow?' <span class="badge newlow">追蹤新低</span>':''}</div>
+    </div>`;
+  }).join('');
+})();
+
+/* ============ 篩選器 ============ */
+/* 預設選最便宜的那條航線，而不是字母排序第一條（後者常是一週兩班的季節航線） */
+const F={org:'',country:'',n:'',m:'',mode:'pay',sort:'pay',dir:1,
+  route:([...ROWS].sort((a,b)=>a.fare-b.fare)[0]?.R.key)||ROUTES[0]?.key||''};
+document.getElementById('fOrg').innerHTML='<option value="">全部</option>'
+  + [...new Set(ROUTES.map(r=>r.org))].map(o=>`<option value="${o}">${NAME[o]} ${o}</option>`).join('');
+document.getElementById('fCountry').innerHTML='<option value="">全部</option>'
+  + [...new Set(ROUTES.map(r=>r.country))].map(c=>`<option>${c}</option>`).join('');
+document.getElementById('fRoute').innerHTML=ROUTES.map(r=>
+  `<option value="${r.key}"${r.key===F.route?' selected':''}>${r.label}（${r.code}）</option>`).join('');
+
+function keep(x){
+  const R=x.R;
+  return (!F.org||R.org===F.org)&&(!F.country||R.country===F.country)
+    &&(!F.n||x.nights==F.n)&&(!F.m||x.dep.slice(5,7)===F.m);
+}
+const price=x=>F.mode==='fare'?x.fare:x.pay;
+
+/* ============ 航線排行 ============ */
+function renderRoutes(){
+  let rs = ROUTES.map(R=>{
+    const mine=ALL.filter(x=>x.R===R&&keep(x));
+    if(!mine.length) return null;
+    const best=mine.reduce((a,b)=>price(b)<price(a)?b:a);
+    const base=ROWS.find(r=>r.R===R);
+    return {...best, lo:base?base.lo:best.fare, chg:base?base.chg:0,
+      isNewLow:base?base.isNewLow:false, cnt:mine.length};
+  }).filter(Boolean);
+  const k=F.sort;
+  rs.sort((a,b)=>{
+    let v;
+    if(k==='route') v=a.R.label.localeCompare(b.R.label,'zh-Hant');
+    else if(k==='dep') v=a.dep.localeCompare(b.dep);
+    else if(k==='tax') v=(a.tax??1e9)-(b.tax??1e9);
+    else v=(a[k]??0)-(b[k]??0);
+    return v*F.dir || price(a)-price(b);
+  });
+  document.getElementById('cnt').textContent=`${rs.length} 條航線`;
+  document.getElementById('tbRoute').innerHTML = rs.map(r=>{
+    const cls=r.chg<0?'dn':(r.chg>0?'up':'flat');
+    const dtxt=r.chg===0?'—':(r.chg<0?'▼':'▲')+fmt(Math.abs(r.chg));
+    return `<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${CCOL[r.R.country]};margin-right:7px"></span>${r.R.label}
+        <span class="rcode">${r.R.code}</span></td>
+      <td>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})${r.isNewLow?' <span class="badge newlow">新低</span>':''}</td>
+      <td class="tot">${fmt(price(r))}</td>
+      <td>${r.nights}</td>
+      <td style="color:var(--ink2)">${fmt(r.fare)}</td>
+      <td style="color:var(--muted)" ${r.taxKnown?`data-t="${r.R.org}→${r.R.dst} ${fmt(LEGTAX[r.R.key])} ＋ ${r.R.dst}→${r.R.org} ${fmt(LEGTAX[r.R.back])}"`:''}>${r.taxKnown?'+'+fmt(r.tax):'<span class="badge est">未實測</span>'}</td>
+      <td class="${cls}">${dtxt}</td></tr>`;
+  }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">沒有符合條件的航線</td></tr>';
+  bindTips(document.getElementById('tbRoute'));
+  return rs;
+}
+document.querySelectorAll('th[data-s]').forEach(th=>{
+  th.style.cursor='pointer';
+  th.addEventListener('click',()=>{
+    const s=th.dataset.s;
+    if(F.sort===s) F.dir*=-1; else {F.sort=s; F.dir=1;}
+    redraw();
+  });
+});
+
+/* ============ 組合明細 ============ */
+function renderCombos(){
+  const rs=ALL.filter(keep).sort((a,b)=>price(a)-price(b));
+  const show=rs.slice(0,400);
+  document.getElementById('tbCombo').innerHTML = show.map(r=>`<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${CCOL[r.R.country]};margin-right:7px"></span>${r.R.label}</td>
+      <td>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})</td>
+      <td>${r.nights}</td><td>${fmt(r.out)}</td><td>${fmt(r.back)}</td>
+      <td style="color:var(--ink2)">${fmt(r.fare)}</td>
+      <td style="color:var(--muted)">${r.taxKnown?'+'+fmt(r.tax):'<span class="badge est">未實測</span>'}</td>
+      <td class="tot">${fmt(price(r))}</td></tr>`).join('')
+    || '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">沒有符合條件的組合</td></tr>';
+  if(rs.length>show.length){
+    document.getElementById('tbCombo').insertAdjacentHTML('beforeend',
+      `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:14px">
+       共 ${rs.length.toLocaleString('en-US')} 個組合，已顯示最便宜的 ${show.length} 筆</td></tr>`);
+  }
+}
+
+/* ============ 長條圖 ============ */
+document.getElementById('barleg').innerHTML=
+  Object.entries(CCOL).map(([c,v])=>`<span><i style="background:${v}"></i>${c}</span>`).join('')
+  + '<span style="color:var(--muted)">TWD · 該航線條件內最便宜的來回價</span>';
+function renderBars(rs){
+  if(!rs.length){document.getElementById('bars').innerHTML='';return;}
+  const rowH=22, padL=150, padR=86, W_=1100;
+  const H=rs.length*rowH+14;
+  const max=Math.max(...rs.map(price));
+  const x=v=>padL+v/max*(W_-padL-padR);
+  let g='';
+  rs.forEach((r,i)=>{
+    const y=i*rowH+8, w=Math.max(2,x(price(r))-padL);
+    g+=`<text x="${padL-8}" y="${y+11}" text-anchor="end" style="font-size:11px;fill:var(--ink2)">${r.R.label}</text>
+      <rect x="${padL}" y="${y+2}" width="${w}" height="${rowH-8}" rx="4" fill="${CCOL[r.R.country]}"
+        data-t="${r.R.label}（${r.R.code}）<br><b>TWD ${fmt(price(r))}</b>${r.taxKnown?`（未稅 ${fmt(r.fare)} ＋ 稅費 ${fmt(r.tax)}）`:'（未稅，稅費尚未實測）'}<br>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})　${r.nights} 天"/>
+      <text x="${padL+w+7}" y="${y+11}" style="font-size:11px;fill:var(--ink)">${fmt(price(r))}${r.taxKnown?'':'*'}</text>`;
+  });
+  document.getElementById('bars').innerHTML=
+    `<svg viewBox="0 0 ${W_} ${H}" role="img" aria-label="各航線最低來回價">${g}</svg>
+     <div style="font-size:11px;color:var(--muted);margin-top:8px">* 稅費尚未實測，顯示的是未稅價；未標星號者已加計官網實測稅費</div>`;
+  bindTips(document.getElementById('bars'));
+}
+
+/* ============ 單一航線：日曆 + 單程走勢 ============ */
+const SEQ=['--seq1','--seq2','--seq3','--seq4','--seq5','--seq6'];
+function renderRoute(){
+  const R=ROUTES.find(r=>r.key===F.route);
+  const box=document.getElementById('calBox'), lb=document.getElementById('legBox');
+  const tx=document.getElementById('routeTax');
+  if(!R){box.innerHTML='';lb.innerHTML='';return;}
+  const to=LEGTAX[R.key], tb=LEGTAX[R.back];
+  tx.innerHTML = (to!=null&&tb!=null&&!isEst(R.key)&&!isEst(R.back))
+    ? `稅費 ${R.org}→${R.dst} ${fmt(to)} ＋ ${R.dst}→${R.org} ${fmt(tb)} ＝ <b>${fmt(to+tb)}</b>（官網實測）`
+    : '<span class="badge est">稅費尚未實測，以下為未稅價</span>';
+
+  const mine=ALL.filter(x=>x.R===R);
+  const best={}; mine.forEach(r=>{ if(!best[r.dep]||price(r)<price(best[r.dep])) best[r.dep]=r; });
+  const vals=Object.values(best).map(price).sort((a,b)=>a-b);
+  if(!vals.length){box.innerHTML='<div style="color:var(--muted)">這條航線在條件內沒有可用組合</div>';}
+  else{
+    const cuts=[1,2,3,4,5].map(k=>vals[Math.floor(vals.length*k/6)]);
+    const bin=v=>{let i=0;while(i<5&&v>=cuts[i])i++;return i;};
+    let html='';
+    [[2027,0],[2027,1],[2027,2]].forEach(([y,m])=>{
+      const first=new Date(y,m,1), last=new Date(y,m+1,0);
+      const pad=(first.getDay()+6)%7;
+      let rowsH='<tr>'+'<td></td>'.repeat(pad);
+      for(let d=1;d<=last.getDate();d++){
+        const key=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const b=best[key];
+        if(b) rowsH+=`<td><div class="cell filled" style="background:var(${SEQ[bin(price(b))]});color:${bin(price(b))>=4?'#fff':'var(--ink)'}"
+          data-t="${R.label}｜${md(b.dep)}(${dow(b.dep)}) → ${md(b.ret)}(${dow(b.ret)})　${b.nights} 天<br><b>TWD ${fmt(price(b))}</b>${b.taxKnown?`<br>未稅 ${fmt(b.fare)}（去 ${fmt(b.out)} ＋ 回 ${fmt(b.back)}）＋ 稅費 ${fmt(b.tax)}`:`<br>去 ${fmt(b.out)} ＋ 回 ${fmt(b.back)}（未稅）`}">
+          <div class="d">${d}</div><div>${Math.round(price(b)/100)/10}k</div></div></td>`;
+        else rowsH+=`<td><div class="cell empty"><div class="d">${d}</div></div></td>`;
+        if((pad+d)%7===0) rowsH+='</tr><tr>';
+      }
+      html+=`<div class="cal"><h3>${m+1} 月</h3><table><thead><tr>${W.map(w=>`<th class="wd">${w}</th>`).join('')}</tr></thead><tbody>${rowsH}</tr></tbody></table></div>`;
+    });
+    box.innerHTML=`<h3 style="margin:0 0 10px;font-size:14px">${R.label}　來回價格日曆（依去程日）</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:4px">${html}</div>
+      <div class="seqleg">便宜 ${SEQ.map(s=>`<span style="background:var(${s})"></span>`).join('')} 貴
+        <span style="width:auto;margin-left:8px;color:var(--muted)">${fmt(vals[0])} – ${fmt(vals[vals.length-1])}</span></div>`;
+    bindTips(box);
+  }
+  /* 單程走勢 */
+  const sets=[{name:`${NAME[R.org]} → ${NAME[R.dst]}`, vals:DATES.map(d=>LEGS[R.key][d]??null)},
+              {name:`${NAME[R.dst]} → ${NAME[R.org]}`, vals:DATES.map(d=>LEGS[R.back][d]??null)}];
+  lb.innerHTML=lineChart(sets,DATES,`${R.label}　單程最低票價（未稅）`);
+  bindTips(lb);
+}
+function lineChart(sets,dates,title){
+  const Wd=980,H=300,M={t:18,r:16,b:26,l:56};
+  const all=sets.flatMap(s=>s.vals.filter(v=>v!=null));
+  if(!all.length) return '<div style="color:var(--muted)">沒有資料</div>';
+  const ymax=Math.ceil(Math.max(...all)/1000)*1000;
+  const x=i=>M.l+i*(Wd-M.l-M.r)/Math.max(1,dates.length-1);
+  const y=v=>M.t+(1-v/ymax)*(H-M.t-M.b);
+  let g='';
+  for(let k=0;k<=5;k++){const v=ymax*k/5;
+    g+=`<line class="gl" x1="${M.l}" x2="${Wd-M.r}" y1="${y(v)}" y2="${y(v)}"/>
+        <text class="tick" x="${M.l-8}" y="${y(v)+3}" text-anchor="end">${fmt(v)}</text>`;}
+  dates.forEach((d,i)=>{ if(d.slice(8)==='01'||d.slice(8)==='15')
+    g+=`<text class="tick" x="${x(i)}" y="${H-M.b+15}" text-anchor="middle">${md(d)}</text>`;});
+  g+=`<line class="ax" x1="${M.l}" x2="${Wd-M.r}" y1="${y(0)}" y2="${y(0)}"/>`;
+  sets.forEach((s,si)=>{
+    const col=si===0?'var(--s1)':'var(--s2)';
+    let ds='',open=false, pts=0;
+    s.vals.forEach((v,i)=>{ if(v==null){open=false;return;} ds+=(open?'L':'M')+x(i)+' '+y(v)+' '; open=true; pts++;});
+    g+=`<path d="${ds}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    if(pts<40) s.vals.forEach((v,i)=>{ if(v!=null) g+=`<circle cx="${x(i)}" cy="${y(v)}" r="2.6" fill="${col}"/>`; });
+    let mi=-1; s.vals.forEach((v,i)=>{if(v!=null&&(mi<0||v<s.vals[mi]))mi=i;});
+    if(mi>=0) g+=`<circle cx="${x(mi)}" cy="${y(s.vals[mi])}" r="4.5" fill="${col}" stroke="var(--surface-1)" stroke-width="2"/>
+      <text class="tick" x="${x(mi)}" y="${y(s.vals[mi])-10}" text-anchor="middle" style="font-size:11px;fill:var(--ink)">${fmt(s.vals[mi])}</text>`;
+  });
+  dates.forEach((d,i)=>{
+    const parts=sets.map(s=>s.vals[i]==null?null:`${s.name} <b>${fmt(s.vals[i])}</b>`).filter(Boolean);
+    if(!parts.length) return;
+    g+=`<rect x="${x(i)-4}" y="${M.t}" width="8" height="${H-M.t-M.b}" fill="transparent"
+      data-t="${md(d)}(${dow(d)})<br>${parts.join('<br>')}" style="cursor:crosshair"/>`;
+  });
+  return `<h3 style="margin:0 0 2px;font-size:14px">${title}</h3>
+    <div class="legend">${sets.map((s,i)=>`<span><i class="ln" style="background:${i===0?'var(--s1)':'var(--s2)'}"></i>${s.name}</span>`).join('')}</div>
+    <svg viewBox="0 0 ${Wd} ${H}" role="img" aria-label="${title}">${g}</svg>`;
+}
+
+/* ============ 追蹤歷程 ============ */
+function renderTrend(){
+  const box=document.getElementById('trendbox');
+  if(HIST.length<2){
+    const top=[...ROWS].sort((a,b)=>a.fare-b.fare).slice(0,8);
+    box.innerHTML=`<div style="color:var(--ink2);font-size:13px">目前只有 ${HIST.length} 次抓價紀錄，尚無走勢可畫。目前最便宜的 8 條航線（未稅來回）：</div>
+      <table style="margin-top:10px;width:auto"><tbody>${top.map(r=>
+      `<tr><td style="text-align:left;padding-right:24px">${r.R.label}</td>
+        <td><b>${fmt(r.fare)}</b></td>
+        <td style="color:var(--muted);text-align:left">${md(r.dep)} → ${md(r.ret)} · ${r.nights} 天</td></tr>`).join('')}</tbody></table>`;
+    return;
+  }
+  const picks=[...new Set([...[...ROWS].sort((a,b)=>a.fare-b.fare).slice(0,6).map(r=>r.R.key), F.route])]
+    .map(k=>ROUTES.find(r=>r.key===k)).filter(Boolean);
+  const Wd=1060,H=280,M={t:16,r:150,b:30,l:58};
+  const series=picks.map(R=>({R, vals:histBest.map(h=>h[R.key]??null)}));
+  const all=series.flatMap(s=>s.vals.filter(v=>v!=null));
+  const ymax=Math.ceil(Math.max(...all)/500)*500, ymin=Math.max(0,Math.floor(Math.min(...all)/500)*500-500);
+  const n=HIST.length;
+  const x=i=>M.l+(n===1?0:i*(Wd-M.l-M.r)/(n-1));
+  const y=v=>M.t+(1-(v-ymin)/((ymax-ymin)||1))*(H-M.t-M.b);
+  let g='';
+  for(let k=0;k<=4;k++){const v=ymin+(ymax-ymin)*k/4;
+    g+=`<line class="gl" x1="${M.l}" x2="${Wd-M.r}" y1="${y(v)}" y2="${y(v)}"/>
+        <text class="tick" x="${M.l-8}" y="${y(v)+3}" text-anchor="end">${fmt(v)}</text>`;}
+  const stepL=Math.ceil(n/10);
+  /* 每小時抓價時，同一天會有多筆，X 軸只印日期會重複 —— 日期數少就改印時間 */
+  const nDays=new Set(HIST.map(h=>h.ts.slice(0,10))).size;
+  const xlab=h=>nDays<=3?h.ts.slice(11,16):h.ts.slice(5,10);
+  HIST.forEach((h,i)=>{ if(i%stepL===0||i===n-1)
+    g+=`<text class="tick" x="${x(i)}" y="${H-M.b+16}" text-anchor="middle">${xlab(h)}</text>`;});
+  series.forEach(s=>{
+    const col=CCOL[s.R.country]; let ds='',open=false;
+    s.vals.forEach((v,i)=>{ if(v==null){open=false;return;} ds+=(open?'L':'M')+x(i)+' '+y(v)+' '; open=true;});
+    const sel=s.R.key===F.route;
+    g+=`<path d="${ds}" fill="none" stroke="${col}" stroke-width="${sel?3:1.6}" stroke-linejoin="round" opacity="${sel?1:.75}"/>`;
+    let li=-1; s.vals.forEach((v,i)=>{if(v!=null)li=i;});
+    if(li>=0) g+=`<circle cx="${x(li)}" cy="${y(s.vals[li])}" r="4" fill="${col}" stroke="var(--surface-1)" stroke-width="2"/>
+      <text x="${x(li)+9}" y="${y(s.vals[li])+4}" style="font-size:11px;fill:${sel?'var(--ink)':'var(--ink2)'};font-weight:${sel?600:400}">${s.R.label} ${fmt(s.vals[li])}</text>`;
+    s.vals.forEach((v,i)=>{ if(v==null)return;
+      g+=`<rect x="${x(i)-5}" y="${y(v)-5}" width="10" height="10" fill="transparent"
+        data-t="${HIST[i].ts}<br>${s.R.label} <b>${fmt(v)}</b>（未稅來回）"/>`;});
+  });
+  box.innerHTML=`<div class="legend">${Object.entries(CCOL).map(([c,v])=>`<span><i style="background:${v}"></i>${c}</span>`).join('')}
+    <span style="color:var(--muted)">粗線 = 上方選定的航線</span></div>
+    <svg viewBox="0 0 ${Wd} ${H}" role="img" aria-label="各航線最低來回未稅合計走勢">${g}</svg>`;
+  bindTips(box);
+}
+
+/* ============ 稅費進度 ============ */
+(function(){
+  const legs=[...new Set(ROUTES.flatMap(R=>[R.key,R.back]))].sort();
+  const meas=legs.filter(k=>!isEst(k));
+  const measRoutes=ROUTES.filter(R=>!isEst(R.key)&&!isEst(R.back)).length;
+
+  document.getElementById('taxnote').innerHTML =
+    `目前 <b>${measRoutes}/${ROUTES.length}</b> 條航線已實測（<b>不使用推估值</b> —— 實測發現稅費同國家不同機場差異很大，推估不可靠）。`;
+
+  document.getElementById('taxtable').innerHTML=`
+    <div style="font-size:13px;color:var(--ink2);margin-bottom:10px">
+      航段 <b>${meas.length}</b> / ${legs.length} 已實測（上次更新 ${TAXD.updated||'—'}）；
+      航線 <b>${measRoutes}</b> / ${ROUTES.length} 兩端都實測。未實測的航線顯示未稅價，不填推估值。</div>
+    <table style="width:auto"><thead><tr><th>航段</th><th>稅金與其他費用</th><th>來源</th><th>抽驗日期</th></tr></thead><tbody>
+    ${legs.map(k=>`<tr><td style="text-align:left">${k.replace('-',' → ')}</td>
+      <td>${LEGTAX[k]!=null?fmt(LEGTAX[k]):'—'}</td>
+      <td style="color:${LEGTAX[k]!=null?'var(--goodtext)':'var(--ink2)'}">${LEGTAX[k]!=null?'實測':'未實測'}</td>
+      <td style="color:var(--muted)">${TAXD.checked?.[k]??'—'}</td></tr>`).join('')}
+    </tbody></table>
+    <div style="font-size:12px;color:var(--ink2);margin-top:10px;max-width:820px">
+    <b>實測值</b>取自官網訂票引擎購物車明細的「稅金與其他費用」欄位，並以「總計金額 = 兩段票價 ＋ 兩段稅費」對帳驗證。
+    <b>不使用推估值</b>：實測發現同一國家不同機場的稅費差異很大 —— 台灣飛沖繩 800、飛石垣島 900；
+    釜山回台 725、仁川 837、濟州 825、成田 1,630、關西 1,624。所以稅費無法由國家或距離推導，只能一段一段量。<br><br>
+    稅費<b>不是固定公告費率</b>：內含台灣機場服務費與兵險費，以及日圓／韓元計價的日本國際觀光旅客稅、
+    機場設施使用費、韓國出國納付金等，會隨匯率與官方費率調整而變動。
+    <b>已知即將變動：台灣機場服務費自 2026/9/1 起由 500 元調升至 750 元</b>（2028/9/1 再升至 1,000 元），
+    屆時所有台灣出發航段的稅費都會改變，排程會重新實測。</div>`;
+})();
+
+/* ============ 事件 ============ */
+function redraw(){ const rs=renderRoutes(); renderBars(rs); renderCombos(); renderRoute(); renderTrend(); }
+[['fOrg','org'],['fCountry','country'],['fN','n'],['fM','m'],['fMode','mode']].forEach(([id,k])=>
+  document.getElementById(id).addEventListener('change',e=>{F[k]=e.target.value;redraw();}));
+document.getElementById('fRoute').addEventListener('change',e=>{F.route=e.target.value;renderRoute();renderTrend();});
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme');
+  const dark=cur?cur==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+});
+redraw();
+</script>
+</body>
+</html>
