@@ -1,0 +1,67 @@
+name: 虎航票價追蹤
+
+on:
+  schedule:
+    # 每 15 分鐘。cron 是 UTC —— 00:00 UTC = 台北 08:00，所以每天第一次執行
+    # 剛好落在台北 08:00，每日摘要就是由那一次發出。
+    # 注意：公開 repo 的排程在 GitHub 負載高時可能延遲幾分鐘，不保證準時。
+    - cron: "*/15 * * * *"
+  workflow_dispatch: # 也可以在 Actions 頁手動按 Run workflow
+    inputs:
+      dry:
+        description: "試跑：抓價並印出本次會發的通知，但不發通知、不改任何檔案"
+        type: boolean
+        default: false
+
+# 只給需要的權限：contents 用來 commit 更新後的頁面，issues 用來留通知留言。
+permissions:
+  contents: write
+  issues: write
+
+# 同一時間只跑一個，避免兩次執行同時 commit 撞在一起。
+concurrency:
+  group: tigerair-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 取出 repo
+        uses: actions/checkout@v4
+
+      - name: 準備 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 抓價、判斷、發通知、產生頁面
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node tools/watch.mjs ${{ inputs.dry && '--dry' || '' }}
+
+      - name: 有變動就 commit 回 repo
+        if: ${{ !inputs.dry }}
+        run: |
+          set -euo pipefail
+          git config user.name  "tigerair-watch[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A index.html all-routes.html status.html status.json tools/state.json
+          if git diff --cached --quiet; then
+            echo "沒有檔案變動，跳過 commit。"
+            exit 0
+          fi
+          git commit -m "自動更新 $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M')"
+          # 兩次執行若剛好撞在一起，先把遠端的變更接上再推
+          for i in 1 2 3; do
+            if git push; then
+              echo "已 push。"
+              exit 0
+            fi
+            echo "push 失敗，第 $i 次重試前先 rebase…"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          done
+          echo "push 連續失敗三次。" >&2
+          exit 1
