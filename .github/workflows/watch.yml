@@ -12,6 +12,10 @@ on:
         description: "試跑：抓價並印出本次會發的通知，但不發通知、不改任何檔案"
         type: boolean
         default: false
+      summary:
+        description: "強制發一次每日摘要（忽略「今天已發過」）—— 用來測試通知信有沒有寄到"
+        type: boolean
+        default: false
 
 # 只給需要的權限：contents 用來 commit 更新後的頁面，issues 用來留通知留言。
 permissions:
@@ -40,7 +44,7 @@ jobs:
       - name: 抓價、判斷、發通知、產生頁面
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node tools/watch.mjs ${{ inputs.dry && '--dry' || '' }}
+        run: node tools/watch.mjs ${{ inputs.dry && '--dry' || '' }} ${{ inputs.summary && '--summary' || '' }}
 
       - name: 有變動就 commit 回 repo
         if: ${{ !inputs.dry }}
