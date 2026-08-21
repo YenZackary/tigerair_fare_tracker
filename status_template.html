@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>虎航追蹤 · 排程執行紀錄</title>
+<style>
+:root{color-scheme:light;--surface-1:#fcfcfb;--plane:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;
+ --muted:#898781;--grid:#e1e0d9;--ring:rgba(11,11,11,.10);--s1:#2a78d6;
+ --good:#0ca30c;--goodtext:#006300;--crit:#d03b3b;--warn:#fab219}
+@media(prefers-color-scheme:dark){:root{color-scheme:dark;--surface-1:#1a1a19;--plane:#0d0d0d;
+ --ink:#fff;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--ring:rgba(255,255,255,.10);
+ --s1:#3987e5;--goodtext:#0ca30c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+ font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif;font-size:14px;line-height:1.55}
+.wrap{max-width:960px;margin:0 auto;padding:28px 20px 72px}
+h1{font-size:21px;margin:0 0 4px}
+.sub{color:var(--ink2);font-size:13px;max-width:760px}
+.cond{margin-top:10px;display:inline-block;font-size:14px;font-weight:600;background:var(--surface-1);
+ border:1px solid var(--ring);border-left:4px solid var(--s1);border-radius:8px;padding:9px 14px}
+.kvs{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 10px;font-size:13px;color:var(--ink2)}
+.kv{background:var(--surface-1);border:1px solid var(--ring);border-radius:999px;padding:3px 11px}
+.kv b{color:var(--ink);font-variant-numeric:tabular-nums}
+.kv.hot{border-color:var(--s1)}.kv.hot b{color:var(--s1)}
+.box{margin-top:22px;border:1px solid var(--ring);border-radius:12px;background:var(--surface-1);overflow:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--grid);white-space:nowrap;vertical-align:top}
+th{font-size:11px;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+td.note{white-space:normal;color:var(--ink2);font-size:13px;min-width:220px}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;border:1px solid var(--ring);
+ color:var(--ink2);background:var(--plane);white-space:nowrap}
+.tag.ch{border-color:var(--good);color:var(--goodtext);font-weight:600}
+.tag.no{border-color:var(--ring)}
+.tag.fail{border-color:var(--crit);color:var(--crit);font-weight:600}
+.tag.gap{border-color:var(--warn);color:var(--ink2)}
+tr.gap td{background:color-mix(in oklab,var(--warn) 10%,transparent)}
+a{color:var(--s1)}
+footer{margin-top:34px;font-size:12px;color:var(--muted);border-top:1px solid var(--grid);padding-top:14px}
+</style>
+</head>
+<body>
+<!-- ===== 排程執行紀錄。每次執行由排程原地取代這整塊。 ===== -->
+<script type="application/json" id="runs">__RUNS__</script>
+
+<div class="wrap">
+<h1>虎航追蹤 · 排程執行紀錄</h1>
+<div class="sub">每次排程執行都會在這裡留下一筆，<b>不論有沒有變動</b>。用途是分辨「跑完但票價沒動」和「執行掛掉」——
+這兩件事在儀表板上看起來一模一樣。</div>
+<div class="cond">排程：每小時 :10 · 台北時間</div>
+<div class="kvs" id="kvs"></div>
+
+<div class="box"><table>
+<thead><tr><th>執行時間</th><th>結果</th><th>變動航線</th><th>是否部署</th><th>稅費</th><th>備註</th></tr></thead>
+<tbody id="tb"><tr><td colspan="6" style="color:var(--muted)">載入中…</td></tr></tbody>
+</table></div>
+
+<footer>
+資料由排程每次執行時追加在本頁的 <code>script#runs</code> 區塊。
+表格中<b>橘底</b>的列代表偵測到時間缺口 —— 那段時間的排程沒有留下紀錄，也就是連 GitHub 都沒摸到
+（掛在很前面，或你的電腦／Chrome 當時沒開）。<br>
+回到 <a href="index.html">追蹤首頁</a>。
+</footer>
+</div>
+<script>
+const RES = {
+  'changed':            ['有變動', 'ch'],
+  'no-change':          ['無變動', 'no'],
+  'no-fetch':           ['抓不到價', 'fail'],
+  'error':              ['執行錯誤', 'fail'],
+  'heartbeat-installed':['心跳建立', 'no'],
+};
+function mins(a, b){ return (new Date(b.replace(' ','T')) - new Date(a.replace(' ','T'))) / 60000; }
+(function(){
+  const d = JSON.parse(document.getElementById('runs').textContent);
+  const runs = (d.runs || []).slice().sort((a, b) => b.ts.localeCompare(a.ts));
+  const nCh = runs.filter(r => r.result === 'changed').length;
+  const nFail = runs.filter(r => r.result === 'no-fetch' || r.result === 'error').length;
+  document.getElementById('kvs').innerHTML =
+      `<span class="kv hot">最後一筆 <b>${runs.length ? runs[0].ts : '—'}</b></span>`
+    + `<span class="kv">共 <b>${runs.length}</b> 筆紀錄</span>`
+    + `<span class="kv">有變動 <b>${nCh}</b></span>`
+    + `<span class="kv">失敗 <b>${nFail}</b></span>`
+    + `<span class="kv">檔案更新 <b>${d.updated || '—'}</b></span>`;
+
+  let html = '';
+  runs.forEach((r, i) => {
+    const nxt = runs[i + 1];                       // 時間上更早的一筆
+    const gap = nxt ? mins(nxt.ts, r.ts) : 0;
+    const [lbl, cls] = RES[r.result] || [r.result, 'no'];
+    html += `<tr><td>${r.ts}${r.by === 'manual' ? ' <span class="tag">手動</span>' : ''}</td>`
+          + `<td><span class="tag ${cls}">${lbl}</span></td>`
+          + `<td>${r.changed ?? 0}</td>`
+          + `<td>${r.deployed ? '是' : '—'}</td>`
+          + `<td class="note">${r.tax || '—'}</td>`
+          + `<td class="note">${r.note || ''}</td></tr>`;
+    if (gap > 95) {                                 // 排程是每小時，超過 95 分鐘就是漏了
+      const missed = Math.round(gap / 60) - 1;
+      html += `<tr class="gap"><td colspan="6"><span class="tag gap">缺口</span> `
+            + `${nxt.ts} → ${r.ts} 之間約 ${missed} 次排程沒有留下紀錄`
+            + `（執行掛在很前面，或當時電腦／Chrome 沒開）</td></tr>`;
+    }
+  });
+  document.getElementById('tb').innerHTML = html
+    || '<tr><td colspan="6" style="color:var(--muted)">還沒有任何紀錄</td></tr>';
+})();
+</script>
+</body>
+</html>

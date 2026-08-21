@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "note": "每次排程執行都會在這裡追加一筆，不論結果。缺一筆＝那次執行連 GitHub 都沒摸到（掛在很前面，或 Chrome 連不上）。",
+  "updated": "2026-08-21 10:50",
+  "runs": [
+    {
+      "ts": "2026-08-21 09:45",
+      "by": "manual",
+      "result": "changed",
+      "changed": 3,
+      "deployed": true,
+      "tax": "未做（tax.updated 距今 1 天）",
+      "note": "手動執行。TPE-FKS -600、TPE-YGJ +100、KHH-DAD +600；並修正 vs 前次 的比較 bug"
+    },
+    {
+      "ts": "2026-08-21 10:50",
+      "by": "manual",
+      "result": "heartbeat-installed",
+      "changed": 0,
+      "deployed": true,
+      "tax": "未做",
+      "note": "建立 status.json / status.html。此前 09:01、09:11、10:10、10:34 四次觸發沒有紀錄，因為心跳當時還不存在。"
+    }
+  ]
+}
