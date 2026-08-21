@@ -42,6 +42,10 @@ const HIST_FINE_HOURS = 72; // 近 72 小時逐筆保留，更早的每天壓成
 const STATUS_KEEP = 120; // status 頁最多保留幾筆事件
 
 const ISSUE_TITLE = "虎航票價通知";
+/** repo 擁有者。每則通知都會 @ 他一次 —— Issue 是 bot 開的，
+ *  擁有者預設不會自動訂閱這個討論串，但「被提及」一定會收到通知。 */
+const OWNER = (process.env.GITHUB_REPOSITORY ?? "").split("/")[0];
+const MENTION = OWNER ? `@${OWNER} ` : "";
 const ISSUE_MARKER = "<!-- tigerair-watch-notify-thread -->";
 
 const API = (s) => `https://api-book.tigerairtw.com/api/cms/station-daily-prices/${s}/TWD`;
@@ -294,7 +298,7 @@ const routeRow = (r) =>
   `${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)}) | ${r.nights} |`;
 
 function newLowBody(newLows, now) {
-  const out = [`## 🔻 新低價 ${newLows.length} 條 · ${now.stamp}`, "", ROUTE_HEAD];
+  const out = [`## 🔻 新低價 ${newLows.length} 條 · ${now.stamp}`, "", `${MENTION}有航線跌破歷史最低。`, "", ROUTE_HEAD];
   for (const r of newLows.slice(0, MAX_NEWLOW)) out.push(routeRow(r));
   out.push("");
   for (const r of newLows.slice(0, MAX_NEWLOW)) {
@@ -311,6 +315,8 @@ function changeBody(changes, now) {
   const down = changes.filter((r) => r.diff < 0).length;
   const out = [
     `## 票價變動 ${changes.length} 條（降 ${down} / 漲 ${changes.length - down}） · ${now.stamp}`,
+    "",
+    `${MENTION}`,
     "",
     "| 航線 | 未稅 上次 → 這次 | 差額 | 實付總額 |",
     "|---|---|---:|---:|",
@@ -334,7 +340,7 @@ function summaryBody(routes, changes, newLows, now, state, stats) {
   }
   const unknown = routes.filter((r) => !r.taxKnown);
 
-  const out = [`## 每日摘要 · ${now.stamp}`];
+  const out = [`## 每日摘要 · ${now.stamp}`, "", `${MENTION}`];
   if (now.hour >= 9) out.push("", "> 原定 08:00，因排程未能執行而延後。");
   out.push(
     "",
@@ -431,6 +437,9 @@ async function ensureNotifyIssue() {
     "因為你是這個 repo 的擁有者，GitHub 會把每一則留言寄到你的信箱 —— 這就是通知的送達方式。",
     "",
     "**不要關閉這個 Issue**，關掉之後程式會另外開一個新的。",
+    "",
+    `每則通知都會 @ ${OWNER || "你"} 一次，所以就算沒有訂閱這個討論串也會收到通知信。` +
+      "若想連 Issue 本體的變動都收到，可以按右側的 Subscribe。",
     "",
     "| 事件 | 條件 | 節流 |",
     "|---|---|---|",
