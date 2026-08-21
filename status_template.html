@@ -46,9 +46,10 @@ footer{margin-top:34px;font-size:12px;color:var(--muted);border-top:1px solid va
 
 <div class="wrap">
 <h1>虎航追蹤 · 排程執行紀錄</h1>
-<div class="sub">每次排程執行都會在這裡留下一筆，<b>不論有沒有變動</b>。用途是分辨「跑完但票價沒動」和「執行掛掉」——
-這兩件事在儀表板上看起來一模一樣。</div>
-<div class="cond">排程：每小時 :10 · 台北時間</div>
+<div class="sub">這裡記錄<b>有意義的事件</b>：票價變動、發出的通知，以及每小時至少一筆「還活著」。
+想看<b>每一次</b>執行的完整紀錄與 log，請到 repo 的
+<a href="https://github.com/YenZackary/tigerair_fare_tracker/actions">Actions 頁</a> —— 那才是完整的執行歷史。</div>
+<div class="cond">GitHub Actions · 每 15 分鐘 · 台北時間</div>
 <div class="kvs" id="kvs"></div>
 
 <div class="box"><table>
@@ -58,11 +59,12 @@ footer{margin-top:34px;font-size:12px;color:var(--muted);border-top:1px solid va
 
 <footer>
 資料由排程每次執行時追加在本頁的 <code>script#runs</code> 區塊。
-表格中<b>橘底</b>的列代表偵測到時間缺口 —— 那段時間的排程沒有留下紀錄，也就是連 GitHub 都沒摸到
-（掛在很前面，或你的電腦／Chrome 當時沒開）。<br>
-<b>通知</b>欄顯示那次執行實際發出的通知：每日摘要（08:00 後第一次成功執行）、新低價（跌破歷史最低，
-必發）、有變動（最低價有動）、排程中斷（距上一筆紀錄超過 3 小時且在 09:00–23:00 之間）。<br>
-目前通知走手機推播；電子郵件管道尚未決定，決定後只需換掉送出的那一步。<br>
+表格中<b>橘底</b>的列代表超過兩小時沒有任何紀錄 —— 那段時間 workflow 沒跑或連續失敗，
+到 Actions 頁看是哪一步掛的。<br>
+<b>通知</b>欄顯示那次執行實際發出的通知：新低價（跌破歷史最低，必發）、每日摘要（台北 08:00 後
+第一次執行）、有變動（最低價有動，每 60 分鐘最多一則）。<br>
+通知貼在 repo 的 <a href="https://github.com/YenZackary/tigerair_fare_tracker/issues">「虎航票價通知」Issue</a>
+裡，GitHub 會把每則留言寄到你的信箱。<br>
 回到 <a href="index.html">追蹤首頁</a>。
 </footer>
 </div>
@@ -103,11 +105,11 @@ function mins(a, b){ return (new Date(b.replace(' ','T')) - new Date(a.replace('
                    ? r.notified.map(n => `<span class="tag ${NTAG[n] || ''}">${NLBL[n] || n}</span>`).join(' ')
                    : '—'}</td>`
           + `<td class="note">${r.note || ''}</td></tr>`;
-    if (gap > 95) {                                 // 排程是每小時，超過 95 分鐘就是漏了
-      const missed = Math.round(gap / 60) - 1;
+    if (gap > 125) {                                 // 排程是每小時，超過 95 分鐘就是漏了
+      const missed = Math.round(gap / 60);
       html += `<tr class="gap"><td colspan="7"><span class="tag gap">缺口</span> `
-            + `${nxt.ts} → ${r.ts} 之間約 ${missed} 次排程沒有留下紀錄`
-            + `（執行掛在很前面，或當時電腦／Chrome 沒開）</td></tr>`;
+            + `${nxt.ts} → ${r.ts} 之間約 ${missed} 小時沒有紀錄`
+            + `（workflow 沒跑或連續失敗，到 Actions 頁看 log）</td></tr>`;
     }
   });
   document.getElementById('tb').innerHTML = html
