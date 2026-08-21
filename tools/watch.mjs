@@ -33,7 +33,11 @@ const TRIP_NIGHTS = [3, 4, 5];
 const REQUIRE_WEEKEND = true;
 
 const DAILY_SUMMARY_HOUR = 8; // 台北時間 08:00 之後第一次執行時發摘要
-const CHANGE_THROTTLE_MIN = 60; // 一般變動通知的最小間隔（分鐘）。新低價不受此限。
+// 一般變動通知的最小間隔（分鐘）。0 = 不節流。
+// 這個節流原本是為了省 LINE 訊息額度而設計的；改用 GitHub Issue → email 之後沒有額度問題，
+// 而且實測 GitHub 對公開 repo 的 schedule 約每小時才真的跑一次，本身就自帶上限，
+// 所以預設關掉 —— 有變動就通知。覺得太吵再調大。
+const CHANGE_THROTTLE_MIN = 0;
 const MAX_NEWLOW = 5;
 const MAX_CHANGE = 10;
 const MAX_SUMMARY = 8;
@@ -445,7 +449,9 @@ async function ensureNotifyIssue() {
     "|---|---|---|",
     "| 新低價 | 某航線未稅來回合計跌破歷史最低 | 不節流，一定發 |",
     `| 每日摘要 | 台北時間 ${DAILY_SUMMARY_HOUR}:00 後第一次執行 | 每天一次 |`,
-    `| 一般變動 | 有變動但沒破歷史最低 | 每 ${CHANGE_THROTTLE_MIN} 分鐘最多一則 |`,
+    `| 一般變動 | 有變動但沒破歷史最低 | ${CHANGE_THROTTLE_MIN ? `每 ${CHANGE_THROTTLE_MIN} 分鐘最多一則` : "不節流，有變動就發"} |`,
+    "",
+    "一次執行最多一則留言（= 一封信），該次成立的內容會合併在同一則裡。",
     "",
     `- 結果頁：${PAGE_HOME}`,
     `- 全航線儀表板：${PAGE_ALL}`,
@@ -590,10 +596,26 @@ async function main() {
 
   /* ---- 通知 ---- */
   const stats = runStatsOf(statusData, now);
-  const planned = [];
-  if (newLows.length) planned.push(["newlow", newLowBody(newLows, now)]);
-  if (dailyDue) planned.push(["daily", summaryBody(routes, changes, newLows, now, state, stats)]);
-  if (changeDue && !newLows.length) planned.push(["change", changeBody(changes, now)]);
+  // 一次執行最多發一則留言（= 一封信），把該次成立的內容全部合併進去。
+  // 這樣不會有「被壓下來的變動永遠沒人講」的漏洞。
+  const kinds = [];
+  const parts = [];
+  if (newLows.length) {
+    kinds.push("newlow");
+    parts.push(newLowBody(newLows, now));
+  }
+  if (dailyDue) {
+    kinds.push("daily");
+    parts.push(summaryBody(routes, changes, newLows, now, state, stats));
+  }
+  // 摘要本身就有「與上次相比的變動」那一段，所以有摘要時不再重複貼一次變動表。
+  if (changeDue && !dailyDue) {
+    kinds.push("change");
+    parts.push(changeBody(changes, now));
+  } else if (changes.length && !changeDue) {
+    console.log(`變動 ${changes.length} 條因節流未通知（CHANGE_THROTTLE_MIN=${CHANGE_THROTTLE_MIN}）`);
+  }
+  const planned = parts.length ? [[kinds.join("+"), parts.join("\n\n---\n\n")]] : [];
 
   const notified = [];
   if (DRY) {
@@ -606,7 +628,7 @@ async function main() {
       const issue = await ensureNotifyIssue();
       for (const [kind, body] of planned) {
         await comment(issue, body);
-        notified.push(kind);
+        notified.push(...kinds);
         console.log(`已留言 Issue #${issue}：${kind}`);
       }
     } catch (e) {
