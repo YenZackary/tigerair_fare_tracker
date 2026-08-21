@@ -40,7 +40,16 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:16p
 header>div:first-child{flex:1 1 640px;min-width:0}
 h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
 .sub{color:var(--ink2);font-size:13px;max-width:980px}
-.note{color:var(--muted);font-size:12px;margin-top:8px}
+/* 條件與更新時間是使用者最常看的兩件事 —— 做成顯眼的資訊帶，不要當成小字說明 */
+.cond{margin-top:10px;display:inline-block;font-size:15px;font-weight:600;color:var(--ink);
+ background:var(--surface-1);border:1px solid var(--ring);border-left:4px solid var(--s1);
+ border-radius:8px;padding:9px 14px;line-height:1.5}
+.note{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;
+ font-size:13px;color:var(--ink2)}
+.note .kv{background:var(--surface-1);border:1px solid var(--ring);border-radius:999px;padding:3px 11px}
+.note .kv b{color:var(--ink);font-variant-numeric:tabular-nums}
+.note .kv.hot{border-color:var(--s1)}
+.note .kv.hot b{color:var(--s1)}
 button.tgl{background:var(--surface-1);color:var(--ink2);border:1px solid var(--ring);
   border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
 .card{background:var(--surface-1);border:1px solid var(--ring);border-radius:12px;padding:18px}
@@ -69,6 +78,14 @@ th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
 tbody tr:hover{background:color-mix(in oklab,var(--s1) 7%,transparent)}
 td.tot{font-weight:600}
 .tblbox{max-height:560px;overflow:auto;border:1px solid var(--ring);border-radius:12px;background:var(--surface-1)}
+.rcode{color:var(--muted)}
+/* 手機只看得到前 3 欄，所以第 3 欄必須是「價格（含稅）」。
+   航線欄本來 217px（中文名＋IATA 代碼）會把價格擠出畫面 —— 窄螢幕就收掉重複的代碼並縮排距。 */
+@media(max-width:700px){
+  .rcode{display:none}
+  .tblbox th,.tblbox td{padding:7px 6px}
+  .tblbox th:nth-child(2),.tblbox td:nth-child(2){font-size:12px}
+}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:2px 0 10px}
 .legend i{width:12px;height:12px;border-radius:3px;display:inline-block;vertical-align:-2px;margin-right:6px}
 .legend i.ln{width:22px;height:2px;border-radius:2px;vertical-align:middle}
@@ -112,9 +129,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--ink2)}
 <header>
   <div>
     <h1>虎航全航線追蹤 · 台灣出發 · 2027 Q1 週末小旅行</h1>
-    <div class="sub">2027 年 1–3 月 · 行程 3–5 天 · 須跨週六與週日 · 1 位成人 · 最低票價（不含行李）</div>
-    <div class="sub" style="margin-top:6px"><b>價格說明：</b>虎航官網顯示的是<b>未稅票價</b>；本頁的稅費是<b>88 個航段一段一段實測</b>官網訂票引擎購物車的
-      「稅金與其他費用」欄位得到的，<b>不使用推估值</b>，所以每一筆都是<b>實付總額</b>。<span id="taxnote"></span></div>
+    <div class="cond">2027 年 1–3 月 · 行程 3–5 天 · 須跨週六與週日 · 1 位成人 · 最低票價（不含行李）</div>
   </div>
   <button class="tgl" id="themeBtn">切換深/淺色</button>
 </header>
@@ -135,9 +150,9 @@ details summary{cursor:pointer;font-size:13px;color:var(--ink2)}
 <div class="tblbox">
 <table>
 <thead><tr>
-  <th data-s="route">航線</th><th data-s="dep">最便宜的去程 → 回程</th><th data-s="nights">天數</th>
-  <th data-s="fare">未稅合計</th><th data-s="tax">稅費</th><th data-s="pay">價格</th>
-  <th data-s="chg">vs 前次</th><th data-s="lo">追蹤最低</th>
+  <th data-s="route">航線</th><th data-s="dep">最便宜的去程 → 回程</th><th data-s="pay">價格（含稅）</th>
+  <th data-s="nights">天數</th><th data-s="fare">未稅合計</th><th data-s="tax">稅費</th>
+  <th data-s="chg">vs 前次</th>
 </tr></thead>
 <tbody id="tbRoute"></tbody>
 </table>
@@ -173,6 +188,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--ink2)}
 
 <details class="card" style="margin-top:22px">
   <summary>稅費查核進度</summary>
+  <div class="h2note" id="taxnote" style="margin-top:10px"></div>
   <div id="taxtable" style="margin-top:12px"></div>
 </details>
 
@@ -309,10 +325,12 @@ function bindTips(root){ (root||document).querySelectorAll('[data-t]').forEach(e
   el.addEventListener('mouseleave',hideTip); }); }
 
 const known=ROUTES.filter(R=>!isEst(R.key)&&!isEst(R.back)).length;
-document.getElementById('cov').textContent =
-  `最後更新 ${LATEST.ts}（台北時間） · 已累積 ${HIST.length} 次抓價 · `
-  + `${ROUTES.length} 條來回航線 / ${ALL.length.toLocaleString('en-US')} 個日期組合 · `
-  + `票價涵蓋 ${DATES[0]} – ${DATES[DATES.length-1]} · 稅費實測 ${known}/${ROUTES.length} 條航線`;
+document.getElementById('cov').innerHTML =
+    `<span class="kv hot">最後更新 <b>${LATEST.ts}</b> 台北時間</span>`
+  + `<span class="kv">已累積 <b>${HIST.length}</b> 次抓價</span>`
+  + `<span class="kv"><b>${ROUTES.length}</b> 條來回航線 / <b>${ALL.length.toLocaleString('en-US')}</b> 個日期組合</span>`
+  + `<span class="kv">票價涵蓋 <b>${DATES[0]}</b> – <b>${DATES[DATES.length-1]}</b></span>`
+  + `<span class="kv">稅費實測 <b>${known}/${ROUTES.length}</b> 條航線</span>`;
 
 /* ============ 統計卡 ============ */
 (function(){
@@ -379,15 +397,14 @@ function renderRoutes(){
     const dtxt=r.chg===0?'—':(r.chg<0?'▼':'▲')+fmt(Math.abs(r.chg));
     return `<tr>
       <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${CCOL[r.R.country]};margin-right:7px"></span>${r.R.label}
-        <span style="color:var(--muted)">${r.R.code}</span></td>
+        <span class="rcode">${r.R.code}</span></td>
       <td>${md(r.dep)}(${dow(r.dep)}) → ${md(r.ret)}(${dow(r.ret)})${r.isNewLow?' <span class="badge newlow">新低</span>':''}</td>
+      <td class="tot">${fmt(price(r))}</td>
       <td>${r.nights}</td>
       <td style="color:var(--ink2)">${fmt(r.fare)}</td>
       <td style="color:var(--muted)" ${r.taxKnown?`data-t="${r.R.org}→${r.R.dst} ${fmt(LEGTAX[r.R.key])} ＋ ${r.R.dst}→${r.R.org} ${fmt(LEGTAX[r.R.back])}"`:''}>${r.taxKnown?'+'+fmt(r.tax):'<span class="badge est">未實測</span>'}</td>
-      <td class="tot">${fmt(price(r))}</td>
-      <td class="${cls}">${dtxt}</td>
-      <td style="color:var(--ink2)">${fmt(r.lo)}</td></tr>`;
-  }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">沒有符合條件的航線</td></tr>';
+      <td class="${cls}">${dtxt}</td></tr>`;
+  }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">沒有符合條件的航線</td></tr>';
   bindTips(document.getElementById('tbRoute'));
   return rs;
 }
@@ -551,8 +568,11 @@ function renderTrend(){
     g+=`<line class="gl" x1="${M.l}" x2="${Wd-M.r}" y1="${y(v)}" y2="${y(v)}"/>
         <text class="tick" x="${M.l-8}" y="${y(v)+3}" text-anchor="end">${fmt(v)}</text>`;}
   const stepL=Math.ceil(n/10);
+  /* 每小時抓價時，同一天會有多筆，X 軸只印日期會重複 —— 日期數少就改印時間 */
+  const nDays=new Set(HIST.map(h=>h.ts.slice(0,10))).size;
+  const xlab=h=>nDays<=3?h.ts.slice(11,16):h.ts.slice(5,10);
   HIST.forEach((h,i)=>{ if(i%stepL===0||i===n-1)
-    g+=`<text class="tick" x="${x(i)}" y="${H-M.b+16}" text-anchor="middle">${h.ts.slice(5,10)}</text>`;});
+    g+=`<text class="tick" x="${x(i)}" y="${H-M.b+16}" text-anchor="middle">${xlab(h)}</text>`;});
   series.forEach(s=>{
     const col=CCOL[s.R.country]; let ds='',open=false;
     s.vals.forEach((v,i)=>{ if(v==null){open=false;return;} ds+=(open?'L':'M')+x(i)+' '+y(v)+' '; open=true;});
