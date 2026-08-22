@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-08-22 23:30",
-  "lastChangeNotifyAt": 1787412600646,
+  "lastRunAt": "2026-08-22 23:51",
+  "lastChangeNotifyAt": 1787413897704,
   "lastDailyDate": "2026-08-22",
   "best": {
     "TPE-ICN": 4098,
@@ -41,7 +41,7 @@
     "TPE-AXT": 11598,
     "TPE-FKS": 11898,
     "TPE-HKD": 10498,
-    "KHH-NGO": 11198,
+    "KHH-NGO": 10598,
     "TPE-HNA": 11398,
     "KHH-FUK": 11098,
     "TPE-SDJ": 12798,
