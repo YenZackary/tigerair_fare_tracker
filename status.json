@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "note": "這裡只記錄有意義的事件（票價變動、發出的通知）加上每小時一筆例行檢查。每一次執行的完整紀錄與 log 在 repo 的 Actions 頁。",
-  "updated": "2026-08-23 05:36",
+  "updated": "2026-08-23 05:58",
   "runs": [
     {
       "ts": "2026-08-21 09:45",
@@ -812,6 +812,16 @@
     },
     {
       "ts": "2026-08-23 05:36",
+      "by": "actions",
+      "result": "changed",
+      "changed": 0,
+      "deployed": true,
+      "tax": "逐航段實測（2026-08-20）",
+      "notified": [],
+      "note": ""
+    },
+    {
+      "ts": "2026-08-23 05:58",
       "by": "actions",
       "result": "changed",
       "changed": 0,
