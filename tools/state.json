@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-08-24 04:31",
-  "lastChangeNotifyAt": 1787517112549,
+  "lastRunAt": "2026-08-24 04:59",
+  "lastChangeNotifyAt": 1787518798013,
   "lastDailyDate": "2026-08-23",
   "best": {
     "TPE-ICN": 4098,
@@ -28,7 +28,7 @@
     "RMQ-OKA": 7798,
     "TPE-HND": 7498,
     "TNN-OKA": 8198,
-    "TPE-NRT": 7798,
+    "TPE-NRT": 7298,
     "TPE-NGO": 8598,
     "RMQ-NGO": 8598,
     "TPE-KMQ": 9098,
@@ -47,7 +47,7 @@
     "TPE-SDJ": 12098,
     "KHH-SDJ": 12098,
     "TPE-CTS": 17198,
-    "KHH-CTS": 18398
+    "KHH-CTS": 19598
   },
   "allTimeLow": {
     "TPE-ICN": 4098,
