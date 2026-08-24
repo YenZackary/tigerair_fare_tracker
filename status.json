@@ -1,18 +1,8 @@
 {
   "schema": 1,
   "note": "這裡只記錄有意義的事件（票價變動、發出的通知）加上每小時一筆例行檢查。每一次執行的完整紀錄與 log 在 repo 的 Actions 頁。",
-  "updated": "2026-08-24 14:24",
+  "updated": "2026-08-24 15:37",
   "runs": [
-    {
-      "ts": "2026-08-21 10:50",
-      "by": "manual",
-      "result": "heartbeat-installed",
-      "changed": 0,
-      "deployed": true,
-      "tax": "未做",
-      "note": "建立 status.json / status.html。此前 09:01、09:11、10:10、10:34 四次觸發沒有紀錄，因為心跳當時還不存在。",
-      "notified": []
-    },
     {
       "ts": "2026-08-21 11:25",
       "by": "manual",
@@ -1410,6 +1400,19 @@
         "change"
       ],
       "note": "高雄 ⇄ 熊本 -500、高雄 ⇄ 大阪 -400"
+    },
+    {
+      "ts": "2026-08-24 15:37",
+      "by": "actions",
+      "result": "changed",
+      "changed": 13,
+      "deployed": true,
+      "tax": "逐航段實測（2026-08-20）",
+      "notified": [
+        "newlow",
+        "change"
+      ],
+      "note": "桃園 ⇄ 函館 -600、桃園 ⇄ 仙台 +200、桃園 ⇄ 宮崎 +300；新低：桃園 ⇄ 米子"
     }
   ]
 }
