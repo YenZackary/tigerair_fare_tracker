@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-08-26 13:17",
-  "lastChangeNotifyAt": 1787721459625,
+  "lastRunAt": "2026-08-26 14:00",
+  "lastChangeNotifyAt": 1787724004491,
   "lastDailyDate": "2026-08-26",
   "best": {
     "TPE-ICN": 4098,
@@ -11,7 +11,7 @@
     "TPE-OKA": 4598,
     "TPE-CJU": 5298,
     "KHH-GMP": 4898,
-    "KHH-ISG": 5998,
+    "KHH-ISG": 5598,
     "TPE-OKJ": 6198,
     "TPE-YGJ": 5398,
     "TPE-KMI": 6298,
@@ -32,7 +32,7 @@
     "TPE-NGO": 8098,
     "RMQ-NGO": 8098,
     "TPE-KMQ": 9098,
-    "KHH-KMJ": 6698,
+    "KHH-KMJ": 6198,
     "TPE-KIJ": 8998,
     "TPE-FUK": 8598,
     "KHH-KMQ": 9598,
@@ -78,7 +78,7 @@
     "TPE-NGO": 8098,
     "RMQ-NGO": 8098,
     "TPE-KMQ": 8598,
-    "KHH-KMJ": 6598,
+    "KHH-KMJ": 6198,
     "TPE-KIJ": 8998,
     "TPE-FUK": 8598,
     "KHH-KMQ": 9598,
@@ -101,8 +101,8 @@
       "at": 1787291477380
     },
     "KHH-KMJ": {
-      "fare": 6598,
-      "at": 1787716515070
+      "fare": 6198,
+      "at": 1787724004491
     },
     "TPE-KIX": {
       "fare": 5798,
