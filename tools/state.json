@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-09-13 06:35",
+  "lastRunAt": "2026-09-13 08:24",
   "lastChangeNotifyAt": 1789245462275,
-  "lastDailyDate": "2026-09-12",
+  "lastDailyDate": "2026-09-13",
   "best": {
     "TPE-ICN": 4098,
     "TPE-PUS": 4598,
@@ -47,7 +47,7 @@
     "TPE-SDJ": 12098,
     "KHH-SDJ": 12098,
     "TPE-CTS": 17198,
-    "KHH-CTS": 18398
+    "KHH-CTS": 19598
   },
   "allTimeLow": {
     "TPE-ICN": 4098,
