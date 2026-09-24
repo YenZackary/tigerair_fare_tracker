@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-09-25 04:40",
-  "lastChangeNotifyAt": 1790282422301,
+  "lastRunAt": "2026-09-25 07:29",
+  "lastChangeNotifyAt": 1790292572686,
   "lastDailyDate": "2026-09-24",
   "best": {
     "TPE-ICN": 4398,
@@ -31,7 +31,7 @@
     "TPE-NRT": 7298,
     "TPE-NGO": 8598,
     "RMQ-NGO": 8598,
-    "TPE-KMQ": 10098,
+    "TPE-KMQ": 10198,
     "KHH-KMJ": 7598,
     "TPE-KIJ": 9498,
     "TPE-FUK": 7598,
