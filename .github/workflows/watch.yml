@@ -41,6 +41,9 @@ jobs:
         with:
           node-version: "20"
 
+      - name: 驗證票價與日期費用邏輯
+        run: node tools/pricing.test.mjs
+
       - name: 抓價、判斷、發通知、產生頁面
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

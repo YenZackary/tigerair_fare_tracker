@@ -10,7 +10,7 @@
  *
  * 追蹤條件：2027-01-01 ~ 2027-10-31 出發、行程 3–5 天（含頭尾）、且區間內同時涵蓋週六與週日、
  *           1 位成人、不含託運行李。
- * 金額一律是「實付總額」＝ 未稅票價 + 去程稅費 + 回程稅費。稅費見 tools/data.mjs（逐航段實測）。
+ * 金額一律是「實付總額」＝ 未稅票價 + 去程稅費 + 回程稅費。稅費見 tools/fees.mjs（依日期計算）。
  *
  * 用法：
  *   node tools/watch.mjs                    正常模式
@@ -22,7 +22,9 @@
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { AIRPORT_NAME, REGION, LEG_TAX, TAX_UPDATED } from "./data.mjs";
+import { AIRPORT_NAME, REGION } from "./data.mjs";
+
+import { TAX_UPDATED, PRICE_MODEL, FEE_BASE, FEE_OBSERVATIONS, legFee, browserFeeCode } from "./fees.mjs";
 
 /* ============================ 可調參數 ============================ */
 
@@ -125,6 +127,7 @@ async function fetchAllLegs() {
   const fx = argOf("fixture", null);
   const fixture = fx ? JSON.parse(readFileSync(new URL(fx, ROOT), "utf8")) : null;
   const legs = {};
+  const updated = {};
   for (const station of TW_AIRPORTS) {
     let rows;
     if (fixture) {
@@ -146,7 +149,12 @@ async function fetchAllLegs() {
       const d = r.destination;
       if (!o || !d || /XX/.test(o + d)) continue;
       if (isTW(o) === isTW(d)) continue; // 只要台灣↔國外
-      (legs[`${o}-${d}`] ??= {})[date] = Number(r.pricingAmount);
+      const key = `${o}-${d}`, amount = Number(r.pricingAmount);
+      if (!Number.isFinite(amount) || amount <= 0 || r.pricingCurrency !== 'TWD') continue;
+      const stamp = r.updatedAt ?? '';
+      if (legs[key]?.[date] != null && stamp <= (updated[key]?.[date] ?? '')) continue;
+      (updated[key] ??= {})[date] = stamp;
+      (legs[key] ??= {})[date] = amount;
     }
   }
   return legs;
@@ -228,13 +236,14 @@ function computeRoutes(legs, combos) {
       const b = legs[back][ret];
       if (a == null || b == null) continue;
       const fare = a + b;
-      if (!best || fare < best.fare) best = { fare, dep, ret, nights };
+      const t1 = legFee(key, dep), t2 = legFee(back, ret);
+      const taxKnown = t1 != null && t2 != null;
+      const tax = taxKnown ? t1 + t2 : 0;
+      const pay = fare + tax;
+      if (!best || pay < best.pay || (pay === best.pay && fare < best.fare))
+        best = { fare, dep, ret, nights, tax, taxKnown, pay };
     }
     if (!best) continue;
-    const t1 = LEG_TAX[key];
-    const t2 = LEG_TAX[back];
-    const taxKnown = t1 != null && t2 != null;
-    const tax = taxKnown ? t1 + t2 : 0;
     routes.push({
       key,
       back,
@@ -243,9 +252,6 @@ function computeRoutes(legs, combos) {
       label: `${nameOf(o)} ⇄ ${nameOf(d)}`,
       region: REGION[d] ?? "其他",
       ...best,
-      tax,
-      taxKnown,
-      pay: best.fare + tax,
     });
   }
   routes.sort((a, b) => a.pay - b.pay || a.fare - b.fare);
@@ -271,15 +277,15 @@ function detect(routes, state, now) {
     const low = state.allTimeLow[r.key];
     const prev = state.best[r.key];
     // 新低價 = 跌破「歷史最低」。第一次看到這條航線不算（沒有歷史可比）。
-    const isNewLow = low != null && r.fare < low;
+    const isNewLow = low != null && r.pay < low;
     if (isNewLow) {
       const seen = state.notifiedLow[r.key];
-      const dup = seen && seen.fare === r.fare && now.epoch - (seen.at ?? 0) < 864e5;
+      const dup = seen && seen.fare === r.pay && now.epoch - (seen.at ?? 0) < 864e5;
       if (!dup) newLows.push({ ...r, prevLow: low });
     }
     // 一般變動 = 跟「上次」比有動，但不是新低
-    if (prev != null && prev !== r.fare && !isNewLow) {
-      changes.push({ ...r, prevFare: prev, diff: r.fare - prev });
+    if (prev != null && prev !== r.pay && !isNewLow) {
+      changes.push({ ...r, prevFare: prev, diff: r.pay - prev });
     }
   }
   newLows.sort((a, b) => a.pay - b.pay);
@@ -307,7 +313,7 @@ function newLowBody(newLows, now) {
   out.push("");
   for (const r of newLows.slice(0, MAX_NEWLOW)) {
     out.push(
-      `- **${r.label}** 比前低便宜 **${fmt(r.prevLow - r.fare)}**（未稅 ${fmt(r.prevLow)} → ${fmt(r.fare)}）`,
+      `- **${r.label}** 比前低便宜 **${fmt(r.prevLow - r.pay)}**（含稅 ${fmt(r.prevLow)} → ${fmt(r.pay)}）`,
     );
   }
   if (newLows.length > MAX_NEWLOW) out.push(`- （另有 ${newLows.length - MAX_NEWLOW} 條未列出）`);
@@ -322,12 +328,12 @@ function changeBody(changes, now) {
     "",
     `${MENTION}`,
     "",
-    "| 航線 | 未稅 上次 → 這次 | 差額 | 實付總額 |",
+    "| 航線 | 含稅 上次 → 這次 | 差額 | 實付總額 |",
     "|---|---|---:|---:|",
   ];
   for (const r of changes.slice(0, MAX_CHANGE)) {
     out.push(
-      `| ${r.diff < 0 ? "▼" : "▲"} ${r.label} | ${fmt(r.prevFare)} → ${fmt(r.fare)} | ` +
+      `| ${r.diff < 0 ? "▼" : "▲"} ${r.label} | ${fmt(r.prevFare)} → ${fmt(r.pay)} | ` +
       `${r.diff > 0 ? "+" : ""}${fmt(r.diff)} | ${r.taxKnown ? fmt(r.pay) : "—"} |`,
     );
   }
@@ -372,7 +378,7 @@ function summaryBody(routes, changes, newLows, now, state, stats) {
   } else {
     for (const r of changes.slice(0, MAX_SUMMARY)) {
       out.push(
-        `- ${r.diff < 0 ? "▼" : "▲"} ${r.label} 未稅 ${fmt(r.prevFare)} → ${fmt(r.fare)}（${r.diff > 0 ? "+" : ""}${fmt(r.diff)}）`,
+        `- ${r.diff < 0 ? "▼" : "▲"} ${r.label} 含稅 ${fmt(r.prevFare)} → ${fmt(r.pay)}（${r.diff > 0 ? "+" : ""}${fmt(r.diff)}）`,
       );
     }
     if (changes.length > MAX_SUMMARY) out.push(`- （另有 ${changes.length - MAX_SUMMARY} 條）`);
@@ -381,7 +387,7 @@ function summaryBody(routes, changes, newLows, now, state, stats) {
   if (newLows.length) {
     out.push("", "### 新低價");
     for (const r of newLows.slice(0, MAX_NEWLOW)) {
-      out.push(`- ${r.label} 實付 ${fmt(r.pay)}（比前低便宜 ${fmt(r.prevLow - r.fare)}）`);
+      out.push(`- ${r.label} 實付 ${fmt(r.pay)}（比前低便宜 ${fmt(r.prevLow - r.pay)}）`);
     }
   }
 
@@ -447,7 +453,7 @@ async function ensureNotifyIssue() {
     "",
     "| 事件 | 條件 | 節流 |",
     "|---|---|---|",
-    "| 新低價 | 某航線未稅來回合計跌破歷史最低 | 不節流，一定發 |",
+    "| 新低價 | 某航線含稅來回合計跌破歷史最低 | 不節流，一定發 |",
     `| 每日摘要 | 台北時間 ${DAILY_SUMMARY_HOUR}:00 後第一次執行 | 每天一次 |`,
     `| 一般變動 | 有變動但沒破歷史最低 | ${CHANGE_THROTTLE_MIN ? `每 ${CHANGE_THROTTLE_MIN} 分鐘最多一則` : "不節流，有變動就發"} |`,
     "",
@@ -489,7 +495,7 @@ function rollHist(hist, entry, now) {
   }
   const rolled = Object.keys(byDay)
     .sort()
-    .map((d) => ({ ts: `${d} 23:59`, best: byDay[d] }));
+    .map((d) => ({ ts: `${d} 23:59`, best: byDay[d], pricingModel: entry.pricingModel }));
   return [...rolled, ...recent].slice(-HIST_KEEP);
 }
 
@@ -497,11 +503,12 @@ const j = (o) => JSON.stringify(o);
 
 function writeAllRoutes(payload, hist, now) {
   const tpl = readFileSync(P.tplAll, "utf8");
-  const tax = { updated: TAX_UPDATED, checked: {}, estimated: [], legs: LEG_TAX };
+  const tax = { updated: TAX_UPDATED, checked: Object.fromEntries(Object.entries(FEE_OBSERVATIONS.legs).map(([k,r]) => [k,r.date])), estimated: [], legs: Object.fromEntries(Object.keys(FEE_BASE).map(k=>[k,FEE_BASE[k]+350])) };
   writeFileSync(
     P.outAll,
     tpl
-      .replace("__LATEST__", j({ ts: now.stamp, pay: payload }))
+      .replace("__LATEST__", j({ ts: now.stamp, pay: payload, pricingModel: PRICE_MODEL }))
+      .replace("__FEE_HELPERS__", browserFeeCode())
       .replace("__HIST__", j(hist))
       .replace("__TAX__", j(tax)),
     "utf8",
@@ -580,12 +587,16 @@ async function main() {
   console.log(`航段 ${Object.keys(legs).length}｜航線 ${routes.length}｜日期組合 ${combos.length}`);
 
   const payload = encodeV3(legs);
-  const state = { ...EMPTY_STATE, ...(readJson(P.state, {}) ?? {}) };
+  let state = { ...EMPTY_STATE, ...(readJson(P.state, {}) ?? {}) };
+  if (state.pricingModel !== PRICE_MODEL) {
+    state = { ...state, best: {}, allTimeLow: {}, notifiedLow: {}, pricingModel: PRICE_MODEL };
+    console.log('含稅計價模型更新：建立新基準，不與舊未稅歷史混比。');
+  }
   const statusData = readJson(P.statusJson, { schema: 1, runs: [] });
   const firstRun = Object.keys(state.best).length === 0;
 
   const prevLatest = readBlock("latest");
-  const priceChanged = prevLatest?.pay !== payload;
+  const priceChanged = prevLatest?.pay !== payload || prevLatest?.pricingModel !== PRICE_MODEL;
 
   const { newLows, changes, dailyDue, changeDue } = detect(routes, state, now);
   console.log(
@@ -645,8 +656,8 @@ async function main() {
   /* ---- 頁面 ---- */
   if (priceChanged) {
     const best = {};
-    for (const r of routes) best[r.key] = r.fare;
-    const hist = rollHist(readBlock("hist") ?? [], { ts: now.stamp, best }, now);
+    for (const r of routes) best[r.key] = r.pay;
+    const hist = rollHist((readBlock("hist") ?? []).filter(h=>h.pricingModel===PRICE_MODEL), { ts: now.stamp, best, pricingModel: PRICE_MODEL }, now);
     writeAllRoutes(payload, hist, now);
     writeIndex(routes, now, hist.length);
     console.log(`已更新 all-routes.html / index.html（歷程 ${hist.length} 筆）`);
@@ -697,12 +708,12 @@ async function main() {
 
   /* ---- 狀態 ---- */
   for (const r of routes) {
-    state.best[r.key] = r.fare;
+    state.best[r.key] = r.pay;
     const low = state.allTimeLow[r.key];
-    if (low == null || r.fare < low) state.allTimeLow[r.key] = r.fare;
+    if (low == null || r.pay < low) state.allTimeLow[r.key] = r.pay;
   }
   if (notified.includes("newlow")) {
-    for (const r of newLows) state.notifiedLow[r.key] = { fare: r.fare, at: now.epoch };
+    for (const r of newLows) state.notifiedLow[r.key] = { fare: r.pay, at: now.epoch };
   }
   if (notified.includes("daily")) state.lastDailyDate = now.date;
   if (notified.includes("change")) state.lastChangeNotifyAt = now.epoch;

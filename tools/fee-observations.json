@@ -1,0 +1,535 @@
+{
+  "checked": "2026-10-02",
+  "source": "Official booking cart, one adult, tigerlight, no extras",
+  "policy": "https://www.tigerairtw.com/zh-TW/ready-to-go/ticket-related",
+  "legs": {
+    "TPE-ICN": {
+      "date": "2027-08-28",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:08:35+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-08-28&inbound=ICN-TPE&infant=0&languageCode=zh-tw&outbound=TPE-ICN&returnDate=2027-09-01&type=multiCity"
+    },
+    "ICN-TPE": {
+      "date": "2027-09-01",
+      "fee": 900,
+      "checkedAt": "2026-10-02T12:08:35+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-08-28&inbound=ICN-TPE&infant=0&languageCode=zh-tw&outbound=TPE-ICN&returnDate=2027-09-01&type=multiCity"
+    },
+    "TPE-PUS": {
+      "date": "2027-10-13",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:09:26+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-13&inbound=PUS-TPE&infant=0&languageCode=zh-tw&outbound=TPE-PUS&returnDate=2027-10-17&type=multiCity"
+    },
+    "PUS-TPE": {
+      "date": "2027-10-17",
+      "fee": 785,
+      "checkedAt": "2026-10-02T12:09:26+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-13&inbound=PUS-TPE&infant=0&languageCode=zh-tw&outbound=TPE-PUS&returnDate=2027-10-17&type=multiCity"
+    },
+    "TPE-OKA": {
+      "date": "2027-09-18",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:11:48+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-18&inbound=OKA-TPE&infant=0&languageCode=zh-tw&outbound=TPE-OKA&returnDate=2027-09-22&type=multiCity"
+    },
+    "OKA-TPE": {
+      "date": "2027-09-22",
+      "fee": 1180,
+      "checkedAt": "2026-10-02T12:11:48+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-18&inbound=OKA-TPE&infant=0&languageCode=zh-tw&outbound=TPE-OKA&returnDate=2027-09-22&type=multiCity"
+    },
+    "KHH-GMP": {
+      "date": "2027-09-02",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:12:09+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-02&inbound=GMP-KHH&infant=0&languageCode=zh-tw&outbound=KHH-GMP&returnDate=2027-09-06&type=multiCity"
+    },
+    "GMP-KHH": {
+      "date": "2027-09-06",
+      "fee": 900,
+      "checkedAt": "2026-10-02T12:12:09+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-02&inbound=GMP-KHH&infant=0&languageCode=zh-tw&outbound=KHH-GMP&returnDate=2027-09-06&type=multiCity"
+    },
+    "TPE-CJU": {
+      "date": "2027-09-29",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:11:58+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-29&inbound=CJU-TPE&infant=0&languageCode=zh-tw&outbound=TPE-CJU&returnDate=2027-10-03&type=multiCity"
+    },
+    "CJU-TPE": {
+      "date": "2027-10-03",
+      "fee": 785,
+      "checkedAt": "2026-10-02T12:11:58+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-29&inbound=CJU-TPE&infant=0&languageCode=zh-tw&outbound=TPE-CJU&returnDate=2027-10-03&type=multiCity"
+    },
+    "KHH-CJU": {
+      "date": "2027-10-15",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:12:19+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-15&inbound=CJU-KHH&infant=0&languageCode=zh-tw&outbound=KHH-CJU&returnDate=2027-10-18&type=multiCity"
+    },
+    "CJU-KHH": {
+      "date": "2027-10-18",
+      "fee": 785,
+      "checkedAt": "2026-10-02T12:12:19+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-15&inbound=CJU-KHH&infant=0&languageCode=zh-tw&outbound=KHH-CJU&returnDate=2027-10-18&type=multiCity"
+    },
+    "TPE-ISG": {
+      "date": "2027-03-27",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:12:54+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-27&inbound=ISG-TPE&infant=0&languageCode=zh-tw&outbound=TPE-ISG&returnDate=2027-03-31&type=multiCity"
+    },
+    "ISG-TPE": {
+      "date": "2027-03-31",
+      "fee": 1039,
+      "checkedAt": "2026-10-02T12:12:54+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-27&inbound=ISG-TPE&infant=0&languageCode=zh-tw&outbound=TPE-ISG&returnDate=2027-03-31&type=multiCity"
+    },
+    "TPE-KMI": {
+      "date": "2027-10-01",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:13:04+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-01&inbound=KMI-TPE&infant=0&languageCode=zh-tw&outbound=TPE-KMI&returnDate=2027-10-04&type=multiCity"
+    },
+    "KMI-TPE": {
+      "date": "2027-10-04",
+      "fee": 984,
+      "checkedAt": "2026-10-02T12:13:04+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-01&inbound=KMI-TPE&infant=0&languageCode=zh-tw&outbound=TPE-KMI&returnDate=2027-10-04&type=multiCity"
+    },
+    "TPE-NRT": {
+      "date": "2027-10-02",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:13:14+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-02&inbound=NRT-TPE&infant=0&languageCode=zh-tw&outbound=TPE-NRT&returnDate=2027-10-06&type=multiCity"
+    },
+    "NRT-TPE": {
+      "date": "2027-10-06",
+      "fee": 1559,
+      "checkedAt": "2026-10-02T12:13:14+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-02&inbound=NRT-TPE&infant=0&languageCode=zh-tw&outbound=TPE-NRT&returnDate=2027-10-06&type=multiCity"
+    },
+    "TPE-KIX": {
+      "date": "2027-10-15",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:13:46+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-15&inbound=KIX-TPE&infant=0&languageCode=zh-tw&outbound=TPE-KIX&returnDate=2027-10-18&type=multiCity"
+    },
+    "KIX-TPE": {
+      "date": "2027-10-18",
+      "fee": 1652,
+      "checkedAt": "2026-10-02T12:13:46+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-15&inbound=KIX-TPE&infant=0&languageCode=zh-tw&outbound=TPE-KIX&returnDate=2027-10-18&type=multiCity"
+    },
+    "TPE-NGO": {
+      "date": "2027-09-09",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:14:08+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-09&inbound=NGO-TPE&infant=0&languageCode=zh-tw&outbound=TPE-NGO&returnDate=2027-09-13&type=multiCity"
+    },
+    "NGO-TPE": {
+      "date": "2027-09-13",
+      "fee": 1467,
+      "checkedAt": "2026-10-02T12:14:08+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-09&inbound=NGO-TPE&infant=0&languageCode=zh-tw&outbound=TPE-NGO&returnDate=2027-09-13&type=multiCity"
+    },
+    "KHH-OKA": {
+      "date": "2027-09-16",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:12:45+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-16&inbound=OKA-KHH&infant=0&languageCode=zh-tw&outbound=KHH-OKA&returnDate=2027-09-20&type=multiCity"
+    },
+    "OKA-KHH": {
+      "date": "2027-09-20",
+      "fee": 1180,
+      "checkedAt": "2026-10-02T12:12:45+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-16&inbound=OKA-KHH&infant=0&languageCode=zh-tw&outbound=KHH-OKA&returnDate=2027-09-20&type=multiCity"
+    },
+    "TPE-HND": {
+      "date": "2027-05-12",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:15:12+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-05-12&inbound=HND-TPE&infant=0&languageCode=zh-tw&outbound=TPE-HND&returnDate=2027-05-16&type=multiCity"
+    },
+    "HND-TPE": {
+      "date": "2027-05-16",
+      "fee": 1563,
+      "checkedAt": "2026-10-02T12:15:12+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-05-12&inbound=HND-TPE&infant=0&languageCode=zh-tw&outbound=TPE-HND&returnDate=2027-05-16&type=multiCity"
+    },
+    "TPE-OKJ": {
+      "date": "2027-05-06",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:13:57+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-05-06&inbound=OKJ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-OKJ&returnDate=2027-05-09&type=multiCity"
+    },
+    "OKJ-TPE": {
+      "date": "2027-05-09",
+      "fee": 1039,
+      "checkedAt": "2026-10-02T12:13:57+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-05-06&inbound=OKJ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-OKJ&returnDate=2027-05-09&type=multiCity"
+    },
+    "TPE-HSG": {
+      "date": "2027-03-25",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:14:18+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-25&inbound=HSG-TPE&infant=0&languageCode=zh-tw&outbound=TPE-HSG&returnDate=2027-03-28&type=multiCity"
+    },
+    "HSG-TPE": {
+      "date": "2027-03-28",
+      "fee": 1039,
+      "checkedAt": "2026-10-02T12:14:18+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-25&inbound=HSG-TPE&infant=0&languageCode=zh-tw&outbound=TPE-HSG&returnDate=2027-03-28&type=multiCity"
+    },
+    "KHH-KMJ": {
+      "date": "2027-10-01",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:16:39+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-01&inbound=KMJ-KHH&infant=0&languageCode=zh-tw&outbound=KHH-KMJ&returnDate=2027-10-05&type=multiCity"
+    },
+    "KMJ-KHH": {
+      "date": "2027-10-05",
+      "fee": 1312,
+      "checkedAt": "2026-10-02T12:16:39+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-01&inbound=KMJ-KHH&infant=0&languageCode=zh-tw&outbound=KHH-KMJ&returnDate=2027-10-05&type=multiCity"
+    },
+    "KHH-KIX": {
+      "date": "2027-10-16",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:15:46+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-16&inbound=KIX-KHH&infant=0&languageCode=zh-tw&outbound=KHH-KIX&returnDate=2027-10-19&type=multiCity"
+    },
+    "KIX-KHH": {
+      "date": "2027-10-19",
+      "fee": 1652,
+      "checkedAt": "2026-10-02T12:15:46+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-16&inbound=KIX-KHH&infant=0&languageCode=zh-tw&outbound=KHH-KIX&returnDate=2027-10-19&type=multiCity"
+    },
+    "TPE-KMQ": {
+      "date": "2027-09-02",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:16:07+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-02&inbound=KMQ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-KMQ&returnDate=2027-09-05&type=multiCity"
+    },
+    "KMQ-TPE": {
+      "date": "2027-09-05",
+      "fee": 984,
+      "checkedAt": "2026-10-02T12:16:07+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-02&inbound=KMQ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-KMQ&returnDate=2027-09-05&type=multiCity"
+    },
+    "TPE-KCZ": {
+      "date": "2027-04-24",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:15:35+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-04-24&inbound=KCZ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-KCZ&returnDate=2027-04-28&type=multiCity"
+    },
+    "KCZ-TPE": {
+      "date": "2027-04-28",
+      "fee": 1039,
+      "checkedAt": "2026-10-02T12:15:35+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-04-24&inbound=KCZ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-KCZ&returnDate=2027-04-28&type=multiCity"
+    },
+    "KHH-NRT": {
+      "date": "2027-10-06",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:16:17+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-06&inbound=NRT-KHH&infant=0&languageCode=zh-tw&outbound=KHH-NRT&returnDate=2027-10-10&type=multiCity"
+    },
+    "NRT-KHH": {
+      "date": "2027-10-10",
+      "fee": 1659,
+      "checkedAt": "2026-10-02T12:16:17+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-06&inbound=NRT-KHH&infant=0&languageCode=zh-tw&outbound=KHH-NRT&returnDate=2027-10-10&type=multiCity"
+    },
+    "KHH-SDJ": {
+      "date": "2027-10-02",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:16:28+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-02&inbound=SDJ-KHH&infant=0&languageCode=zh-tw&outbound=KHH-SDJ&returnDate=2027-10-06&type=multiCity"
+    },
+    "SDJ-KHH": {
+      "date": "2027-10-06",
+      "fee": 1123,
+      "checkedAt": "2026-10-02T12:16:28+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-02&inbound=SDJ-KHH&infant=0&languageCode=zh-tw&outbound=KHH-SDJ&returnDate=2027-10-06&type=multiCity"
+    },
+    "TPE-KIJ": {
+      "date": "2027-05-07",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:15:25+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-05-07&inbound=KIJ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-KIJ&returnDate=2027-05-10&type=multiCity"
+    },
+    "KIJ-TPE": {
+      "date": "2027-05-10",
+      "fee": 1084,
+      "checkedAt": "2026-10-02T12:15:25+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-05-07&inbound=KIJ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-KIJ&returnDate=2027-05-10&type=multiCity"
+    },
+    "RMQ-NGO": {
+      "date": "2027-06-11",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:17:13+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-06-11&inbound=NGO-RMQ&infant=0&languageCode=zh-tw&outbound=RMQ-NGO&returnDate=2027-06-14&type=multiCity"
+    },
+    "NGO-RMQ": {
+      "date": "2027-06-14",
+      "fee": 1367,
+      "checkedAt": "2026-10-02T12:17:13+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-06-11&inbound=NGO-RMQ&infant=0&languageCode=zh-tw&outbound=RMQ-NGO&returnDate=2027-06-14&type=multiCity"
+    },
+    "RMQ-CJU": {
+      "date": "2027-09-29",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:17:24+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-29&inbound=CJU-RMQ&infant=0&languageCode=zh-tw&outbound=RMQ-CJU&returnDate=2027-10-03&type=multiCity"
+    },
+    "CJU-RMQ": {
+      "date": "2027-10-03",
+      "fee": 785,
+      "checkedAt": "2026-10-02T12:17:24+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-09-29&inbound=CJU-RMQ&infant=0&languageCode=zh-tw&outbound=RMQ-CJU&returnDate=2027-10-03&type=multiCity"
+    },
+    "TPE-SDJ": {
+      "date": "2027-06-17",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:17:38+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-06-17&inbound=SDJ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-SDJ&returnDate=2027-06-20&type=multiCity"
+    },
+    "SDJ-TPE": {
+      "date": "2027-06-20",
+      "fee": 1123,
+      "checkedAt": "2026-10-02T12:17:38+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-06-17&inbound=SDJ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-SDJ&returnDate=2027-06-20&type=multiCity"
+    },
+    "TPE-YGJ": {
+      "date": "2027-01-08",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:17:49+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-01-08&inbound=YGJ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-YGJ&returnDate=2027-01-11&type=multiCity"
+    },
+    "YGJ-TPE": {
+      "date": "2027-01-11",
+      "fee": 939,
+      "checkedAt": "2026-10-02T12:17:49+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-01-08&inbound=YGJ-TPE&infant=0&languageCode=zh-tw&outbound=TPE-YGJ&returnDate=2027-01-11&type=multiCity"
+    },
+    "TPE-CTS": {
+      "date": "2027-06-02",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:18:34+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-06-02&inbound=CTS-TPE&infant=0&languageCode=zh-tw&outbound=TPE-CTS&returnDate=2027-06-06&type=multiCity"
+    },
+    "CTS-TPE": {
+      "date": "2027-06-06",
+      "fee": 1756,
+      "checkedAt": "2026-10-02T12:18:34+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-06-02&inbound=CTS-TPE&infant=0&languageCode=zh-tw&outbound=TPE-CTS&returnDate=2027-06-06&type=multiCity"
+    },
+    "TNN-KMJ": {
+      "date": "2027-03-05",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:18:44+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-05&inbound=KMJ-TNN&infant=0&languageCode=zh-tw&outbound=TNN-KMJ&returnDate=2027-03-09&type=multiCity"
+    },
+    "KMJ-TNN": {
+      "date": "2027-03-09",
+      "fee": 1312,
+      "checkedAt": "2026-10-02T12:18:44+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-05&inbound=KMJ-TNN&infant=0&languageCode=zh-tw&outbound=TNN-KMJ&returnDate=2027-03-09&type=multiCity"
+    },
+    "RMQ-OKA": {
+      "date": "2027-03-26",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:18:24+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-26&inbound=OKA-RMQ&infant=0&languageCode=zh-tw&outbound=RMQ-OKA&returnDate=2027-03-30&type=multiCity"
+    },
+    "OKA-RMQ": {
+      "date": "2027-03-30",
+      "fee": 1280,
+      "checkedAt": "2026-10-02T12:18:24+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-26&inbound=OKA-RMQ&infant=0&languageCode=zh-tw&outbound=RMQ-OKA&returnDate=2027-03-30&type=multiCity"
+    },
+    "KHH-FUK": {
+      "date": "2027-10-15",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:18:55+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-15&inbound=FUK-KHH&infant=0&languageCode=zh-tw&outbound=KHH-FUK&returnDate=2027-10-17&type=multiCity"
+    },
+    "FUK-KHH": {
+      "date": "2027-10-17",
+      "fee": 1436,
+      "checkedAt": "2026-10-02T12:18:55+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-10-15&inbound=FUK-KHH&infant=0&languageCode=zh-tw&outbound=KHH-FUK&returnDate=2027-10-17&type=multiCity"
+    },
+    "TPE-FUK": {
+      "date": "2027-04-08",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:19:36+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-04-08&inbound=FUK-TPE&infant=0&languageCode=zh-tw&outbound=TPE-FUK&returnDate=2027-04-12&type=multiCity"
+    },
+    "FUK-TPE": {
+      "date": "2027-04-12",
+      "fee": 1436,
+      "checkedAt": "2026-10-02T12:19:36+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-04-08&inbound=FUK-TPE&infant=0&languageCode=zh-tw&outbound=TPE-FUK&returnDate=2027-04-12&type=multiCity"
+    },
+    "TNN-OKA": {
+      "date": "2027-01-07",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:19:48+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-01-07&inbound=OKA-TNN&infant=0&languageCode=zh-tw&outbound=TNN-OKA&returnDate=2027-01-10&type=multiCity"
+    },
+    "OKA-TNN": {
+      "date": "2027-01-10",
+      "fee": 1180,
+      "checkedAt": "2026-10-02T12:19:48+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-01-07&inbound=OKA-TNN&infant=0&languageCode=zh-tw&outbound=TNN-OKA&returnDate=2027-01-10&type=multiCity"
+    },
+    "KHH-ISG": {
+      "date": "2027-01-06",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:19:58+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-01-06&inbound=ISG-KHH&infant=0&languageCode=zh-tw&outbound=KHH-ISG&returnDate=2027-01-10&type=multiCity"
+    },
+    "ISG-KHH": {
+      "date": "2027-01-10",
+      "fee": 939,
+      "checkedAt": "2026-10-02T12:19:58+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-01-06&inbound=ISG-KHH&infant=0&languageCode=zh-tw&outbound=KHH-ISG&returnDate=2027-01-10&type=multiCity"
+    },
+    "TPE-DAD": {
+      "date": "2027-03-13",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:20:08+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-13&inbound=DAD-TPE&infant=0&languageCode=zh-tw&outbound=TPE-DAD&returnDate=2027-03-16&type=multiCity"
+    },
+    "DAD-TPE": {
+      "date": "2027-03-16",
+      "fee": 1040,
+      "checkedAt": "2026-10-02T12:20:08+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-13&inbound=DAD-TPE&infant=0&languageCode=zh-tw&outbound=TPE-DAD&returnDate=2027-03-16&type=multiCity"
+    },
+    "TPE-OIT": {
+      "date": "2027-03-13",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:20:26+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-13&inbound=OIT-TPE&infant=0&languageCode=zh-tw&outbound=TPE-OIT&returnDate=2027-03-17&type=multiCity"
+    },
+    "OIT-TPE": {
+      "date": "2027-03-17",
+      "fee": 939,
+      "checkedAt": "2026-10-02T12:20:26+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-13&inbound=OIT-TPE&infant=0&languageCode=zh-tw&outbound=TPE-OIT&returnDate=2027-03-17&type=multiCity"
+    },
+    "KHH-DAD": {
+      "date": "2027-03-17",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:20:57+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-17&inbound=DAD-KHH&infant=0&languageCode=zh-tw&outbound=KHH-DAD&returnDate=2027-03-21&type=multiCity"
+    },
+    "DAD-KHH": {
+      "date": "2027-03-21",
+      "fee": 1040,
+      "checkedAt": "2026-10-02T12:20:57+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-17&inbound=DAD-KHH&infant=0&languageCode=zh-tw&outbound=KHH-DAD&returnDate=2027-03-21&type=multiCity"
+    },
+    "TPE-HKD": {
+      "date": "2027-04-15",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:20:47+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-04-15&inbound=HKD-TPE&infant=0&languageCode=zh-tw&outbound=TPE-HKD&returnDate=2027-04-19&type=multiCity"
+    },
+    "HKD-TPE": {
+      "date": "2027-04-19",
+      "fee": 1175,
+      "checkedAt": "2026-10-02T12:20:47+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-04-15&inbound=HKD-TPE&infant=0&languageCode=zh-tw&outbound=TPE-HKD&returnDate=2027-04-19&type=multiCity"
+    },
+    "KHH-NGO": {
+      "date": "2027-06-12",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:20:36+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-06-12&inbound=NGO-KHH&infant=0&languageCode=zh-tw&outbound=KHH-NGO&returnDate=2027-06-14&type=multiCity"
+    },
+    "NGO-KHH": {
+      "date": "2027-06-14",
+      "fee": 1367,
+      "checkedAt": "2026-10-02T12:20:36+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-06-12&inbound=NGO-KHH&infant=0&languageCode=zh-tw&outbound=KHH-NGO&returnDate=2027-06-14&type=multiCity"
+    },
+    "KHH-OKJ": {
+      "date": "2027-01-08",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:21:16+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-01-08&inbound=OKJ-KHH&infant=0&languageCode=zh-tw&outbound=KHH-OKJ&returnDate=2027-01-11&type=multiCity"
+    },
+    "OKJ-KHH": {
+      "date": "2027-01-11",
+      "fee": 939,
+      "checkedAt": "2026-10-02T12:21:16+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-01-08&inbound=OKJ-KHH&infant=0&languageCode=zh-tw&outbound=KHH-OKJ&returnDate=2027-01-11&type=multiCity"
+    },
+    "KHH-KMQ": {
+      "date": "2027-02-18",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:21:26+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-02-18&inbound=KMQ-KHH&infant=0&languageCode=zh-tw&outbound=KHH-KMQ&returnDate=2027-02-21&type=multiCity"
+    },
+    "KMQ-KHH": {
+      "date": "2027-02-21",
+      "fee": 984,
+      "checkedAt": "2026-10-02T12:21:26+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-02-18&inbound=KMQ-KHH&infant=0&languageCode=zh-tw&outbound=KHH-KMQ&returnDate=2027-02-21&type=multiCity"
+    },
+    "KHH-CTS": {
+      "date": "2027-05-15",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:21:36+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-05-15&inbound=CTS-KHH&infant=0&languageCode=zh-tw&outbound=KHH-CTS&returnDate=2027-05-18&type=multiCity"
+    },
+    "CTS-KHH": {
+      "date": "2027-05-18",
+      "fee": 1656,
+      "checkedAt": "2026-10-02T12:21:36+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-05-15&inbound=CTS-KHH&infant=0&languageCode=zh-tw&outbound=KHH-CTS&returnDate=2027-05-18&type=multiCity"
+    },
+    "TPE-AXT": {
+      "date": "2027-03-18",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:21:46+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-18&inbound=AXT-TPE&infant=0&languageCode=zh-tw&outbound=TPE-AXT&returnDate=2027-03-21&type=multiCity"
+    },
+    "AXT-TPE": {
+      "date": "2027-03-21",
+      "fee": 1039,
+      "checkedAt": "2026-10-02T12:21:46+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-18&inbound=AXT-TPE&infant=0&languageCode=zh-tw&outbound=TPE-AXT&returnDate=2027-03-21&type=multiCity"
+    },
+    "TPE-FKS": {
+      "date": "2027-03-12",
+      "fee": 1100,
+      "checkedAt": "2026-10-02T12:22:25+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-12&inbound=FKS-TPE&infant=0&languageCode=zh-tw&outbound=TPE-FKS&returnDate=2027-03-16&type=multiCity"
+    },
+    "FKS-TPE": {
+      "date": "2027-03-16",
+      "fee": 939,
+      "checkedAt": "2026-10-02T12:22:25+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-12&inbound=FKS-TPE&infant=0&languageCode=zh-tw&outbound=TPE-FKS&returnDate=2027-03-16&type=multiCity"
+    },
+    "TPE-HNA": {
+      "date": "2027-03-20",
+      "fee": 1200,
+      "checkedAt": "2026-10-02T12:22:35+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-20&inbound=HNA-TPE&infant=0&languageCode=zh-tw&outbound=TPE-HNA&returnDate=2027-03-24&type=multiCity"
+    },
+    "HNA-TPE": {
+      "date": "2027-03-24",
+      "fee": 1039,
+      "checkedAt": "2026-10-02T12:22:35+08:00",
+      "bookingUrl": "https://booking.tigerairtw.com/?adult=1&children=0&currencyCode=TWD&departureDate=2027-03-20&inbound=HNA-TPE&infant=0&languageCode=zh-tw&outbound=TPE-HNA&returnDate=2027-03-24&type=multiCity"
+    }
+  }
+}
