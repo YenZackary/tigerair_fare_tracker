@@ -1,260 +1,100 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-10-02 11:55",
+  "lastRunAt": "2026-10-02 13:19",
   "lastChangeNotifyAt": 1790913316469,
   "lastDailyDate": "2026-10-02",
   "best": {
-    "TPE-ICN": 2798,
-    "TPE-PUS": 3398,
-    "TPE-ISG": 4798,
-    "KHH-CJU": 4598,
-    "TPE-OKA": 3198,
-    "TPE-CJU": 4098,
-    "KHH-GMP": 3998,
-    "KHH-ISG": 7698,
-    "TPE-OKJ": 4998,
-    "TPE-YGJ": 6698,
-    "TPE-KMI": 4698,
-    "TPE-HSG": 5398,
-    "TPE-OIT": 7598,
-    "TPE-DAD": 7598,
-    "RMQ-CJU": 6398,
-    "KHH-DAD": 9198,
-    "TPE-KIX": 4298,
-    "KHH-OKA": 3998,
-    "TPE-KCZ": 5798,
-    "TNN-KMJ": 6598,
-    "KHH-KIX": 5098,
-    "RMQ-OKA": 6998,
-    "TPE-HND": 4798,
-    "TNN-OKA": 7398,
-    "TPE-NRT": 4198,
-    "TPE-NGO": 4698,
-    "RMQ-NGO": 4798,
-    "TPE-KMQ": 5798,
-    "KHH-KMJ": 5798,
-    "TPE-KIJ": 5398,
-    "TPE-FUK": 5598,
-    "KHH-KMQ": 9698,
-    "KHH-OKJ": 9598,
-    "KHH-NRT": 5198,
-    "TPE-AXT": 11598,
-    "TPE-FKS": 12498,
-    "TPE-HKD": 8598,
-    "KHH-NGO": 7798,
-    "TPE-HNA": 13698,
-    "KHH-FUK": 5598,
-    "TPE-SDJ": 6698,
-    "KHH-SDJ": 5398,
-    "TPE-CTS": 6098,
-    "KHH-CTS": 10498
+    "TPE-ICN": 4798,
+    "TPE-PUS": 5483,
+    "TPE-OKA": 5578,
+    "KHH-GMP": 5998,
+    "TPE-CJU": 6083,
+    "KHH-CJU": 6483,
+    "TPE-ISG": 6637,
+    "TPE-KMI": 6782,
+    "TPE-NRT": 6857,
+    "TPE-OKJ": 7037,
+    "KHH-OKA": 7078,
+    "TPE-NGO": 7165,
+    "TPE-KIX": 7450,
+    "TPE-HND": 7461,
+    "KHH-SDJ": 7621,
+    "RMQ-NGO": 7665,
+    "KHH-KMJ": 7810,
+    "TPE-HSG": 7837,
+    "TPE-KCZ": 7837,
+    "KHH-KIX": 7850,
+    "KHH-NRT": 7857,
+    "TPE-KIJ": 7882,
+    "TPE-KMQ": 7882,
+    "RMQ-CJU": 8383,
+    "TPE-SDJ": 8421,
+    "TPE-YGJ": 8737,
+    "TPE-CTS": 8954,
+    "RMQ-OKA": 9078,
+    "TPE-FUK": 9134,
+    "KHH-FUK": 9134,
+    "TNN-KMJ": 9510,
+    "TPE-OIT": 9637,
+    "TNN-OKA": 9678,
+    "KHH-ISG": 9737,
+    "TPE-DAD": 9738,
+    "KHH-DAD": 10138,
+    "KHH-NGO": 10865,
+    "TPE-HKD": 10873,
+    "KHH-OKJ": 11637,
+    "KHH-KMQ": 11782,
+    "KHH-CTS": 12754,
+    "TPE-AXT": 13837,
+    "TPE-FKS": 14537,
+    "TPE-HNA": 15937
   },
   "allTimeLow": {
-    "TPE-ICN": 2798,
-    "TPE-PUS": 3398,
-    "TPE-ISG": 3911,
-    "KHH-CJU": 4598,
-    "TPE-OKA": 2811,
-    "TPE-CJU": 4011,
-    "KHH-GMP": 3998,
-    "KHH-ISG": 5211,
-    "TPE-OKJ": 4998,
-    "TPE-YGJ": 4998,
-    "TPE-KMI": 4698,
-    "TPE-HSG": 5398,
-    "TPE-OIT": 6598,
-    "TPE-DAD": 5111,
-    "RMQ-CJU": 6398,
-    "KHH-DAD": 5111,
-    "TPE-KIX": 4298,
-    "KHH-OKA": 3998,
-    "TPE-KCZ": 5798,
-    "TNN-KMJ": 6198,
-    "KHH-KIX": 5098,
-    "RMQ-OKA": 4411,
-    "TPE-HND": 4798,
-    "TNN-OKA": 4811,
-    "TPE-NRT": 4198,
-    "TPE-NGO": 3798,
-    "RMQ-NGO": 4798,
-    "TPE-KMQ": 5798,
-    "KHH-KMJ": 5798,
-    "TPE-KIJ": 5398,
-    "TPE-FUK": 5598,
-    "KHH-KMQ": 9098,
-    "KHH-OKJ": 9598,
-    "KHH-NRT": 5198,
-    "TPE-AXT": 10398,
-    "TPE-FKS": 9798,
-    "TPE-HKD": 8598,
-    "KHH-NGO": 7798,
-    "TPE-HNA": 11398,
-    "KHH-FUK": 5598,
-    "TPE-SDJ": 6698,
-    "KHH-SDJ": 5398,
-    "TPE-CTS": 6098,
-    "KHH-CTS": 10498
+    "TPE-ICN": 4798,
+    "TPE-PUS": 5483,
+    "TPE-OKA": 5578,
+    "KHH-GMP": 5998,
+    "TPE-CJU": 6083,
+    "KHH-CJU": 6483,
+    "TPE-ISG": 6637,
+    "TPE-KMI": 6782,
+    "TPE-NRT": 6857,
+    "TPE-OKJ": 7037,
+    "KHH-OKA": 7078,
+    "TPE-NGO": 7165,
+    "TPE-KIX": 7450,
+    "TPE-HND": 7461,
+    "KHH-SDJ": 7621,
+    "RMQ-NGO": 7665,
+    "KHH-KMJ": 7810,
+    "TPE-HSG": 7837,
+    "TPE-KCZ": 7837,
+    "KHH-KIX": 7850,
+    "KHH-NRT": 7857,
+    "TPE-KIJ": 7882,
+    "TPE-KMQ": 7882,
+    "RMQ-CJU": 8383,
+    "TPE-SDJ": 8421,
+    "TPE-YGJ": 8737,
+    "TPE-CTS": 8954,
+    "RMQ-OKA": 9078,
+    "TPE-FUK": 9134,
+    "KHH-FUK": 9134,
+    "TNN-KMJ": 9510,
+    "TPE-OIT": 9637,
+    "TNN-OKA": 9678,
+    "KHH-ISG": 9737,
+    "TPE-DAD": 9738,
+    "KHH-DAD": 10138,
+    "KHH-NGO": 10865,
+    "TPE-HKD": 10873,
+    "KHH-OKJ": 11637,
+    "KHH-KMQ": 11782,
+    "KHH-CTS": 12754,
+    "TPE-AXT": 13837,
+    "TPE-FKS": 14537,
+    "TPE-HNA": 15937
   },
-  "notifiedLow": {
-    "TPE-NRT": {
-      "fare": 4198,
-      "at": 1790913316469
-    },
-    "KHH-KMJ": {
-      "fare": 5798,
-      "at": 1790913316469
-    },
-    "TPE-KIX": {
-      "fare": 4298,
-      "at": 1790913316469
-    },
-    "TPE-YGJ": {
-      "fare": 4998,
-      "at": 1789116962294
-    },
-    "TPE-FKS": {
-      "fare": 9798,
-      "at": 1787563572065
-    },
-    "KHH-KIX": {
-      "fare": 5098,
-      "at": 1790913316469
-    },
-    "TNN-KMJ": {
-      "fare": 6198,
-      "at": 1788867449223
-    },
-    "TPE-OKJ": {
-      "fare": 4998,
-      "at": 1790913316469
-    },
-    "KHH-OKA": {
-      "fare": 3998,
-      "at": 1790913316469
-    },
-    "RMQ-OKA": {
-      "fare": 4411,
-      "at": 1789645465786
-    },
-    "TNN-OKA": {
-      "fare": 4811,
-      "at": 1789659665255
-    },
-    "TPE-FUK": {
-      "fare": 5598,
-      "at": 1790913316469
-    },
-    "TPE-OKA": {
-      "fare": 2811,
-      "at": 1789625374297
-    },
-    "TPE-ISG": {
-      "fare": 3911,
-      "at": 1789645465786
-    },
-    "TPE-NGO": {
-      "fare": 3798,
-      "at": 1789476665982
-    },
-    "KHH-GMP": {
-      "fare": 3998,
-      "at": 1790913316469
-    },
-    "TPE-HND": {
-      "fare": 4798,
-      "at": 1790913316469
-    },
-    "KHH-NRT": {
-      "fare": 5198,
-      "at": 1790913316469
-    },
-    "KHH-KMQ": {
-      "fare": 9098,
-      "at": 1789476665982
-    },
-    "KHH-SDJ": {
-      "fare": 5398,
-      "at": 1790913316469
-    },
-    "TPE-SDJ": {
-      "fare": 6698,
-      "at": 1790913316469
-    },
-    "KHH-CTS": {
-      "fare": 10498,
-      "at": 1790913316469
-    },
-    "TPE-ICN": {
-      "fare": 2798,
-      "at": 1790913316469
-    },
-    "TPE-PUS": {
-      "fare": 3398,
-      "at": 1790913316469
-    },
-    "TPE-CJU": {
-      "fare": 4011,
-      "at": 1789708514819
-    },
-    "KHH-ISG": {
-      "fare": 5211,
-      "at": 1789625374297
-    },
-    "TPE-KIJ": {
-      "fare": 5398,
-      "at": 1790913316469
-    },
-    "TPE-CTS": {
-      "fare": 6098,
-      "at": 1790913316469
-    },
-    "TPE-DAD": {
-      "fare": 5111,
-      "at": 1789672712802
-    },
-    "KHH-DAD": {
-      "fare": 5111,
-      "at": 1789692004305
-    },
-    "TPE-KMI": {
-      "fare": 4698,
-      "at": 1790913316469
-    },
-    "RMQ-CJU": {
-      "fare": 6398,
-      "at": 1790913316469
-    },
-    "RMQ-NGO": {
-      "fare": 4798,
-      "at": 1790913316469
-    },
-    "TPE-KMQ": {
-      "fare": 5798,
-      "at": 1790913316469
-    },
-    "KHH-FUK": {
-      "fare": 5598,
-      "at": 1790913316469
-    },
-    "KHH-CJU": {
-      "fare": 4598,
-      "at": 1790913316469
-    },
-    "TPE-HSG": {
-      "fare": 5398,
-      "at": 1790913316469
-    },
-    "TPE-KCZ": {
-      "fare": 5798,
-      "at": 1790913316469
-    },
-    "KHH-NGO": {
-      "fare": 7798,
-      "at": 1790913316469
-    },
-    "TPE-HKD": {
-      "fare": 8598,
-      "at": 1790913316469
-    }
-  }
+  "notifiedLow": {},
+  "pricingModel": "date-fees-2026-10-02-v1"
 }
