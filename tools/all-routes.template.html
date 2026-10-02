@@ -138,11 +138,12 @@ details summary{cursor:pointer;font-size:13px;color:var(--ink2)}
 <div class="tiles" id="tiles"></div>
 
 <h2>航線排行</h2>
-<p class="h2note">每條航線在條件內最便宜的來回組合。點欄位標題可換排序方式。</p>
+<p class="h2note">每種行程在條件內最便宜的兩段機票組合。韓國 A 進 B 出限仁川、金浦、釜山共 6 種配對，不含境內交通費。點欄位標題可換排序方式。</p>
 <div class="filters">
   <div class="fg">出發機場 <select id="fOrg"></select></div>
   <div class="fg">地區 <select id="fCountry"></select></div>
   <div class="fg">天數 <select id="fN"><option value="">全部</option><option value="3">3 天</option><option value="4">4 天</option><option value="5">5 天</option></select></div>
+  <div class="fg">行程類型 <select id="fType"><option value="">全部</option><option value="roundtrip">同點進出</option><option value="openjaw">韓國 A 進 B 出</option></select></div>
   <div class="fg">月份 <select id="fM"><option value="">全部</option><option value="01">1 月</option><option value="02">2 月</option><option value="03">3 月</option><option value="04">4 月</option><option value="05">5 月</option><option value="06">6 月</option><option value="07">7 月</option><option value="08">8 月</option><option value="09">9 月</option><option value="10">10 月</option></select></div>
   <div class="fg">價格顯示 <select id="fMode"><option value="pay">實付總額（含稅）</option><option value="fare">未稅票價</option></select></div>
   <div class="fg" style="margin-left:auto" id="cnt"></div>
@@ -250,14 +251,9 @@ const {dates:DATES, legs:LEGS} = decodeV3(LATEST.pay);
 
 /* 來回航線 = 兩個方向都有資料，且出發地是台灣機場 */
 const TW=['TPE','RMQ','KHH','TNN'];
-const ROUTES=[];
-for(const k of Object.keys(LEGS)){
-  const [o,d]=k.split('-');
-  if(!TW.includes(o)) continue;
-  if(!LEGS[d+'-'+o]) continue;
-  ROUTES.push({key:k, back:d+'-'+o, org:o, dst:d, country:cty(d),
-    label:`${NAME[o]||o} ⇄ ${NAME[d]||d}`, code:`${o}⇄${d}`});
-}
+__ROUTE_HELPERS__
+const ROUTES=routeDefinitions(LEGS,NAME,Object.fromEntries(Object.keys(NAME).map(c=>[c,cty(c)])))
+  .map(r=>({...r,country:r.region}));
 ROUTES.sort((a,b)=>a.org.localeCompare(b.org)||a.dst.localeCompare(b.dst));
 
 const W=['一','二','三','四','五','六','日'];
@@ -287,9 +283,9 @@ const ALL=[];
 for(const R of ROUTES){
   /* 只有兩端都「實測」到稅費才顯示實付總額；沒量到的就誠實顯示未稅，不用推估值填。 */
   for(const [dep,ret,n] of COMBOS){
-    const a=LEGS[R.key][dep], b=LEGS[R.back][ret];
+    const a=LEGS[R.outKey][dep], b=LEGS[R.back][ret];
     if(a==null||b==null) continue;
-    const to=legFee(R.key,dep), tb=legFee(R.back,ret);
+    const to=legFee(R.outKey,dep), tb=legFee(R.back,ret);
     const measured=to!=null&&tb!=null;
     const tax=measured?to+tb:0;
     ALL.push({R, dep, ret, nights:n, out:a, back:b, fare:a+b, tax, taxOut:to, taxBack:tb,
@@ -325,11 +321,11 @@ function bindTips(root){ (root||document).querySelectorAll('[data-t]').forEach(e
   el.addEventListener('mousemove',e=>showTip(e,el.dataset.t));
   el.addEventListener('mouseleave',hideTip); }); }
 
-const known=ROUTES.filter(R=>!isEst(R.key)&&!isEst(R.back)).length;
+const known=ROUTES.filter(R=>!isEst(R.outKey)&&!isEst(R.back)).length;
 document.getElementById('cov').innerHTML =
     `<span class="kv hot">最後更新 <b>${LATEST.ts}</b> 台北時間</span>`
   + `<span class="kv">已累積 <b>${HIST.length}</b> 次抓價</span>`
-  + `<span class="kv"><b>${ROUTES.length}</b> 條來回航線 / <b>${ALL.length.toLocaleString('en-US')}</b> 個日期組合</span>`
+  + `<span class="kv"><b>${ROUTES.length}</b> 種行程 / <b>${ALL.length.toLocaleString('en-US')}</b> 個日期組合</span>`
   + `<span class="kv">票價涵蓋 <b>${DATES[0]}</b> – <b>${DATES[DATES.length-1]}</b></span>`
   + `<span class="kv">稅費實測 <b>${known}/${ROUTES.length}</b> 條航線</span>`;
 
@@ -357,7 +353,7 @@ document.getElementById('cov').innerHTML =
 
 /* ============ 篩選器 ============ */
 /* 預設選最便宜的那條航線，而不是字母排序第一條（後者常是一週兩班的季節航線） */
-const F={org:'',country:'',n:'',m:'',mode:'pay',sort:'pay',dir:1,
+const F={org:'',country:'',type:'',n:'',m:'',mode:'pay',sort:'pay',dir:1,
   route:([...ROWS].sort((a,b)=>a.pay-b.pay)[0]?.R.key)||ROUTES[0]?.key||''};
 document.getElementById('fOrg').innerHTML='<option value="">全部</option>'
   + [...new Set(ROUTES.map(r=>r.org))].map(o=>`<option value="${o}">${NAME[o]} ${o}</option>`).join('');
@@ -368,7 +364,7 @@ document.getElementById('fRoute').innerHTML=ROUTES.map(r=>
 
 function keep(x){
   const R=x.R;
-  return (!F.org||R.org===F.org)&&(!F.country||R.country===F.country)
+  return (!F.type||(F.type==='openjaw'?R.openJaw:!R.openJaw))&&(!F.org||R.org===F.org)&&(!F.country||R.country===F.country)
     &&(!F.n||x.nights==F.n)&&(!F.m||x.dep.slice(5,7)===F.m);
 }
 const price=x=>F.mode==='fare'?x.fare:x.pay;
@@ -403,7 +399,7 @@ function renderRoutes(){
       <td class="tot">${fmt(price(r))}</td>
       <td>${r.nights}</td>
       <td style="color:var(--ink2)">${fmt(r.fare)}</td>
-      <td style="color:var(--muted)" ${r.taxKnown?`data-t="${r.R.org}→${r.R.dst} ${fmt(r.taxOut)} ＋ ${r.R.dst}→${r.R.org} ${fmt(r.taxBack)}"`:''}>${r.taxKnown?'+'+fmt(r.tax):'<span class="badge est">未實測</span>'}</td>
+      <td style="color:var(--muted)" ${r.taxKnown?`data-t="${r.R.org}→${r.R.dst} ${fmt(r.taxOut)} ＋ ${r.R.returnFrom}→${r.R.returnTo} ${fmt(r.taxBack)}"`:''}>${r.taxKnown?'+'+fmt(r.tax):'<span class="badge est">未實測</span>'}</td>
       <td class="${cls}">${dtxt}</td></tr>`;
   }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">沒有符合條件的航線</td></tr>';
   bindTips(document.getElementById('tbRoute'));
@@ -443,7 +439,7 @@ document.getElementById('barleg').innerHTML=
   + '<span style="color:var(--muted)">TWD · 該航線條件內最便宜的來回價</span>';
 function renderBars(rs){
   if(!rs.length){document.getElementById('bars').innerHTML='';return;}
-  const rowH=22, padL=150, padR=86, W_=1100;
+  const rowH=22, padL=rs.some(r=>r.R.openJaw)?350:150, padR=86, W_=1100;
   const H=rs.length*rowH+14;
   const max=Math.max(...rs.map(price));
   const x=v=>padL+v/max*(W_-padL-padR);
@@ -468,7 +464,7 @@ function renderRoute(){
   const box=document.getElementById('calBox'), lb=document.getElementById('legBox');
   const tx=document.getElementById('routeTax');
   if(!R){box.innerHTML='';lb.innerHTML='';return;}
-  tx.innerHTML='稅金與其他費用依各航段出發日期計算；訂位服務費非旺季 350、旺季 450 元。';
+  tx.innerHTML='稅金與其他費用依各航段出發日期計算；訂位服務費非旺季 350、旺季 450 元。'+(R.openJaw?' A 進 B 出金額為兩段機票合計，不含韓國境內交通。':'');
 
   const mine=ALL.filter(x=>x.R===R);
   const best={}; mine.forEach(r=>{ if(!best[r.dep]||price(r)<price(best[r.dep])) best[r.dep]=r; });
@@ -500,8 +496,8 @@ function renderRoute(){
     bindTips(box);
   }
   /* 單程走勢 */
-  const sets=[{name:`${NAME[R.org]} → ${NAME[R.dst]}`, vals:DATES.map(d=>LEGS[R.key][d]??null)},
-              {name:`${NAME[R.dst]} → ${NAME[R.org]}`, vals:DATES.map(d=>LEGS[R.back][d]??null)}];
+  const sets=[{name:`${NAME[R.org]} → ${NAME[R.dst]}`, vals:DATES.map(d=>LEGS[R.outKey][d]??null)},
+              {name:`${NAME[R.returnFrom]} → ${NAME[R.returnTo]}`, vals:DATES.map(d=>LEGS[R.back][d]??null)}];
   lb.innerHTML=lineChart(sets,DATES,`${R.label}　單程最低票價（未稅）`);
   bindTips(lb);
 }
@@ -554,7 +550,7 @@ function renderTrend(){
   }
   const picks=[...new Set([...[...ROWS].sort((a,b)=>a.pay-b.pay).slice(0,6).map(r=>r.R.key), F.route])]
     .map(k=>ROUTES.find(r=>r.key===k)).filter(Boolean);
-  const Wd=1060,H=280,M={t:16,r:150,b:30,l:58};
+  const Wd=1060,H=280,M={t:16,r:picks.some(r=>r.openJaw)?320:150,b:30,l:58};
   const series=picks.map(R=>({R, vals:histBest.map(h=>h[R.key]??null)}));
   const all=series.flatMap(s=>s.vals.filter(v=>v!=null));
   const ymax=Math.ceil(Math.max(...all)/500)*500, ymin=Math.max(0,Math.floor(Math.min(...all)/500)*500-500);
@@ -591,9 +587,9 @@ function renderTrend(){
 
 /* ============ 稅費進度 ============ */
 (function(){
-  const legs=[...new Set(ROUTES.flatMap(R=>[R.key,R.back]))].sort();
+  const legs=[...new Set(ROUTES.flatMap(R=>[R.outKey,R.back]))].sort();
   const meas=legs.filter(k=>!isEst(k));
-  const measRoutes=ROUTES.filter(R=>!isEst(R.key)&&!isEst(R.back)).length;
+  const measRoutes=ROUTES.filter(R=>!isEst(R.outKey)&&!isEst(R.back)).length;
 
   document.getElementById('taxnote').innerHTML =
     `目前 <b>${measRoutes}/${ROUTES.length}</b> 條航線已實測（<b>不使用推估值</b> —— 實測發現稅費同國家不同機場差異很大，推估不可靠）。`;
@@ -618,7 +614,7 @@ function renderTrend(){
 
 /* ============ 事件 ============ */
 function redraw(){ const rs=renderRoutes(); renderBars(rs); renderCombos(); renderRoute(); renderTrend(); }
-[['fOrg','org'],['fCountry','country'],['fN','n'],['fM','m'],['fMode','mode']].forEach(([id,k])=>
+[['fType','type'],['fOrg','org'],['fCountry','country'],['fN','n'],['fM','m'],['fMode','mode']].forEach(([id,k])=>
   document.getElementById(id).addEventListener('change',e=>{F[k]=e.target.value;redraw();}));
 document.getElementById('fRoute').addEventListener('change',e=>{F.route=e.target.value;renderRoute();renderTrend();});
 document.getElementById('themeBtn').addEventListener('click',()=>{

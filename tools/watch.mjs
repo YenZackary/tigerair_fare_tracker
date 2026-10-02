@@ -26,6 +26,8 @@ import { AIRPORT_NAME, REGION } from "./data.mjs";
 
 import { TAX_UPDATED, PRICE_MODEL, FEE_BASE, FEE_OBSERVATIONS, legFee, browserFeeCode } from "./fees.mjs";
 
+import { ROUTE_MODEL, routeDefinitions, browserRouteCode } from "./routes.mjs";
+
 /* ============================ 可調參數 ============================ */
 
 const TW_AIRPORTS = ["TPE", "RMQ", "KHH", "TNN"];
@@ -223,20 +225,16 @@ function buildCombos() {
 }
 
 function computeRoutes(legs, combos) {
-  const isTW = (c) => TW_AIRPORTS.includes(c);
   const routes = [];
-  for (const key of Object.keys(legs)) {
-    const [o, d] = key.split("-");
-    if (!isTW(o)) continue;
-    const back = `${d}-${o}`;
-    if (!legs[back]) continue;
+  for (const route of routeDefinitions(legs, AIRPORT_NAME, REGION)) {
+    const { outKey, back } = route;
     let best = null;
     for (const [dep, ret, nights] of combos) {
-      const a = legs[key][dep];
+      const a = legs[outKey][dep];
       const b = legs[back][ret];
       if (a == null || b == null) continue;
       const fare = a + b;
-      const t1 = legFee(key, dep), t2 = legFee(back, ret);
+      const t1 = legFee(outKey, dep), t2 = legFee(back, ret);
       const taxKnown = t1 != null && t2 != null;
       const tax = taxKnown ? t1 + t2 : 0;
       const pay = fare + tax;
@@ -244,15 +242,7 @@ function computeRoutes(legs, combos) {
         best = { fare, dep, ret, nights, tax, taxKnown, pay };
     }
     if (!best) continue;
-    routes.push({
-      key,
-      back,
-      org: o,
-      dst: d,
-      label: `${nameOf(o)} ⇄ ${nameOf(d)}`,
-      region: REGION[d] ?? "其他",
-      ...best,
-    });
+    routes.push({ ...route, ...best });
   }
   routes.sort((a, b) => a.pay - b.pay || a.fare - b.fare);
   return routes;
@@ -507,8 +497,9 @@ function writeAllRoutes(payload, hist, now) {
   writeFileSync(
     P.outAll,
     tpl
-      .replace("__LATEST__", j({ ts: now.stamp, pay: payload, pricingModel: PRICE_MODEL }))
+      .replace("__LATEST__", j({ ts: now.stamp, pay: payload, pricingModel: PRICE_MODEL, routeModel: ROUTE_MODEL }))
       .replace("__FEE_HELPERS__", browserFeeCode())
+      .replace("__ROUTE_HELPERS__", browserRouteCode())
       .replace("__HIST__", j(hist))
       .replace("__TAX__", j(tax)),
     "utf8",
@@ -530,7 +521,7 @@ function writeIndex(routes, now, histLen) {
     })
     .join("");
   const desc =
-    `桃園／台中／高雄／台南出發的所有航點，共 ${routes.length} 條來回航線。` +
+    `桃園／台中／高雄／台南出發的所有航點，共 ${routes.length} 種行程（含韓國 A 進 B 出）。` +
     `目前最便宜的 5 條（<b>實付總額</b>，含稅；稅費 ${known}/${routes.length} 條為官網<b>逐航段實測</b>` +
     (known === routes.length ? "，全部航線都有含稅價" : '，其餘標 <span class="badge">推估</span>') +
     "）：";
@@ -596,7 +587,7 @@ async function main() {
   const firstRun = Object.keys(state.best).length === 0;
 
   const prevLatest = readBlock("latest");
-  const priceChanged = prevLatest?.pay !== payload || prevLatest?.pricingModel !== PRICE_MODEL;
+  const priceChanged = prevLatest?.pay !== payload || prevLatest?.pricingModel !== PRICE_MODEL || prevLatest?.routeModel !== ROUTE_MODEL;
 
   const { newLows, changes, dailyDue, changeDue } = detect(routes, state, now);
   console.log(
