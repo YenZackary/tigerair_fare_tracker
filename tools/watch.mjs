@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 台灣虎航 2027 Q1 週末來回票價監控 —— 跑在 GitHub Actions 上。
+ * 台灣虎航 2027 年 1–10 月 週末來回票價監控 —— 跑在 GitHub Actions 上。
  *
  * 一次執行做四件事：
  *   1. 抓價（虎航每日票價 API，4 個台灣機場）→ 算出每條來回航線在條件內的最低價
@@ -8,7 +8,7 @@
  *   3. 通知：在 repo 的長期 Issue 留 comment（GitHub 會把留言寄到 repo 擁有者的信箱）
  *   4. 重新產生 index.html / all-routes.html / status.html，由 workflow commit 回 repo
  *
- * 追蹤條件：2027-01-01 ~ 2027-03-31 出發、行程 3–5 天（含頭尾）、且區間內同時涵蓋週六與週日、
+ * 追蹤條件：2027-01-01 ~ 2027-10-31 出發、行程 3–5 天（含頭尾）、且區間內同時涵蓋週六與週日、
  *           1 位成人、不含託運行李。
  * 金額一律是「實付總額」＝ 未稅票價 + 去程稅費 + 回程稅費。稅費見 tools/data.mjs（逐航段實測）。
  *
@@ -28,7 +28,7 @@ import { AIRPORT_NAME, REGION, LEG_TAX, TAX_UPDATED } from "./data.mjs";
 
 const TW_AIRPORTS = ["TPE", "RMQ", "KHH", "TNN"];
 const DATE_FROM = "2027-01-01";
-const DATE_TO = "2027-03-31";
+const DATE_TO = "2027-10-31";
 const TRIP_NIGHTS = [3, 4, 5];
 const REQUIRE_WEEKEND = true;
 

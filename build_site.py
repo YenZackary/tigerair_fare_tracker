@@ -25,7 +25,7 @@ def block(html, sid):
 
 def combos():
     out = []
-    d, end = date(2027, 1, 1), date(2027, 3, 31)
+    d, end = date(2027, 1, 1), date(2027, 10, 31)
     while d <= end:
         for n in (3, 4, 5):
             r = d + timedelta(days=n - 1)
@@ -168,7 +168,7 @@ footer{margin-top:40px;font-size:12px;color:var(--muted);border-top:1px solid va
 <body>
 <div class="wrap">
 <h1>虎航票價追蹤</h1>
-<div class="sub">台灣虎航 2027 年 1–3 月的來回票價追蹤：行程 3–5 天，且必須涵蓋週六與週日。
+<div class="sub">台灣虎航 2027 年 1–10 月的來回票價追蹤：行程 3–5 天，且必須涵蓋週六與週日。
 每小時自動抓一次官網票價，記錄歷史最低價（只在票價真的變動時才更新頁面）。</div>
 <div class="note">__UPDATED__</div>
 
