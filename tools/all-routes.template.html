@@ -69,6 +69,13 @@ h2{font-size:15px;margin:34px 0 4px}
 .filters{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:0 0 14px;
   padding:12px 14px;background:var(--surface-1);border:1px solid var(--ring);border-radius:10px}
 .fg{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)}
+.months{flex-basis:100%;flex-wrap:wrap;gap:8px}
+.months label,.months button{display:inline-flex;align-items:center;gap:5px;
+  padding:5px 9px;border:1px solid var(--ring);border-radius:7px;background:var(--plane);
+  color:var(--ink2);font:inherit;cursor:pointer;white-space:nowrap}
+.months label:has(input:checked),.months button[aria-pressed="true"]{border-color:var(--s1);
+  color:var(--ink);background:color-mix(in oklab,var(--s1) 10%,var(--plane))}
+.months input{margin:0;accent-color:var(--s1)}
 select{font:inherit;font-size:13px;padding:5px 8px;border-radius:7px;border:1px solid var(--ring);
   background:var(--plane);color:var(--ink);max-width:190px}
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
@@ -144,7 +151,20 @@ details summary{cursor:pointer;font-size:13px;color:var(--ink2)}
   <div class="fg">地區 <select id="fCountry"></select></div>
   <div class="fg">天數 <select id="fN"><option value="">全部</option><option value="3">3 天</option><option value="4">4 天</option><option value="5">5 天</option></select></div>
   <div class="fg">行程類型 <select id="fType"><option value="">全部</option><option value="roundtrip">同點進出</option><option value="openjaw">韓國 A 進 B 出</option></select></div>
-  <div class="fg">月份 <select id="fM"><option value="">全部</option><option value="01">1 月</option><option value="02">2 月</option><option value="03">3 月</option><option value="04">4 月</option><option value="05">5 月</option><option value="06">6 月</option><option value="07">7 月</option><option value="08">8 月</option><option value="09">9 月</option><option value="10">10 月</option></select></div>
+  <div class="fg months" id="fMonths" role="group" aria-label="出發月份（可複選）">
+    <span>出發月份（可複選）</span><button type="button" id="allMonths" aria-pressed="true">全部月份</button>
+    <label><input type="checkbox" value="01">1 月</label>
+    <label><input type="checkbox" value="02">2 月</label>
+    <label><input type="checkbox" value="03">3 月</label>
+    <label><input type="checkbox" value="04">4 月</label>
+    <label><input type="checkbox" value="05">5 月</label>
+    <label><input type="checkbox" value="06">6 月</label>
+    <label><input type="checkbox" value="07">7 月</label>
+    <label><input type="checkbox" value="08">8 月</label>
+    <label><input type="checkbox" value="09">9 月</label>
+    <label><input type="checkbox" value="10">10 月</label>
+    <span style="color:var(--muted)">未勾選時顯示全部月份</span>
+  </div>
   <div class="fg">價格顯示 <select id="fMode"><option value="pay">實付總額（含稅）</option><option value="fare">未稅票價</option></select></div>
   <div class="fg" style="margin-left:auto" id="cnt"></div>
 </div>
@@ -353,7 +373,7 @@ document.getElementById('cov').innerHTML =
 
 /* ============ 篩選器 ============ */
 /* 預設選最便宜的那條航線，而不是字母排序第一條（後者常是一週兩班的季節航線） */
-const F={org:'',country:'',type:'',n:'',m:'',mode:'pay',sort:'pay',dir:1,
+const F={org:'',country:'',type:'',n:'',months:[],mode:'pay',sort:'pay',dir:1,
   route:([...ROWS].sort((a,b)=>a.pay-b.pay)[0]?.R.key)||ROUTES[0]?.key||''};
 document.getElementById('fOrg').innerHTML='<option value="">全部</option>'
   + [...new Set(ROUTES.map(r=>r.org))].map(o=>`<option value="${o}">${NAME[o]} ${o}</option>`).join('');
@@ -365,7 +385,7 @@ document.getElementById('fRoute').innerHTML=ROUTES.map(r=>
 function keep(x){
   const R=x.R;
   return (!F.type||(F.type==='openjaw'?R.openJaw:!R.openJaw))&&(!F.org||R.org===F.org)&&(!F.country||R.country===F.country)
-    &&(!F.n||x.nights==F.n)&&(!F.m||x.dep.slice(5,7)===F.m);
+    &&(!F.n||x.nights==F.n)&&(!F.months.length||F.months.includes(x.dep.slice(5,7)));
 }
 const price=x=>F.mode==='fare'?x.fare:x.pay;
 
@@ -614,8 +634,18 @@ function renderTrend(){
 
 /* ============ 事件 ============ */
 function redraw(){ const rs=renderRoutes(); renderBars(rs); renderCombos(); renderRoute(); renderTrend(); }
-[['fType','type'],['fOrg','org'],['fCountry','country'],['fN','n'],['fM','m'],['fMode','mode']].forEach(([id,k])=>
+[['fType','type'],['fOrg','org'],['fCountry','country'],['fN','n'],['fMode','mode']].forEach(([id,k])=>
   document.getElementById(id).addEventListener('change',e=>{F[k]=e.target.value;redraw();}));
+const monthInputs=[...document.querySelectorAll('#fMonths input')];
+function updateMonths(){
+  F.months=monthInputs.filter(el=>el.checked).map(el=>el.value);
+  document.getElementById('allMonths').setAttribute('aria-pressed',String(!F.months.length));
+  redraw();
+}
+monthInputs.forEach(el=>el.addEventListener('change',updateMonths));
+document.getElementById('allMonths').addEventListener('click',()=>{
+  monthInputs.forEach(el=>{el.checked=false;});updateMonths();
+});
 document.getElementById('fRoute').addEventListener('change',e=>{F.route=e.target.value;renderRoute();renderTrend();});
 document.getElementById('themeBtn').addEventListener('click',()=>{
   const cur=document.documentElement.getAttribute('data-theme');
