@@ -2,14 +2,8 @@ name: 虎航票價追蹤
 
 on:
   schedule:
-    # UTC，每小時 07/22/37/52 分，避開整點尖峰；不保證準時或不漏跑。
-    # 分開列出只方便追查哪個排程觸發，不是獨立的可靠排程器。
-    - cron: "7 * * * *"
-    - cron: "22 * * * *"
-    - cron: "37 * * * *"
-    - cron: "52 * * * *"
-  repository_dispatch:
-    types: [tigerair-watch] # 外部 scheduler 的穩定觸發入口，詳見 README。
+    # 回復原有排程；GitHub 可能延遲或漏跑，不保證準時。
+    - cron: "*/15 * * * *"
   workflow_dispatch: # 也可以在 Actions 頁手動按 Run workflow
     inputs:
       dry:
@@ -61,9 +55,7 @@ jobs:
         continue-on-error: true # 寄信失敗仍必須保存票價、頁面及重試佇列。
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          EMAIL_ENABLED: "false" # 復原期間只記錄 Issue；保留既有待寄佇列。
         run: node tools/watch.mjs ${{ inputs.dry && '--dry' || '' }} ${{ inputs.summary && '--summary' || '' }}
 
       - name: 有變動就 commit 回 repo

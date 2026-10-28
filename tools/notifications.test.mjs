@@ -71,7 +71,7 @@ test('delivery limit preserves backlog without silently dropping messages', asyn
 
 // Run the real watch pipeline against an in-memory filesystem and fixed clock.
 // No production API, email, Issue or tracked data is touched.
-function watcher(args = []) {
+function watcher(args = [], emailEnabled = true) {
   const root = new URL('../', import.meta.url);
   const files = new Map(['tools/state.json', 'status.json', 'all-routes.html',
     'tools/all-routes.template.html', 'tools/index.template.html', 'status_template.html']
@@ -86,7 +86,7 @@ function watcher(args = []) {
     constructor(...args) { super(...(args.length ? args : ['2026-10-28T01:00:00Z'])); }
     static now() { return new Date('2026-10-28T01:00:00Z').getTime(); }
   }
-  const proc = { argv: ['node', 'watch', '--fixture=fixture.json', ...args], env: { GITHUB_TOKEN: 'test', GITHUB_REPOSITORY: 'owner/repo' } };
+  const proc = { argv: ['node', 'watch', '--fixture=fixture.json', ...args], env: { GITHUB_TOKEN: 'test', GITHUB_REPOSITORY: 'owner/repo', EMAIL_ENABLED: String(emailEnabled) } };
   const api = vm.runInNewContext(source.slice(0, source.lastIndexOf('main().catch')) + '\n({main});', {
     ...data, ...fees, ...routes, URL, AbortSignal, Date: FixedDate, process: proc,
     console: { log() {}, error() {} }, createNotification,
@@ -133,4 +133,33 @@ test('dry-run performs no delivery and no file writes', async () => {
   const w = watcher(['--dry', '--summary']);
   await w.api.main();
   assert.deepEqual(w.counts(), { emailCalls: 0, issueCalls: 0, writes: 0 });
+});
+
+test('paused email preserves historical backlog and sends only new Issue notifications', async () => {
+  const queue = [createNotification('daily', 'old pending email')];
+  queue[0].issueSent = true;
+  const original = JSON.stringify(queue[0]);
+  const current = createNotification('change', 'current Issue only');
+  current.emailRequired = false;
+  queue.push(current);
+  let issues = 0;
+  const result = await deliverNotifications(queue, {
+    emailEnabled: false,
+    email: async () => { throw new Error('email must not be called'); },
+    issue: async () => { issues++; }, save() {}, log() {},
+  });
+  assert.equal(issues, 1);
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.emailed, []);
+  assert.deepEqual(result.issued, ['change']);
+  assert.equal(queue.length, 1);
+  assert.equal(JSON.stringify(queue[0]), original);
+
+  const w = watcher([], false);
+  w.failEmail(true);
+  await w.api.main();
+  assert.equal(w.counts().emailCalls, 0);
+  assert.equal(w.counts().issueCalls, 1);
+  assert.equal(w.state().pendingNotifications.length, 0);
+  assert.notEqual(w.proc.exitCode, 1);
 });

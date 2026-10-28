@@ -7,15 +7,31 @@ import * as fees from './fees.mjs';
 import * as routeTools from './routes.mjs';
 
 const source=readFileSync(new URL('./watch.mjs',import.meta.url),'utf8');
-function engine(fixture={}) {
+function engine(fixture={}, fetchFn=null) {
   const code=source.replace(/^import .*;\r?\n/gm,'')
     .replaceAll('import.meta.url',JSON.stringify(new URL('./watch.mjs',import.meta.url).href))
     .slice(0,source.replace(/^import .*;\r?\n/gm,'').replaceAll('import.meta.url',JSON.stringify(new URL('./watch.mjs',import.meta.url).href)).lastIndexOf('main().catch'));
   return vm.runInNewContext(code+'\n({fetchAllLegs,buildCombos,computeRoutes,encodeV3,writeAllRoutes,writeIndex,detect});',{
     ...data,...fees,...routeTools,readFileSync:()=>JSON.stringify(fixture),writeFileSync:()=>{},URL,console,
-    process:{argv:['node','watch','--fixture=test.json'],env:{}},Date,
+    process:{argv:['node','watch',...(fetchFn ? [] : ['--fixture=test.json'])],env:{}},Date,
+    fetch:fetchFn,AbortSignal,
   });
 }
+
+test('live API validation rejects HTTP failures, malformed data and empty stations',async()=>{
+  const good = [{origin:'TPE',destination:'ICN',pricingDate:'2027-04-24',pricingCurrency:'TWD',pricingAmount:1599}];
+  for (const station of ['TPE','RMQ','KHH','TNN']) {
+    for (const mode of ['http','object','empty','invalid']) {
+      const e=engine({},async(url,init)=>{
+        assert(init.signal instanceof AbortSignal);
+        if(!url.includes(`/${station}/`))return {ok:true,status:200,json:async()=>good};
+        return {ok:mode!=='http',status:mode==='http'?403:200,json:async()=>
+          mode==='object'?{}:mode==='invalid'?[{...good[0],pricingAmount:0}]:[]};
+      });
+      await assert.rejects(e.fetchAllLegs(),new RegExp(station));
+    }
+  }
+});
 
 test('all 88 observations reconstruct their actual cart fees',()=>{
   assert.equal(Object.keys(fees.FEE_OBSERVATIONS.legs).length,88);

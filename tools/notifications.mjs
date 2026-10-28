@@ -44,13 +44,16 @@ export async function sendEmail(message, { env = process.env, fetchFn = fetch,
 
 // Each channel has its own acknowledgement. A failed channel never blocks the other.
 // The caller persists the queue before sending and after every acknowledgement.
-export async function deliverNotifications(queue, { email = sendEmail, issue, save,
+export async function deliverNotifications(queue, { email = sendEmail, emailEnabled = true, issue, save,
   log = console.log, report = console.error, limit = 10 }) {
   const errors = [];
   const emailed = [];
+  const issued = [];
   for (const [channel, send] of [['email', email], ['issue', issue]]) {
+    if (channel === 'email' && !emailEnabled) continue;
     let count = 0;
     for (const message of queue) {
+      if (channel === 'email' && message.emailRequired === false) continue;
       const field = `${channel}Sent`;
       if (message[field]) continue;
       if (count++ >= limit) break;
@@ -64,14 +67,15 @@ export async function deliverNotifications(queue, { email = sendEmail, issue, sa
       }
       message[field] = true;
       if (channel === 'email') emailed.push(...message.kind.split('+'));
+      if (channel === 'issue') issued.push(...message.kind.split('+'));
       save(); // Persistence errors must be fatal, never mistaken for delivery errors.
       log(`${channel} 已接受通知 ${message.id}`);
     }
   }
   for (let i = queue.length - 1; i >= 0; i--) {
-    if (queue[i].emailSent && queue[i].issueSent) queue.splice(i, 1);
+    if ((queue[i].emailSent || queue[i].emailRequired === false) && queue[i].issueSent) queue.splice(i, 1);
   }
   save();
   log(`通知佇列剩餘 ${queue.length} 筆（每管道每次最多 ${limit} 筆）`);
-  return { errors, emailed };
+  return { errors, emailed, issued };
 }

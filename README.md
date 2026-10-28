@@ -26,12 +26,12 @@
 ## 怎麼運作
 
 ```
-GitHub Actions（錯開整點 cron／手動／外部 scheduler）
+GitHub Actions（原有每 15 分鐘 cron／手動）
   └─ node tools/watch.mjs
        ├─ 抓虎航每日票價 API（4 個台灣機場）
        ├─ 算出每條來回航線在條件內的最低價
        ├─ 跟 tools/state.json 比對 → 判斷「新低價」與「一般變動」
-       ├─ 通知寫入持久佇列 → Resend API 寄 Email
+       ├─ 通知寫入持久佇列 → Issue #1（Email 暫停）
        ├─ 同時在 Issue #1 留言作 log/history（不再 mention）
        └─ 重新產生 index.html / all-routes.html / status.html
   └─ 有變動就 commit 回 repo → GitHub Pages 自動更新
@@ -42,30 +42,13 @@ Actions runner 上的 Node 不送 `Origin` header，所以可以直接呼叫。
 
 ## 通知
 
-主要通知改由 **Resend Email API** 發送，不需自架伺服器，也不需安裝套件。
-同一份文字仍會貼到 [Issue #1](../../issues/1) 作歷史記錄；即使 Issue 關閉也沿用 #1，不另開 Issue。
-GitHub 自身可能仍寄訂閱通知，但不再依賴 mention 或訂閱信保證送達。
-Email 以純文字保留 Markdown 表格、金額與網站連結；API 接受不等於收件匣一定送達，請在 Resend 查看投遞／退信及垃圾郵件分類。
+2026-10-28 復原：`57be938` 新增 Resend 必填依賴，但 repo 沒有 `RESEND_API_KEY`、`EMAIL_FROM`、`EMAIL_TO`，導致抓價成功後整個工作顯示失敗。
 
-| 事件 | 條件 | 節流 |
-|---|---|---|
-| **新低價** | 某航線含稅來回合計跌破**歷史最低** | 不節流，寫入佇列 |
-| **每日摘要** | 台北時間 08:00 之後第一次執行 | 每天一次 |
-| **一般變動** | 最低價跟上次比有動，但沒破歷史最低 | 預設不節流（沿用程式設定 0） |
+目前 `EMAIL_ENABLED` 預設為 false，workflow 也明確停用 Email。本次新通知只寫入既有 Issue #1；即使 Issue 關閉也不另開 Issue。Issue 或抓價真正失敗仍會回報失敗。
 
-幾個刻意的設計：
+舊 `pendingNotifications` 的 Email 待寄內容與各管道狀態繼續保存；已成功寫入 Issue 的訊息不重送。復原期間新通知標為不要求寄信，Issue 寫入成功後即可完成。日誌的通知成功在此模式代表 Issue 留言成功，不代表 Email 投遞。
 
-- **新低價獨立排入佇列**：不受節流限制，也不受「今天摘要已排入」影響。同一條航線 24 小時內用同一個價位
-  不會重複發，價位不同就會再發。
-- **通知失敗不會阻擋資料更新**。`tools/state.json` 的 `pendingNotifications` 保存原始通知及 Email／Issue 各自成功狀態；即使價格基準已更新、隔次價格相同，也會重試原訊息。成功管道不重送，兩者成功才移除。每日摘要與節流欄位代表「已排入佇列」，`status.json` 的 `notified` 代表 Email API 已接受。
-- Resend 網路錯誤、逾時、HTTP 429／5xx 最多重試 3 次，每次最多等 15 秒；其他 4xx 留待設定修正後下次執行再試。每管道每次最多處理 10 筆，失敗時該管道暫停，另一管道繼續，未完成內容不丟棄。
-- 相同訊息使用相同 Resend idempotency key，服務端只保留 24 小時去重。若寄送成功但狀態未能 push、或逾 24 小時才重試，仍可能重複寄送；Issue API 本身沒有相同去重保證。
-- 失敗會顯示 Actions error、在狀態頁留下錯誤及佇列筆數；workflow 先嘗試 commit 頁面／狀態，最後仍標示失敗。請啟用 GitHub Actions 失敗通知並查看 push 是否成功。
-- 佇列內容與既有 Issue 一樣是公開票價資訊；API key 與收寄件地址只從 Secrets 讀取，不存入 repo。
-- 每次成立的通知合併成一封 Email／一則 Issue 留言；摘要已包含變動表時不再重複列出。
-- **第一次執行只建立基準**，不發新低價或變動通知（沒有歷史可以比）。
-- 「新低」用的是**歷史最低**，不是「跟上次比」—— 後者只是一般變動。
-
+不設定或驗證寄信服務，亦不宣稱 Email 已送達。未來重新啟用前應另行完成 Secrets 與投遞驗證。
 想調整就改 `tools/watch.mjs` 最上面那段常數：`CHANGE_THROTTLE_MIN`、`DAILY_SUMMARY_HOUR`、
 `MAX_*`（訊息最多列幾條）。追蹤條件也在同一區：`DATE_FROM`、`DATE_TO`、`TRIP_NIGHTS`、`REQUIRE_WEEKEND`。
 
@@ -104,56 +87,14 @@ node tools/watch.mjs --summary                 # 強制發每日摘要
 官方規則：https://www.tigerairtw.com/zh-TW/ready-to-go/ticket-related
 測試：`node tools/pricing.test.mjs`。
 
-## 設定（只需做一次）
+## 設定與排程
 
-1. 到 [Resend](https://resend.com/) 建立帳號與具寄信權限的 API key。正式使用請驗證自己的寄件網域，並使用該網域的寄件地址。沒有網域時可先用 `onboarding@resend.dev` 測試，但只能寄到註冊 Resend 帳號的信箱；實際限制依 Resend 帳號／方案為準。
-2. 到 repo **Settings → Secrets and variables → Actions → New repository secret** 加入：
-
-   | Secret | 用途／範例 |
-   |---|---|
-   | `RESEND_API_KEY` | Resend 提供的寄信 API key |
-   | `EMAIL_FROM` | 已驗證寄件地址，例如 `虎航票價追蹤 <tracker@your-domain.example>`；測試可用 `onboarding@resend.dev` |
-   | `EMAIL_TO` | 你的收件信箱；多個收件地址用英文逗號分隔 |
-
-   `GITHUB_TOKEN` 由 Actions 自動提供，不需自己新增。此 repo 檢查時沒有現有 Email Secrets／Variables，所以沒有可沿用的寄信帳號。請勿把 key 貼進 Issue 或 commit。
-3. **Settings → Actions → General → Workflow permissions** 允許 workflow 的 `contents: write` 與 `issues: write`，用於保存頁面／狀態與 Issue 記錄。
-4. **Settings → Pages** 保留 `main` 分支根目錄來源；頁面檔名、內容模板與計價規則均沿用。
-5. 先手動 Run workflow 勾 `dry` 檢查輸出；再取消 `dry`、勾 `summary` 強制產生一次測試摘要。確認 Email 收到、Resend 顯示投遞狀態、Issue #1 有留言，以及 Actions 有成功保存狀態。`dry` 不驗證 Email 連線，也不送出待傳通知。
-
-若缺少 Secrets，抓價與 Issue log 仍會執行，Email 留在佇列，workflow 最後顯示失敗。補齊 Secrets 後手動執行即可重試。當 Email 無法使用很久，會累積歷史通知，恢復後依序補寄；請留意方案額度，多個收件人也會消耗額度。
-
-## 排程與外部 scheduler
-
-內建 cron 改為 UTC 每小時 **07、22、37、52 分**，避開整點尖峰。四個 cron 是同一個 GitHub 排程服務，分開列出便於追查觸發來源，**不是四份獨立備援，也不能保證 15 分鐘**。每日摘要仍在台北 08:00 後首次實際執行才排入佇列。
-
-已保留 `workflow_dispatch`（手動或 API）並新增 `repository_dispatch`，事件名稱為 `tigerair-watch`。若要降低 GitHub cron 漏觸發的風險，在你選用的外部 scheduler 設定每 15 分鐘發出以下 HTTPS 請求；所有抓價與寄信仍在 GitHub Actions 執行：
-
-```http
-POST https://api.github.com/repos/YenZackary/tigerair_fare_tracker/dispatches
-Accept: application/vnd.github+json
-Authorization: Bearer <外部 scheduler 安全儲存的 GitHub token>
-X-GitHub-Api-Version: 2022-11-28
-Content-Type: application/json
-
-{"event_type":"tigerair-watch"}
-```
-
-使用只授權本 repo、具 **Contents: write** 的 fine-grained PAT（repository dispatch 所需），設定期限並定期輪替。token 存在外部 scheduler 的安全憑證欄位，不能寫在 URL、repo 或公開頁面；無需額外放進本 repo Secrets。外部服務需支援自訂 POST body 與 Authorization header，針對非 204 回應重試並發出警示。HTTP 204 只代表 GitHub 接受事件，還要在 Actions 確認 job 實際開始及成功。
-
-也可用具 **Actions: write** 權限的 fine-grained PAT 呼叫：
-
-```http
-POST https://api.github.com/repos/YenZackary/tigerair_fare_tracker/actions/workflows/watch.yml/dispatches
-Accept: application/vnd.github+json
-Authorization: Bearer <外部 scheduler 安全儲存的 GitHub token>
-X-GitHub-Api-Version: 2022-11-28
-Content-Type: application/json
-
-{"ref":"main","inputs":{"dry":false,"summary":false}}
-```
-
-外部入口已完成，但**尚未建立任何外部服務排程或 token**。啟用外部 scheduler 後可保留內建 cron 作盡力備援（可能增加抓價次數），或移除 `schedule` 區塊。共用 concurrency 避免同時改狀態；checkout 取最新分支。GitHub concurrency 只保留一個 pending job，尖峰時較新的觸發可能取代等待中的觸發，無法保證每個事件都執行。
-
+- `GITHUB_TOKEN` 由 Actions 提供，workflow 使用 `contents: write` 保存頁面與狀態、`issues: write` 沿用 Issue #1。
+- `EMAIL_ENABLED: "false"`：復原期間不需要 Email Secrets，也不呼叫 Resend。
+- cron 回復修改前的 `*/15 * * * *`；外部 scheduler 入口撤回。GitHub 排程仍可能延遲或漏跑，沒有準時保證。
+- Pages 保留 main 分支根目錄來源。
+- 人工執行：Actions → 虎航票價追蹤 → Run workflow。先用 dry 確認四個機場，再取消 dry 確認頁面／狀態保存。summary 預設關閉。
+- 各機場記錄 HTTP 狀態、原始筆數、追蹤日期內有效 TWD 筆數及航段數。HTTP 錯誤、非陣列或任一機場沒有有效票價都會失敗，不覆寫資料；每次 API 呼叫最多等待 30 秒。
 ## 驗證
 
 ```bash

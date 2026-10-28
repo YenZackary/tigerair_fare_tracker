@@ -5,7 +5,7 @@
  * 一次執行做四件事：
  *   1. 抓價（虎航每日票價 API，4 個台灣機場）→ 算出每條來回航線在條件內的最低價
  *   2. 跟上次比對，判斷「新低價」與「一般變動」
- *   3. 通知：Resend Email + Issue #1 歷史記錄，失敗保留佇列重試
+ *   3. 通知：Issue #1 歷史記錄；Email 暫停，既有待寄通知保留
  *   4. 重新產生 index.html / all-routes.html / status.html，由 workflow commit 回 repo
  *
  * 追蹤條件：2027-01-01 ~ 2027-10-31 出發、行程 3–5 天（含頭尾）、且區間內同時涵蓋週六與週日、
@@ -76,6 +76,8 @@ const argOf = (n, d) => {
 };
 const flag = (n) => process.argv.includes(`--${n}`);
 const DRY = flag("dry");
+// Recovery default: collecting fares must not require unconfigured email credentials.
+const EMAIL_ENABLED = process.env.EMAIL_ENABLED === "true";
 
 function taipeiNow() {
   const d = new Date(Date.now() + 8 * 3600 * 1000);
@@ -127,18 +129,24 @@ async function fetchAllLegs() {
   const updated = {};
   for (const station of TW_AIRPORTS) {
     let rows;
+    let httpStatus;
     if (fixture) {
       rows = fixture[station] ?? [];
     } else {
       const res = await fetch(API(station), {
+        signal: AbortSignal.timeout(30000),
         headers: {
           accept: "application/json",
           "user-agent": "tigerair-fare-tracker (+github actions)",
         },
       });
       if (!res.ok) throw new Error(`HTTP ${res.status} 抓 ${station} 失敗`);
+      httpStatus = res.status;
       rows = await res.json();
     }
+    if (!Array.isArray(rows)) throw new Error(`${station} API 回應不是票價陣列`);
+    let validRows = 0;
+    const stationLegs = new Set();
     for (const r of rows) {
       const date = r.pricingDate;
       if (!date || date < DATE_FROM || date > DATE_TO) continue;
@@ -148,11 +156,15 @@ async function fetchAllLegs() {
       if (isTW(o) === isTW(d)) continue; // 只要台灣↔國外
       const key = `${o}-${d}`, amount = Number(r.pricingAmount);
       if (!Number.isFinite(amount) || amount <= 0 || r.pricingCurrency !== 'TWD') continue;
+      validRows++;
+      stationLegs.add(key);
       const stamp = r.updatedAt ?? '';
       if (legs[key]?.[date] != null && stamp <= (updated[key]?.[date] ?? '')) continue;
       (updated[key] ??= {})[date] = stamp;
       (legs[key] ??= {})[date] = amount;
     }
+    console.log(`${station} ${fixture ? 'fixture' : `HTTP ${httpStatus}`}｜原始 ${rows.length} 筆｜有效 ${validRows} 筆｜航段 ${stationLegs.size}`);
+    if (!fixture && !validRows) throw new Error(`${station} 在追蹤日期內沒有有效 TWD 票價，停止更新`);
   }
   return legs;
 }
@@ -585,7 +597,12 @@ async function main() {
     console.log(`既有待傳通知 ${(state.pendingNotifications ?? []).length} 筆（試跑不傳送）。`);
   } else {
     state.pendingNotifications ??= [];
-    for (const [kind, body] of planned) state.pendingNotifications.push(createNotification(kind, body));
+    for (const [kind, body] of planned) {
+      const message = createNotification(kind, body);
+      message.emailRequired = EMAIL_ENABLED;
+      state.pendingNotifications.push(message);
+    }
+    if (!EMAIL_ENABLED) console.log('Email 暫停：不呼叫寄信 API，保留既有待寄通知；本次通知只記錄 Issue #1。');
     // Record scheduling/detection acknowledgement when durably queued, independently
     // of delivery. This prevents duplicate daily messages while email is unavailable.
     for (const r of routes) {
@@ -601,9 +618,10 @@ async function main() {
     state.lastRunAt = now.stamp;
     saveState();
     const delivery = await deliverNotifications(state.pendingNotifications, {
+      emailEnabled: EMAIL_ENABLED,
       issue: message => comment(ISSUE_NUMBER, message.body), save: saveState,
     });
-    notified = delivery.emailed;
+    notified = EMAIL_ENABLED ? delivery.emailed : delivery.issued;
     notificationErrors = delivery.errors;
     // Report failure only after pages/state are saved. Workflow still commits them.
     if (notificationErrors.length) process.exitCode = 1;
