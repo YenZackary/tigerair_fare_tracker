@@ -5,7 +5,7 @@
  * 一次執行做四件事：
  *   1. 抓價（虎航每日票價 API，4 個台灣機場）→ 算出每條來回航線在條件內的最低價
  *   2. 跟上次比對，判斷「新低價」與「一般變動」
- *   3. 通知：在 repo 的長期 Issue 留 comment（GitHub 會把留言寄到 repo 擁有者的信箱）
+ *   3. 通知：Resend Email + Issue #1 歷史記錄，失敗保留佇列重試
  *   4. 重新產生 index.html / all-routes.html / status.html，由 workflow commit 回 repo
  *
  * 追蹤條件：2027-01-01 ~ 2027-10-31 出發、行程 3–5 天（含頭尾）、且區間內同時涵蓋週六與週日、
@@ -18,10 +18,11 @@
  *   node tools/watch.mjs --fixture=x.json   用本地 JSON 取代 API（離線測試，路徑相對 repo 根目錄）
  *   node tools/watch.mjs --summary          強制發每日摘要（忽略「今天已發過」）
  *
- * 環境變數（workflow 提供）：GITHUB_TOKEN、GITHUB_REPOSITORY
+ * 環境變數：GITHUB_TOKEN、GITHUB_REPOSITORY、RESEND_API_KEY、EMAIL_FROM、EMAIL_TO
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
+import { createNotification, deliverNotifications } from "./notifications.mjs";
 import { AIRPORT_NAME, REGION } from "./data.mjs";
 
 import { TAX_UPDATED, PRICE_MODEL, FEE_BASE, FEE_OBSERVATIONS, legFee, browserFeeCode } from "./fees.mjs";
@@ -38,9 +39,7 @@ const REQUIRE_WEEKEND = true;
 
 const DAILY_SUMMARY_HOUR = 8; // 台北時間 08:00 之後第一次執行時發摘要
 // 一般變動通知的最小間隔（分鐘）。0 = 不節流。
-// 這個節流原本是為了省 LINE 訊息額度而設計的；改用 GitHub Issue → email 之後沒有額度問題，
-// 而且實測 GitHub 對公開 repo 的 schedule 約每小時才真的跑一次，本身就自帶上限，
-// 所以預設關掉 —— 有變動就通知。覺得太吵再調大。
+// 保留既有預設：有變動就通知。請留意 Email 服務的寄送額度。
 const CHANGE_THROTTLE_MIN = 0;
 const MAX_NEWLOW = 5;
 const MAX_CHANGE = 10;
@@ -49,12 +48,8 @@ const HIST_KEEP = 200; // #hist（走勢圖用）最多保留幾筆
 const HIST_FINE_HOURS = 72; // 近 72 小時逐筆保留，更早的每天壓成一筆（保留當日最低）
 const STATUS_KEEP = 120; // status 頁最多保留幾筆事件
 
-const ISSUE_TITLE = "虎航票價通知";
-/** repo 擁有者。每則通知都會 @ 他一次 —— Issue 是 bot 開的，
- *  擁有者預設不會自動訂閱這個討論串，但「被提及」一定會收到通知。 */
-const OWNER = (process.env.GITHUB_REPOSITORY ?? "").split("/")[0];
-const MENTION = OWNER ? `@${OWNER} ` : "";
-const ISSUE_MARKER = "<!-- tigerair-watch-notify-thread -->";
+const ISSUE_NUMBER = 1; // 永遠沿用既有 log/history，不另外建立 Issue。
+const MENTION = ""; // Email 由 Resend 發送，不再依賴 GitHub mention。
 
 const API = (s) => `https://api-book.tigerairtw.com/api/cms/station-daily-prices/${s}/TWD`;
 const PAGE_HOME = "https://yenzackary.github.io/tigerair_fare_tracker/";
@@ -409,6 +404,7 @@ async function gh(path, init = {}) {
   if (!token || !repo) throw new Error("缺少 GITHUB_TOKEN 或 GITHUB_REPOSITORY");
   const res = await fetch(`https://api.github.com/repos/${repo}${path}`, {
     ...init,
+    signal: AbortSignal.timeout(15000),
     headers: {
       authorization: `Bearer ${token}`,
       accept: "application/vnd.github+json",
@@ -418,47 +414,9 @@ async function gh(path, init = {}) {
     },
   });
   if (!res.ok) {
-    throw new Error(`GitHub API ${init.method ?? "GET"} ${path} → ${res.status} ${await res.text()}`);
+    throw new Error(`GitHub API ${init.method ?? "GET"} ${path} → HTTP ${res.status}`);
   }
   return res.json();
-}
-
-/** 找到（或建立）那條長期通知 Issue，回傳 number。 */
-async function ensureNotifyIssue() {
-  const open = await gh("/issues?state=open&per_page=100");
-  const found = open.find(
-    (i) => !i.pull_request && typeof i.body === "string" && i.body.includes(ISSUE_MARKER),
-  );
-  if (found) return found.number;
-  const body = [
-    ISSUE_MARKER,
-    "",
-    "這是虎航票價追蹤的**通知串**。偵測到新低價、票價變動，或每天的摘要，都會以留言貼在這裡。",
-    "因為你是這個 repo 的擁有者，GitHub 會把每一則留言寄到你的信箱 —— 這就是通知的送達方式。",
-    "",
-    "**不要關閉這個 Issue**，關掉之後程式會另外開一個新的。",
-    "",
-    `每則通知都會 @ ${OWNER || "你"} 一次，所以就算沒有訂閱這個討論串也會收到通知信。` +
-      "若想連 Issue 本體的變動都收到，可以按右側的 Subscribe。",
-    "",
-    "| 事件 | 條件 | 節流 |",
-    "|---|---|---|",
-    "| 新低價 | 某航線含稅來回合計跌破歷史最低 | 不節流，一定發 |",
-    `| 每日摘要 | 台北時間 ${DAILY_SUMMARY_HOUR}:00 後第一次執行 | 每天一次 |`,
-    `| 一般變動 | 有變動但沒破歷史最低 | ${CHANGE_THROTTLE_MIN ? `每 ${CHANGE_THROTTLE_MIN} 分鐘最多一則` : "不節流，有變動就發"} |`,
-    "",
-    "一次執行最多一則留言（= 一封信），該次成立的內容會合併在同一則裡。",
-    "",
-    `- 結果頁：${PAGE_HOME}`,
-    `- 全航線儀表板：${PAGE_ALL}`,
-    `- 變動與通知紀錄：${PAGE_STATUS}`,
-  ].join("\n");
-  const created = await gh("/issues", {
-    method: "POST",
-    body: JSON.stringify({ title: ISSUE_TITLE, body }),
-  });
-  console.log(`已建立通知 Issue #${created.number}`);
-  return created.number;
 }
 
 const comment = (issue, body) =>
@@ -619,24 +577,36 @@ async function main() {
   }
   const planned = parts.length ? [[kinds.join("+"), parts.join("\n\n---\n\n")]] : [];
 
-  const notified = [];
+  let notified = [];
+  let notificationErrors = [];
+  const saveState = () => writeFileSync(P.state, `${JSON.stringify(state, null, 2)}\n`, "utf8");
   if (DRY) {
     for (const [kind, body] of planned) console.log(`\n===== ${kind} =====\n${body}\n=====`);
-    if (!planned.length) console.log("本次沒有要發的通知。");
-  } else if (planned.length) {
-    // 通知失敗不能阻擋資料更新；失敗時不寫 notifiedLow，下次會重試 ——
-    // 這是「新低價一定要通知到」的保險。
-    try {
-      const issue = await ensureNotifyIssue();
-      for (const [kind, body] of planned) {
-        await comment(issue, body);
-        notified.push(...kinds);
-        console.log(`已留言 Issue #${issue}：${kind}`);
-      }
-    } catch (e) {
-      console.error(`⚠ 通知失敗（頁面仍會更新，下次執行會重試）：${e.message}`);
-      process.exitCode = 1;
+    console.log(`既有待傳通知 ${(state.pendingNotifications ?? []).length} 筆（試跑不傳送）。`);
+  } else {
+    state.pendingNotifications ??= [];
+    for (const [kind, body] of planned) state.pendingNotifications.push(createNotification(kind, body));
+    // Record scheduling/detection acknowledgement when durably queued, independently
+    // of delivery. This prevents duplicate daily messages while email is unavailable.
+    for (const r of routes) {
+      state.best[r.key] = r.pay;
+      const low = state.allTimeLow[r.key];
+      if (low == null || r.pay < low) state.allTimeLow[r.key] = r.pay;
     }
+    if (kinds.includes("newlow")) {
+      for (const r of newLows) state.notifiedLow[r.key] = { fare: r.pay, at: now.epoch };
+    }
+    if (kinds.includes("daily")) state.lastDailyDate = now.date;
+    if (kinds.includes("change")) state.lastChangeNotifyAt = now.epoch;
+    state.lastRunAt = now.stamp;
+    saveState();
+    const delivery = await deliverNotifications(state.pendingNotifications, {
+      issue: message => comment(ISSUE_NUMBER, message.body), save: saveState,
+    });
+    notified = delivery.emailed;
+    notificationErrors = delivery.errors;
+    // Report failure only after pages/state are saved. Workflow still commits them.
+    if (notificationErrors.length) process.exitCode = 1;
   }
 
   if (DRY) {
@@ -660,8 +630,9 @@ async function main() {
      每一次執行的完整紀錄在 repo 的 Actions 頁，不需要在這裡每 15 分鐘寫一筆、
      徒增 commit 與雜訊。 */
   const heartbeatDue = now.minute < 15;
-  if (priceChanged || notified.length || firstRun || heartbeatDue) {
+  if (priceChanged || notified.length || notificationErrors.length || firstRun || heartbeatDue) {
     const noteBits = [];
+    if (notificationErrors.length) noteBits.push(`通知失敗，佇列保留 ${state.pendingNotifications.length} 筆；詳見 Actions log`);
     if (changes.length) {
       noteBits.push(
         changes
@@ -684,6 +655,8 @@ async function main() {
         deployed: priceChanged,
         tax: `逐航段實測（${TAX_UPDATED}）`,
         notified,
+        notificationErrors,
+        pendingNotifications: state.pendingNotifications.length,
         note: noteBits.join("；"),
       },
     ].slice(-STATUS_KEEP);
@@ -697,20 +670,8 @@ async function main() {
     console.log("本次無事件且非整點：不寫 status（完整執行紀錄看 Actions 頁）。");
   }
 
-  /* ---- 狀態 ---- */
-  for (const r of routes) {
-    state.best[r.key] = r.pay;
-    const low = state.allTimeLow[r.key];
-    if (low == null || r.pay < low) state.allTimeLow[r.key] = r.pay;
-  }
-  if (notified.includes("newlow")) {
-    for (const r of newLows) state.notifiedLow[r.key] = { fare: r.pay, at: now.epoch };
-  }
-  if (notified.includes("daily")) state.lastDailyDate = now.date;
-  if (notified.includes("change")) state.lastChangeNotifyAt = now.epoch;
-  state.lastRunAt = now.stamp;
-  writeFileSync(P.state, `${JSON.stringify(state, null, 2)}\n`, "utf8");
-  console.log("已更新 tools/state.json");
+  saveState();
+  console.log("已更新 tools/state.json（含待傳通知與各管道傳送狀態）");
 }
 
 main().catch((e) => {

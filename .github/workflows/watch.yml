@@ -2,10 +2,14 @@ name: 虎航票價追蹤
 
 on:
   schedule:
-    # 每 15 分鐘。cron 是 UTC —— 00:00 UTC = 台北 08:00，所以每天第一次執行
-    # 剛好落在台北 08:00，每日摘要就是由那一次發出。
-    # 注意：公開 repo 的排程在 GitHub 負載高時可能延遲幾分鐘，不保證準時。
-    - cron: "*/15 * * * *"
+    # UTC，每小時 07/22/37/52 分，避開整點尖峰；不保證準時或不漏跑。
+    # 分開列出只方便追查哪個排程觸發，不是獨立的可靠排程器。
+    - cron: "7 * * * *"
+    - cron: "22 * * * *"
+    - cron: "37 * * * *"
+    - cron: "52 * * * *"
+  repository_dispatch:
+    types: [tigerair-watch] # 外部 scheduler 的穩定觸發入口，詳見 README。
   workflow_dispatch: # 也可以在 Actions 頁手動按 Run workflow
     inputs:
       dry:
@@ -34,23 +38,36 @@ jobs:
 
     steps:
       - name: 取出 repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }} # 排隊後取分支最新狀態，避免重送已完成通知。
 
       - name: 準備 Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: "24"
+
+      - name: 記錄觸發來源
+        env:
+          EVENT: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+        run: echo "event=$EVENT schedule=$SCHEDULE started=$(date -u +%FT%TZ)"
 
       - name: 驗證票價與日期費用邏輯
-        run: node tools/pricing.test.mjs
+        run: node --test tools/*.test.mjs
 
       - name: 抓價、判斷、發通知、產生頁面
+        id: watch
+        continue-on-error: true # 寄信失敗仍必須保存票價、頁面及重試佇列。
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
         run: node tools/watch.mjs ${{ inputs.dry && '--dry' || '' }} ${{ inputs.summary && '--summary' || '' }}
 
       - name: 有變動就 commit 回 repo
-        if: ${{ !inputs.dry }}
+        if: ${{ !cancelled() && steps.watch.outcome != 'skipped' && steps.watch.outcome != '' && !inputs.dry }}
         run: |
           set -euo pipefail
           git config user.name  "tigerair-watch[bot]"
@@ -71,4 +88,10 @@ jobs:
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           done
           echo "push 連續失敗三次。" >&2
+          exit 1
+
+      - name: 回報抓價或通知錯誤
+        if: ${{ !cancelled() && steps.watch.outcome == 'failure' }}
+        run: |
+          echo "::error::抓價或通知失敗。已嘗試保存成功取得的資料及待傳通知；請檢查前面的 log 與 commit 結果。"
           exit 1
