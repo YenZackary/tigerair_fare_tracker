@@ -49,7 +49,8 @@ const HIST_FINE_HOURS = 72; // 近 72 小時逐筆保留，更早的每天壓成
 const STATUS_KEEP = 120; // status 頁最多保留幾筆事件
 
 const ISSUE_NUMBER = 1; // 永遠沿用既有 log/history，不另外建立 Issue。
-const MENTION = ""; // Email 由 Resend 發送，不再依賴 GitHub mention。
+const OWNER = (process.env.GITHUB_REPOSITORY ?? "").split("/")[0];
+const MENTION = OWNER ? `@${OWNER} ` : ""; // GitHub notification email follows the account's notification settings.
 
 const API = (s) => `https://api-book.tigerairtw.com/api/cms/station-daily-prices/${s}/TWD`;
 const PAGE_HOME = "https://yenzackary.github.io/tigerair_fare_tracker/";
@@ -602,7 +603,7 @@ async function main() {
       message.emailRequired = EMAIL_ENABLED;
       state.pendingNotifications.push(message);
     }
-    if (!EMAIL_ENABLED) console.log('Email 暫停：不呼叫寄信 API，保留既有待寄通知；本次通知只記錄 Issue #1。');
+    if (!EMAIL_ENABLED) console.log('直接寄信 API 暫停；通知寫入 Issue #1 並提及帳號。GitHub 是否寄 Email 依帳號通知設定；保留既有待寄佇列。');
     // Record scheduling/detection acknowledgement when durably queued, independently
     // of delivery. This prevents duplicate daily messages while email is unavailable.
     for (const r of routes) {

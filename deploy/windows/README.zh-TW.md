@@ -1,5 +1,13 @@
 # Windows 本機每 15 分鐘部署
 
+## 目前的隱私與 Email 通知方式
+
+GitHub repo 已改為 Private、Actions 已整體停用，公開 Pages 已下架。下方涉及公開 Pages 的內容是先前部署紀錄。
+
+舊版透過 Actions bot 在 Issue #1 留言並提及擁有者，由 GitHub 寄送通知，並不需要 Resend。現在已恢復 Issue 的 `@擁有者` 提及，但本機使用擁有者本人的 GitHub token 留言，因此需至 [GitHub 通知設定](https://github.com/settings/notifications)，確認 Email 通知開啟、預設通知地址正確，並勾選 **Include your own updates／自己的更新**。本機仍維持 `EMAIL_ENABLED=false`，此值只關閉直接呼叫 Resend，不會關閉 GitHub 自己的通知信。實際投遞仍依 GitHub 帳號設定，不能以 Issue 留言成功當作已收到信。
+
+若未來選擇由本機直接寄信，才需要另外設定寄信服務；目前不需為沿用 GitHub 通知申請 Resend 金鑰。
+
 ## 架構查核
 
 查核起點：`f36cb3023fee3b8ffb966ea40a18eee774a489bf`（2026-10-29）。
