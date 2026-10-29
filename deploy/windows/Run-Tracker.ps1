@@ -87,7 +87,7 @@ try {
     try { $lock = [IO.File]::Open((Join-Path $local 'run.lock'), 'OpenOrCreate', 'ReadWrite', 'None') }
     catch [IO.IOException] { Write-Log 'Another wrapper holds the lock; skipped.'; exit 0 }
     Save-Result 'running'
-    $config = Get-Content -Raw -LiteralPath (Join-Path $local 'config.json') | ConvertFrom-Json
+    $config = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $local 'config.json') | ConvertFrom-Json
     if ([int]$config.LogRetentionDays -lt 1) { throw 'LogRetentionDays must be at least 1.' }
     if (-not (Test-Path -LiteralPath $config.NodePath -PathType Leaf)) { throw 'Node executable missing. Update .local/config.json.' }
     $version = Invoke-Child $config.NodePath @('--version')
@@ -103,7 +103,7 @@ try {
     }
     if (-not $DryRun) {
         $stage = 'preflight'
-        $workflow = Get-Content -Raw -LiteralPath (Join-Path $root '.github/workflows/watch.yml')
+        $workflow = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root '.github/workflows/watch.yml')
         if ($workflow -match '(?m)^\s{2}schedule\s*:') { throw 'Cloud cron still exists. Complete the cutover before live execution.' }
         $tokenFile = Join-Path $local 'github-token.dpapi'
         $secret = (Get-Content -Raw -LiteralPath $tokenFile).Trim() | ConvertTo-SecureString
@@ -129,10 +129,11 @@ try {
         Publish-Pending
         $stage = 'sync'
         $null = Git @('pull','--ff-only','origin',$config.Branch)
-        if ((Get-Content -Raw (Join-Path $root '.github/workflows/watch.yml')) -match '(?m)^\s{2}schedule\s*:') { throw 'Remote reintroduced cloud cron; refusing concurrent writers.' }
+        if ((Get-Content -Raw -Encoding UTF8 (Join-Path $root '.github/workflows/watch.yml')) -match '(?m)^\s{2}schedule\s*:') { throw 'Remote reintroduced cloud cron; refusing concurrent writers.' }
         # Do not let the entrypoint's fallback silently reset malformed persisted state.
         foreach ($jsonFile in @('tools/state.json','status.json')) {
-            $null = Get-Content -Raw -LiteralPath (Join-Path $root $jsonFile) | ConvertFrom-Json
+            try { $null = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $root $jsonFile) | ConvertFrom-Json }
+            catch { throw "Invalid persisted JSON: $jsonFile. Inspect backups before retrying." }
         }
         $backup = Join-Path $local ('backup/' + $stamp)
         [IO.Directory]::CreateDirectory($backup) | Out-Null
