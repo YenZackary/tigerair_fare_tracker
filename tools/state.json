@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-10-29 11:45",
+  "lastRunAt": "2026-10-29 12:00",
   "lastChangeNotifyAt": 1793245504061,
   "lastDailyDate": "2026-10-29",
   "best": {
     "TPE-ICN": 4798,
     "TPE-PUS": 5583,
-    "TPE-OKA": 5978,
+    "TPE-OKA": 5478,
     "KHH-GMP": 6198,
     "TPE-CJU": 6683,
     "KHH-CJU": 6483,
@@ -58,7 +58,7 @@
   "allTimeLow": {
     "TPE-ICN": 4798,
     "TPE-PUS": 5383,
-    "TPE-OKA": 5578,
+    "TPE-OKA": 5478,
     "KHH-GMP": 5998,
     "TPE-CJU": 6083,
     "KHH-CJU": 6483,
@@ -159,6 +159,10 @@
     "TPE-HNA": {
       "fare": 15837,
       "at": 1793241903916
+    },
+    "TPE-OKA": {
+      "fare": 5478,
+      "at": 1793246404012
     }
   },
   "pricingModel": "date-fees-2026-10-02-v1",
