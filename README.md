@@ -1,5 +1,7 @@
 # 虎航票價追蹤
 
+> Current scheduler: Windows Task Scheduler (15 minutes). Cloud cron is disabled; the Actions schedule described below is historical. See [Windows deployment guide](deploy/windows/README.zh-TW.md) for setup, logs, credentials, and recovery.
+
 台灣虎航 2027 年 1–10 月來回票價追蹤，跑在 **GitHub Actions** 上，以每 15 分鐘為目標排程抓價（GitHub cron 不保證準時或不漏跑）。
 不需要任何本機環境、不需要瀏覽器、不需要你的電腦開著。
 

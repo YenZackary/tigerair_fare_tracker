@@ -1,0 +1,8 @@
+{
+  "NodePath": "C:\\Program Files\\nodejs\\node.exe",
+  "GitPath": "C:\\Program Files\\Git\\cmd\\git.exe",
+  "Repository": "YenZackary/tigerair_fare_tracker",
+  "Branch": "main",
+  "TaskName": "TigerairFareTracker-15m",
+  "LogRetentionDays": 30
+}

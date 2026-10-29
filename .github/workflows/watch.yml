@@ -1,9 +1,6 @@
 name: 虎航票價追蹤
 
 on:
-  schedule:
-    # 回復原有排程；GitHub 可能延遲或漏跑，不保證準時。
-    - cron: "*/15 * * * *"
   workflow_dispatch: # 也可以在 Actions 頁手動按 Run workflow
     inputs:
       dry:
