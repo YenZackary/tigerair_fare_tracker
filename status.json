@@ -1,18 +1,8 @@
 {
   "schema": 1,
   "note": "這裡只記錄有意義的事件（票價變動、發出的通知）加上每小時一筆例行檢查。每一次執行的完整紀錄與 log 在 repo 的 Actions 頁。",
-  "updated": "2026-10-30 11:15",
+  "updated": "2026-10-30 11:30",
   "runs": [
-    {
-      "ts": "2026-10-27 05:28",
-      "by": "actions",
-      "result": "changed",
-      "changed": 0,
-      "deployed": true,
-      "tax": "逐航段實測（2026-10-02）",
-      "notified": [],
-      "note": ""
-    },
     {
       "ts": "2026-10-27 08:43",
       "by": "actions",
@@ -1588,6 +1578,20 @@
       "notificationErrors": [],
       "pendingNotifications": 1,
       "note": "桃園 ⇄ 石垣島 +100"
+    },
+    {
+      "ts": "2026-10-30 11:30",
+      "by": "actions",
+      "result": "changed",
+      "changed": 1,
+      "deployed": true,
+      "tax": "逐航段實測（2026-10-02）",
+      "notified": [
+        "change"
+      ],
+      "notificationErrors": [],
+      "pendingNotifications": 1,
+      "note": "桃園 ⇄ 花卷 +900"
     }
   ]
 }
