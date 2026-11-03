@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-11-03 10:00",
-  "lastChangeNotifyAt": 1793671205448,
+  "lastRunAt": "2026-11-03 10:15",
+  "lastChangeNotifyAt": 1793672105340,
   "lastDailyDate": "2026-11-03",
   "best": {
     "TPE-ICN": 4798,
@@ -18,7 +18,7 @@
     "TPE-NGO": 7465,
     "TPE-KIX": 7350,
     "TPE-HND": 7461,
-    "KHH-SDJ": 9321,
+    "KHH-SDJ": 9421,
     "RMQ-NGO": 8665,
     "KHH-KMJ": 8710,
     "TPE-HSG": 7837,
@@ -29,20 +29,20 @@
     "TPE-KMQ": 8282,
     "RMQ-CJU": 7183,
     "TPE-SDJ": 9721,
-    "TPE-YGJ": 9237,
+    "TPE-YGJ": 7037,
     "TPE-CTS": 9954,
     "RMQ-OKA": 9278,
     "TPE-FUK": 9134,
     "KHH-FUK": 9634,
-    "TNN-KMJ": 9210,
-    "TPE-OIT": 10337,
-    "TNN-OKA": 9278,
-    "KHH-ISG": 9837,
+    "TNN-KMJ": 7410,
+    "TPE-OIT": 7837,
+    "TNN-OKA": 8078,
+    "KHH-ISG": 6537,
     "TPE-DAD": 8838,
-    "KHH-DAD": 11438,
+    "KHH-DAD": 12038,
     "KHH-NGO": 10265,
     "TPE-HKD": 10873,
-    "KHH-OKJ": 10137,
+    "KHH-OKJ": 8337,
     "KHH-KMQ": 12882,
     "KHH-CTS": 13254,
     "TPE-AXT": 15437,
@@ -81,20 +81,20 @@
     "TPE-KMQ": 7882,
     "RMQ-CJU": 7183,
     "TPE-SDJ": 8421,
-    "TPE-YGJ": 8337,
+    "TPE-YGJ": 7037,
     "TPE-CTS": 8954,
     "RMQ-OKA": 9078,
     "TPE-FUK": 9134,
     "KHH-FUK": 9134,
-    "TNN-KMJ": 9010,
-    "TPE-OIT": 9637,
-    "TNN-OKA": 8778,
-    "KHH-ISG": 9737,
+    "TNN-KMJ": 7410,
+    "TPE-OIT": 7837,
+    "TNN-OKA": 8078,
+    "KHH-ISG": 6537,
     "TPE-DAD": 7238,
     "KHH-DAD": 10138,
     "KHH-NGO": 10265,
     "TPE-HKD": 10873,
-    "KHH-OKJ": 9637,
+    "KHH-OKJ": 8337,
     "KHH-KMQ": 11282,
     "KHH-CTS": 12754,
     "TPE-AXT": 13837,
@@ -117,8 +117,8 @@
       "at": 1793353505017
     },
     "TNN-KMJ": {
-      "fare": 9010,
-      "at": 1790919915812
+      "fare": 7410,
+      "at": 1793672105340
     },
     "TPE-PUS": {
       "fare": 5383,
@@ -133,8 +133,8 @@
       "at": 1790955067445
     },
     "TNN-OKA": {
-      "fare": 8778,
-      "at": 1791186189562
+      "fare": 8078,
+      "at": 1793672105340
     },
     "RMQ-CJU": {
       "fare": 7183,
@@ -149,12 +149,12 @@
       "at": 1791973704312
     },
     "TPE-YGJ": {
-      "fare": 8337,
-      "at": 1791991475674
+      "fare": 7037,
+      "at": 1793672105340
     },
     "KHH-OKJ": {
-      "fare": 9637,
-      "at": 1792595948036
+      "fare": 8337,
+      "at": 1793672105340
     },
     "TPE-HNA": {
       "fare": 13937,
@@ -163,6 +163,14 @@
     "TPE-OKA": {
       "fare": 5478,
       "at": 1793246404012
+    },
+    "KHH-ISG": {
+      "fare": 6537,
+      "at": 1793672105340
+    },
+    "TPE-OIT": {
+      "fare": 7837,
+      "at": 1793672105340
     }
   },
   "pricingModel": "date-fees-2026-10-02-v1",
