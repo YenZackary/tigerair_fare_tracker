@@ -1,22 +1,8 @@
 {
   "schema": 1,
   "note": "這裡只記錄有意義的事件（票價變動、發出的通知）加上每小時一筆例行檢查。每一次執行的完整紀錄與 log 在 repo 的 Actions 頁。",
-  "updated": "2026-11-03 16:00",
+  "updated": "2026-11-03 16:15",
   "runs": [
-    {
-      "ts": "2026-11-02 10:15",
-      "by": "actions",
-      "result": "changed",
-      "changed": 2,
-      "deployed": true,
-      "tax": "逐航段實測（2026-10-02）",
-      "notified": [
-        "change"
-      ],
-      "notificationErrors": [],
-      "pendingNotifications": 1,
-      "note": "桃園 ⇄ 大阪 -400、桃園 ⇄ 名古屋 +400"
-    },
     {
       "ts": "2026-11-02 10:30",
       "by": "actions",
@@ -1629,6 +1615,20 @@
       "notificationErrors": [],
       "pendingNotifications": 1,
       "note": "桃園 ⇄ 濟州 -300、高雄 ⇄ 岡山 +100；新低：桃園 ⇄ 秋田"
+    },
+    {
+      "ts": "2026-11-03 16:15",
+      "by": "actions",
+      "result": "changed",
+      "changed": 7,
+      "deployed": true,
+      "tax": "逐航段實測（2026-10-02）",
+      "notified": [
+        "change"
+      ],
+      "notificationErrors": [],
+      "pendingNotifications": 1,
+      "note": "高雄 ⇄ 岡山 -800、台中 ⇄ 濟州 -500、高雄 ⇄ 福岡 -500"
     }
   ]
 }
