@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-11-03 15:45",
-  "lastChangeNotifyAt": 1793691905556,
+  "lastRunAt": "2026-11-03 16:00",
+  "lastChangeNotifyAt": 1793692805336,
   "lastDailyDate": "2026-11-03",
   "best": {
     "TPE-ICN": 4798,
     "TPE-PUS": 5583,
     "TPE-OKA": 5478,
     "KHH-GMP": 6198,
-    "TPE-CJU": 6783,
+    "TPE-CJU": 6483,
     "KHH-CJU": 6483,
     "TPE-ISG": 7637,
     "TPE-KMI": 7882,
@@ -42,10 +42,10 @@
     "KHH-DAD": 11438,
     "KHH-NGO": 10265,
     "TPE-HKD": 10873,
-    "KHH-OKJ": 8637,
+    "KHH-OKJ": 8737,
     "KHH-KMQ": 12882,
     "KHH-CTS": 13254,
-    "TPE-AXT": 15637,
+    "TPE-AXT": 13737,
     "TPE-FKS": 15437,
     "TPE-HNA": 14837,
     "TPE-ICN__PUS-TPE": 5083,
@@ -97,7 +97,7 @@
     "KHH-OKJ": 7837,
     "KHH-KMQ": 11282,
     "KHH-CTS": 12754,
-    "TPE-AXT": 13837,
+    "TPE-AXT": 13737,
     "TPE-FKS": 14537,
     "TPE-HNA": 13937,
     "TPE-ICN__PUS-TPE": 5083,
@@ -171,6 +171,10 @@
     "TPE-OIT": {
       "fare": 5837,
       "at": 1793686505122
+    },
+    "TPE-AXT": {
+      "fare": 13737,
+      "at": 1793692805336
     }
   },
   "pricingModel": "date-fees-2026-10-02-v1",
