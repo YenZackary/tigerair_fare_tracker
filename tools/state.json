@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-11-04 19:30",
+  "lastRunAt": "2026-11-04 19:45",
   "lastChangeNotifyAt": 1793790903919,
   "lastDailyDate": "2026-11-04",
   "best": {
@@ -31,7 +31,7 @@
     "TPE-SDJ": 9721,
     "TPE-YGJ": 7437,
     "TPE-CTS": 9954,
-    "RMQ-OKA": 9278,
+    "RMQ-OKA": 8378,
     "TPE-FUK": 9134,
     "KHH-FUK": 9634,
     "TNN-KMJ": 7410,
@@ -83,7 +83,7 @@
     "TPE-SDJ": 8421,
     "TPE-YGJ": 7037,
     "TPE-CTS": 8954,
-    "RMQ-OKA": 9078,
+    "RMQ-OKA": 8378,
     "TPE-FUK": 9134,
     "KHH-FUK": 9134,
     "TNN-KMJ": 7010,
@@ -175,6 +175,10 @@
     "TPE-AXT": {
       "fare": 12837,
       "at": 1793704505170
+    },
+    "RMQ-OKA": {
+      "fare": 8378,
+      "at": 1793792703926
     }
   },
   "pricingModel": "date-fees-2026-10-02-v1",
