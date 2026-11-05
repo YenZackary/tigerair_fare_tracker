@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-11-05 17:30",
-  "lastChangeNotifyAt": 1793871005620,
+  "lastRunAt": "2026-11-05 17:45",
+  "lastChangeNotifyAt": 1793871905564,
   "lastDailyDate": "2026-11-05",
   "best": {
     "TPE-ICN": 4798,
-    "TPE-PUS": 5083,
+    "TPE-PUS": 4683,
     "TPE-OKA": 5878,
     "KHH-GMP": 6198,
     "TPE-CJU": 6783,
@@ -16,7 +16,7 @@
     "TPE-OKJ": 7037,
     "KHH-OKA": 7078,
     "TPE-NGO": 7865,
-    "TPE-KIX": 7750,
+    "TPE-KIX": 7450,
     "TPE-HND": 7561,
     "KHH-SDJ": 9421,
     "RMQ-NGO": 8665,
@@ -35,7 +35,7 @@
     "TPE-FUK": 9134,
     "KHH-FUK": 9634,
     "TNN-KMJ": 7410,
-    "TPE-OIT": 6937,
+    "TPE-OIT": 7837,
     "TNN-OKA": 7378,
     "KHH-ISG": 6537,
     "TPE-DAD": 8838,
@@ -48,8 +48,8 @@
     "TPE-AXT": 14737,
     "TPE-FKS": 15437,
     "TPE-HNA": 13937,
-    "TPE-ICN__PUS-TPE": 5283,
-    "KHH-GMP__PUS-TPE": 5483,
+    "TPE-ICN__PUS-TPE": 4883,
+    "KHH-GMP__PUS-TPE": 5383,
     "KHH-GMP__ICN-TPE": 5698,
     "TPE-PUS__ICN-TPE": 4598,
     "TPE-ICN__GMP-KHH": 5998,
@@ -57,7 +57,7 @@
   },
   "allTimeLow": {
     "TPE-ICN": 4798,
-    "TPE-PUS": 5083,
+    "TPE-PUS": 4683,
     "TPE-OKA": 5478,
     "KHH-GMP": 5998,
     "TPE-CJU": 6083,
@@ -100,8 +100,8 @@
     "TPE-AXT": 12837,
     "TPE-FKS": 14537,
     "TPE-HNA": 13937,
-    "TPE-ICN__PUS-TPE": 5083,
-    "KHH-GMP__PUS-TPE": 5483,
+    "TPE-ICN__PUS-TPE": 4883,
+    "KHH-GMP__PUS-TPE": 5383,
     "KHH-GMP__ICN-TPE": 5498,
     "TPE-PUS__ICN-TPE": 4598,
     "TPE-ICN__GMP-KHH": 5998,
@@ -121,8 +121,8 @@
       "at": 1793673905638
     },
     "TPE-PUS": {
-      "fare": 5083,
-      "at": 1793871005620
+      "fare": 4683,
+      "at": 1793871905564
     },
     "KHH-NGO": {
       "fare": 10265,
@@ -187,6 +187,14 @@
     "TPE-PUS__GMP-KHH": {
       "fare": 6598,
       "at": 1793871005620
+    },
+    "TPE-ICN__PUS-TPE": {
+      "fare": 4883,
+      "at": 1793871905564
+    },
+    "KHH-GMP__PUS-TPE": {
+      "fare": 5383,
+      "at": 1793871905564
     }
   },
   "pricingModel": "date-fees-2026-10-02-v1",
