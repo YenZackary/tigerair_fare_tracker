@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-11-07 07:40",
-  "lastChangeNotifyAt": 1794008405749,
+  "lastRunAt": "2026-11-07 07:45",
+  "lastChangeNotifyAt": 1794008705775,
   "lastDailyDate": "2026-11-06",
   "best": {
     "TPE-ICN": 4798,
@@ -39,7 +39,7 @@
     "TNN-OKA": 7378,
     "KHH-ISG": 6537,
     "TPE-DAD": 8538,
-    "KHH-DAD": 11338,
+    "KHH-DAD": 11038,
     "KHH-NGO": 10265,
     "TPE-HKD": 7673,
     "KHH-OKJ": 8637,
@@ -277,6 +277,14 @@
       "body": "## 票價變動 11 條（降 8 / 漲 3） · 2026-10-28 16:59\n\n\n\n| 航線 | 含稅 上次 → 這次 | 差額 | 實付總額 |\n|---|---|---:|---:|\n| ▼ 桃園 ⇄ 花卷 | 17,737 → 16,837 | -900 | 16,837 |\n| ▼ 高雄 ⇄ 熊本 | 8,710 → 8,210 | -500 | 8,210 |\n| ▼ 高雄 ⇄ 岡山 | 10,137 → 9,637 | -500 | 9,637 |\n| ▼ 高雄 ⇄ 峴港 | 11,938 → 11,438 | -500 | 11,438 |\n| ▼ 台南 ⇄ 熊本 | 9,610 → 9,210 | -400 | 9,210 |\n| ▼ 桃園 ⇄ 東京成田 | 7,557 → 7,257 | -300 | 7,257 |\n| ▼ 桃園 ⇄ 福島 | 15,637 → 15,437 | -200 | 15,437 |\n| ▼ 桃園 ⇄ 石垣島 | 7,737 → 7,637 | -100 | 7,637 |\n| ▲ 桃園 ⇄ 大分 | 10,337 → 10,537 | +200 | 10,537 |\n| ▲ 台南 ⇄ 沖繩 | 9,278 → 9,678 | +400 | 9,678 |\n\n（另有 1 條未列出）\n\n[全航線儀表板](https://yenzackary.github.io/tigerair_fare_tracker/all-routes.html)",
       "emailSent": false,
       "issueSent": true
+    },
+    {
+      "id": "82eb48ae-587e-4012-8ce5-e5acd11cb58e",
+      "kind": "change",
+      "body": "## 票價變動 1 條（降 1 / 漲 0） · 2026-11-07 07:45\n\n@YenZackary \n\n| 航線 | 含稅 上次 → 這次 | 差額 | 實付總額 |\n|---|---|---:|---:|\n| ▼ 高雄 ⇄ 峴港 | 11,338 → 11,038 | -300 | 11,038 |\n\n[全航線儀表板](https://yenzackary.github.io/tigerair_fare_tracker/all-routes.html)",
+      "emailSent": false,
+      "issueSent": false,
+      "emailRequired": false
     }
   ]
 }
