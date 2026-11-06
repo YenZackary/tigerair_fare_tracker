@@ -1,59 +1,59 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-11-06 11:00",
-  "lastChangeNotifyAt": 1793934005851,
+  "lastRunAt": "2026-11-06 11:15",
+  "lastChangeNotifyAt": 1793934905729,
   "lastDailyDate": "2026-11-06",
   "best": {
     "TPE-ICN": 4798,
-    "TPE-PUS": 4783,
-    "TPE-OKA": 4278,
+    "TPE-PUS": 4683,
+    "TPE-OKA": 5578,
     "KHH-GMP": 6198,
     "TPE-CJU": 4283,
     "KHH-CJU": 6483,
     "TPE-ISG": 4137,
-    "TPE-KMI": 7282,
-    "TPE-NRT": 6457,
-    "TPE-OKJ": 6437,
+    "TPE-KMI": 7882,
+    "TPE-NRT": 6557,
+    "TPE-OKJ": 6737,
     "KHH-OKA": 7078,
-    "TPE-NGO": 7165,
+    "TPE-NGO": 6465,
     "TPE-KIX": 7450,
     "TPE-HND": 6761,
     "KHH-SDJ": 9421,
-    "RMQ-NGO": 7665,
+    "RMQ-NGO": 8465,
     "KHH-KMJ": 8710,
     "TPE-HSG": 7137,
     "TPE-KCZ": 7137,
     "KHH-KIX": 8650,
     "KHH-NRT": 7957,
     "TPE-KIJ": 7482,
-    "TPE-KMQ": 8082,
-    "RMQ-CJU": 4283,
+    "TPE-KMQ": 8482,
+    "RMQ-CJU": 6483,
     "TPE-SDJ": 10221,
-    "TPE-YGJ": 6837,
-    "TPE-CTS": 9554,
-    "RMQ-OKA": 6078,
+    "TPE-YGJ": 7137,
+    "TPE-CTS": 8454,
+    "RMQ-OKA": 7878,
     "TPE-FUK": 7634,
-    "KHH-FUK": 10134,
+    "KHH-FUK": 9634,
     "TNN-KMJ": 7410,
-    "TPE-OIT": 5737,
+    "TPE-OIT": 5637,
     "TNN-OKA": 7378,
     "KHH-ISG": 6537,
     "TPE-DAD": 8538,
     "KHH-DAD": 11338,
     "KHH-NGO": 10265,
-    "TPE-HKD": 9473,
+    "TPE-HKD": 7573,
     "KHH-OKJ": 8637,
     "KHH-KMQ": 12882,
     "KHH-CTS": 13254,
     "TPE-AXT": 12937,
     "TPE-FKS": 15437,
-    "TPE-HNA": 14437,
+    "TPE-HNA": 15037,
     "TPE-ICN__PUS-TPE": 5283,
     "KHH-GMP__PUS-TPE": 5683,
     "KHH-GMP__ICN-TPE": 4798,
     "TPE-PUS__ICN-TPE": 4598,
     "TPE-ICN__GMP-KHH": 5998,
-    "TPE-PUS__GMP-KHH": 6598
+    "TPE-PUS__GMP-KHH": 5798
   },
   "allTimeLow": {
     "TPE-ICN": 4398,
@@ -67,7 +67,7 @@
     "TPE-NRT": 6457,
     "TPE-OKJ": 6437,
     "KHH-OKA": 6778,
-    "TPE-NGO": 6965,
+    "TPE-NGO": 6465,
     "TPE-KIX": 6950,
     "TPE-HND": 6661,
     "KHH-SDJ": 7621,
@@ -105,7 +105,7 @@
     "KHH-GMP__ICN-TPE": 4798,
     "TPE-PUS__ICN-TPE": 4598,
     "TPE-ICN__GMP-KHH": 5998,
-    "TPE-PUS__GMP-KHH": 6598
+    "TPE-PUS__GMP-KHH": 5798
   },
   "notifiedLow": {
     "KHH-OKA": {
@@ -185,8 +185,8 @@
       "at": 1793871005620
     },
     "TPE-PUS__GMP-KHH": {
-      "fare": 6598,
-      "at": 1793871005620
+      "fare": 5798,
+      "at": 1793934905729
     },
     "TPE-ICN__PUS-TPE": {
       "fare": 4883,
@@ -229,8 +229,8 @@
       "at": 1793934005851
     },
     "TPE-NGO": {
-      "fare": 6965,
-      "at": 1793931305872
+      "fare": 6465,
+      "at": 1793934905729
     },
     "TPE-HSG": {
       "fare": 5837,
