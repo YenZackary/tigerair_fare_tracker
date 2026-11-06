@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-11-06 09:45",
+  "lastRunAt": "2026-11-06 10:00",
   "lastChangeNotifyAt": 1793929505730,
   "lastDailyDate": "2026-11-06",
   "best": {
@@ -19,7 +19,7 @@
     "TPE-KIX": 7450,
     "TPE-HND": 7561,
     "KHH-SDJ": 9421,
-    "RMQ-NGO": 8665,
+    "RMQ-NGO": 7265,
     "KHH-KMJ": 8710,
     "TPE-HSG": 7837,
     "TPE-KCZ": 8237,
@@ -71,7 +71,7 @@
     "TPE-KIX": 6950,
     "TPE-HND": 7461,
     "KHH-SDJ": 7621,
-    "RMQ-NGO": 7665,
+    "RMQ-NGO": 7265,
     "KHH-KMJ": 7810,
     "TPE-HSG": 7837,
     "TPE-KCZ": 7837,
@@ -195,6 +195,10 @@
     "KHH-GMP__PUS-TPE": {
       "fare": 4883,
       "at": 1793874605544
+    },
+    "RMQ-NGO": {
+      "fare": 7265,
+      "at": 1793930405859
     }
   },
   "pricingModel": "date-fees-2026-10-02-v1",
