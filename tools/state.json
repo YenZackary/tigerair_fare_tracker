@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-11-07 17:15",
-  "lastChangeNotifyAt": 1794042605730,
+  "lastRunAt": "2026-11-07 17:20",
+  "lastChangeNotifyAt": 1794043205757,
   "lastDailyDate": "2026-11-07",
   "best": {
     "TPE-ICN": 4798,
     "TPE-PUS": 5583,
-    "TPE-OKA": 5578,
+    "TPE-OKA": 5678,
     "KHH-GMP": 6198,
     "TPE-CJU": 5983,
     "KHH-CJU": 6483,
