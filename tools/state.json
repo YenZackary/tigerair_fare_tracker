@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "lastRunAt": "2026-11-08 03:10",
-  "lastChangeNotifyAt": 1794078305757,
+  "lastRunAt": "2026-11-08 03:15",
+  "lastChangeNotifyAt": 1794078905796,
   "lastDailyDate": "2026-11-07",
   "best": {
-    "TPE-ICN": 4798,
+    "TPE-ICN": 4398,
     "TPE-PUS": 5583,
     "TPE-OKA": 5578,
     "KHH-GMP": 6198,
@@ -35,7 +35,7 @@
     "TPE-FUK": 8234,
     "KHH-FUK": 10134,
     "TNN-KMJ": 7410,
-    "TPE-OIT": 6937,
+    "TPE-OIT": 7137,
     "TNN-OKA": 7378,
     "KHH-ISG": 6537,
     "TPE-DAD": 8538,
@@ -48,11 +48,11 @@
     "TPE-AXT": 12937,
     "TPE-FKS": 15437,
     "TPE-HNA": 14437,
-    "TPE-ICN__PUS-TPE": 5283,
+    "TPE-ICN__PUS-TPE": 5083,
     "KHH-GMP__PUS-TPE": 5683,
     "KHH-GMP__ICN-TPE": 4798,
     "TPE-PUS__ICN-TPE": 4898,
-    "TPE-ICN__GMP-KHH": 5998,
+    "TPE-ICN__GMP-KHH": 5598,
     "TPE-PUS__GMP-KHH": 6698
   },
   "allTimeLow": {
